@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "readline.h": "c"
+    },
+    "search.useParentIgnoreFiles": false
+}
