@@ -6,7 +6,7 @@ int main()
 {
     char *input;
 
-    input = readline("Enter your name: ");
+    input = readline("");
 
     printf("Hello, %s!\n", input);
 
