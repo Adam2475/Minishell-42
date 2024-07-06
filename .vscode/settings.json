@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "readline.h": "c"
+        "readline.h": "c",
+        "minishell.h": "c"
     },
     "search.useParentIgnoreFiles": false
 }

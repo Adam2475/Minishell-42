@@ -1,9 +1,11 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+#CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -g
 # Source files
 SRC_DIR = src
-SRCS = main parsing exit_handle
+LIB = ./libft/libft.a
+SRCS = main parsing exit_handle tokenizer states redirection init
 SRC = $(addprefix $(SRC_DIR)/, $(addsuffix .c, $(SRCS)))
 # Object file generation
 OBJ_DIR = obj
@@ -27,17 +29,21 @@ BANNER = \
  |  \/  |        / ____| |        | | |\n\
  | \  / |___  __| (___ | |__   ___| | |\n\
  | |\/| / _ \/ _ \___ \| '_ \ / _ \ | |\n\
- | |  |  __/  /  ____| ) | | | |__/ | |\n\
+ | |  | |__/  /  ____| ) | | | |__/ | |\n\
  |_|  |_|\___|  |_____/|_| |_|\___|_|_|\n\
 $(DEFAULT)"
 
-all: banner $(OBJ_DIR) $(NAME)
+all: banner lib $(OBJ_DIR) $(NAME)
+
+lib:
+		make -s -C libft
 
 $(OBJ_DIR):
 		mkdir -p $(OBJ_DIR)
 
 $(NAME): $(OBJ)
-		$(CC) $(CFLAGS) $(OBJ) -lreadline -o $(NAME)
+		@echo "\033[32mCompiling $(NAME) 🚀"
+		$(CC) $(CFLAGS) $(OBJ) $(LIB) -lreadline -o $(NAME)
 		@echo "$(GREEN)$(NAME) compilata con successo❗️ 📁$(DEFAULT)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
