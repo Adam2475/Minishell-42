@@ -53,17 +53,61 @@ void	tokenize_string(t_data *data)
 			|| buffer[i] == SINGLE_QUOTES
 			|| buffer[i] == DOUBLE_QUOTES)
 		{
-			i++;
-			special_cases_lexer(data);
+			i = i + special_cases_lexer(data, i);
+			printf("i value: %d\n", i);
 			continue;
 		}
-		ft_printf("%c", buffer[i]);
+		end = buffer;
+		while (*end && *end != WHITESPACE
+				&& *end != REDIRECT_LEFT && *end != PIPE
+				&& *end != REDIRECT_RIGHT)
+				end++;
+		//ft_printf("%c", buffer[i]);
 		i++;
 	}
-	ft_printf("\n");
 }
 
-void	special_cases_lexer(t_data *data)
+int	special_cases_lexer(t_data *data, int i)
 {
-	printf("found special case\n");
+	char 	*buffer;
+	char	*end;
+
+	buffer = data->input;
+	ft_printf("index number passed: %d\n", i);
+	printf("buffer value at index position: %c\n", buffer[i]);
+	if (buffer[i] == REDIRECT_LEFT)
+	{
+		if (buffer[i + 1] == REDIRECT_LEFT)
+		{
+			//add_token('<<')
+			ft_printf("case herdoc\n");		
+			return (2);
+		}
+		else
+		{
+			printf("case redirect left\n");
+			return (1);
+		}
+	}
+	if (buffer[i] == REDIRECT_RIGHT)
+	{
+		if (buffer[i + 1] == REDIRECT_RIGHT)
+		{
+			//add_token('>>')
+			printf("case append\n");
+			return (2);
+		}
+		else
+		{
+			//add_token('>');
+			printf("case redirect right\n");
+			return (1);
+		}
+	}
+	if (buffer[i] == PIPE)
+	{
+		printf("case pipe\n");
+		return (1);
+	}
+	return (1);
 }
