@@ -33,33 +33,37 @@ int		lexer_control(t_data *data, int j)
 
 void	tokenize_string(t_data *data)
 {
-	int		i;
-	int		j;
-	char	*buffer;
+	char				*buffer;
+	t_token_type		*tokens;
+	int					i;
 
 	i = 0;
-	j = 0;
-	init_state(data);
-	while (data->input[i] != '\0')
+	buffer = data->input;
+	init_state(data, tokens);
+	while (buffer[i])
 	{
-
-		// if (data->input[i] == '(' || data->input[i] == '|'
-		// 		|| data->input[i] == '<' || data->input[i] == '>'
-		// 		|| data->input[i] == '<<' || data->input[i] == '>>'
-		// 		|| data->input[i] == '&&' || data->input[i] == '||')
-		// 	special_cases_lexer(data);
-		// funny behaviour
-
-		lexer_control(data, i);
-	
-		ft_printf(&data->input[j]);
-		ft_printf(&data->input[i]);
-		j++;
+		if ((buffer[i]) == WHITESPACE)
+		{
+			i++;
+			continue; // Skip the rest of the loop body
+		}
+		if (buffer[i] == REDIRECT_LEFT
+			|| buffer[i] == REDIRECT_RIGHT
+			|| buffer[i] == PIPE
+			|| buffer[i] == SINGLE_QUOTES
+			|| buffer[i] == DOUBLE_QUOTES)
+		{
+			i++;
+			special_cases_lexer(data);
+			continue;
+		}
+		ft_printf("%c", buffer[i]);
 		i++;
 	}
+	ft_printf("\n");
 }
 
 void	special_cases_lexer(t_data *data)
 {
-	printf("found special case");
+	printf("found special case\n");
 }

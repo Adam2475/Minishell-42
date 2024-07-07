@@ -5,7 +5,9 @@ CFLAGS = -g
 # Source files
 SRC_DIR = src
 LIB = ./libft/libft.a
-SRCS = main parsing exit_handle tokenizer states redirection init
+SRCS = main parsing exit_handle tokenizer states redirection init \
+		utils \
+
 SRC = $(addprefix $(SRC_DIR)/, $(addsuffix .c, $(SRCS)))
 # Object file generation
 OBJ_DIR = obj

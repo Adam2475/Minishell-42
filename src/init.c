@@ -12,7 +12,8 @@
 
 #include "../inc/minishell.h"
 
-void	init_state(t_data *data)
+void	init_state(t_data *data, t_token_type *tokens)
 {
 	data->state = NORMAL;
+	tokens = NULL;
 }
