@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 19:30:25 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 09:00:35 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 09:54:38 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,20 @@ char	*ft_strdup(const char *s)
 	return (pt1);
 }
 
-// char	*ft_strndup(const char *s, int n)
-// {
-// 	char	*pt1;
-// 	int		l;
+char	*ft_strndup(const char *s, size_t n)
+{
+	char			*res;
+	unsigned int	i;
 
-// 	l = ft_strlen(s);
-// 	pt1 = malloc(sizeof(char) * (l + 1));
-// 	if (!pt1)
-// 		return (0);
-// 	ft_memcpy(pt1, s, l);
-// 	pt1[l] = '\0';
-// 	return (pt1);
-// }
+	i = 0;
+	res = ft_calloc(sizeof(char), n + 1);
+	if (res == NULL)
+		return (NULL);
+	while (i < n)
+	{
+		res[i] = s[i];
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
+}

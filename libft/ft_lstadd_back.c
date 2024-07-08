@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 20:33:05 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 08:36:58 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 09:41:25 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,10 @@ void	ft_tokenadd_back(t_token **lst, t_token *new)
 	if (lst)
 	{
 		if (*lst == NULL)
+		{
+			//*lst = (t_token *)malloc(sizeof(t_token *));
 			*lst = new;
+		}
 		else
 		{
 			tmp = ft_tokenlast(*lst);

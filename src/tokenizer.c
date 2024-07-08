@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 09:00:53 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 11:09:15 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int		lexer_control(t_data *data, int j)
 		data->state = STATE_DOUBLE_QUOTES;
 		ft_printf("Actual lexer state :%d\n", data->state);
 	}
+	return (0);
 }
 
 void	tokenize_string(t_data *data)
@@ -36,84 +37,79 @@ void	tokenize_string(t_data *data)
 	char				*buffer;
 	char				*end;
 	t_token				*tokens;
-	int					i;
 
-	i = 0;
+
 	buffer = data->input;
-	init_state(data, tokens);
-	while (buffer[i])
+	init_state(data, &tokens);
+	while (*buffer)
 	{
-		if ((buffer[i]) == WHITESPACE)
+		if ((*buffer) == WHITESPACE)
 		{
-			i++;
+			buffer++;
 			continue; // Skip the rest of the loop body
 		}
-		if (buffer[i] == REDIRECT_LEFT
-			|| buffer[i] == REDIRECT_RIGHT
-			|| buffer[i] == PIPE
-			|| buffer[i] == SINGLE_QUOTES
-			|| buffer[i] == DOUBLE_QUOTES)
+		if (*buffer == REDIRECT_LEFT
+			|| *buffer == REDIRECT_RIGHT
+			|| *buffer == PIPE
+			|| *buffer == SINGLE_QUOTES
+			|| *buffer == DOUBLE_QUOTES)
 		{
-			i = i + special_cases_lexer(data, i);
-			printf("i value: %d\n", i);
+			buffer = buffer + special_cases_lexer(buffer, &tokens);
 			continue;
 		}
 		end = buffer;
 		while (*end && *end != WHITESPACE
 				&& *end != REDIRECT_LEFT && *end != PIPE
 				&& *end != REDIRECT_RIGHT)
-				end++;
-
-		ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_WORD, ft_strdup(buffer)));
-		//ft_printf("%c", buffer[i]);
-		i++;
+		{
+			end++;
+		}
+		//printf("iteration position: %i\n", i);
+		ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_WORD, ft_strndup(buffer, end - buffer)));
+		buffer = end;
 	}
-	while (tokens) {
-		printf("%-15s %-20s\n", token_type_to_string(tokens->type), tokens->value ? tokens->value : "NULL");
+	ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_EOF, NULL));
+	// Debugging
+	while (tokens)
+	{
+		printf("%d : %s\n", tokens->type, tokens->value);
 		tokens = tokens->next;
 	}
 }
 
-int	special_cases_lexer(t_data *data, int i)
+int	special_cases_lexer(char *buffer, t_token **tokens)
 {
-	char 	*buffer;
 	char	*end;
 
-	buffer = data->input;
-	ft_printf("index number passed: %d\n", i);
-	printf("buffer value at index position: %c\n", buffer[i]);
-	if (buffer[i] == REDIRECT_LEFT)
+	if (*buffer == REDIRECT_LEFT)
 	{
-		if (buffer[i + 1] == REDIRECT_LEFT)
+		if (*(buffer + 1) == REDIRECT_LEFT)
 		{
-			//add_token('<<')
-			ft_printf("case herdoc\n");
+			ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_HEREDOC, ft_strndup(buffer, 2)));
 			return (2);
 		}
 		else
 		{
-			printf("case redirect left\n");
+			ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_REDIRECT_IN, ft_strndup(buffer, 1)));
 			return (1);
 		}
 	}
-	if (buffer[i] == REDIRECT_RIGHT)
+	if (*buffer  == REDIRECT_RIGHT)
 	{
-		if (buffer[i + 1] == REDIRECT_RIGHT)
+		if (*(buffer + 1)  == REDIRECT_RIGHT)
 		{
-			//add_token('>>')
-			printf("case append\n");
+			ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_APPEND, ft_strndup(buffer, 2)));
 			return (2);
 		}
 		else
 		{
-			//add_token('>');
-			printf("case redirect right\n");
+			ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_REDIRECT_OUT, ft_strndup(buffer, 1)));
 			return (1);
 		}
 	}
-	if (buffer[i] == PIPE)
+	if (*buffer == PIPE)
 	{
-		printf("case pipe\n");
+		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_PIPE, ft_strndup(buffer, 1)));
 		return (1);
 	}
 	return (1);

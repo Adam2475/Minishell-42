@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:27:20 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 08:57:21 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 09:54:58 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <stdbool.h>
 # include <stddef.h>
 # include <string.h>
-# include "../inc/minishell.h"
+//# include "../inc/minishell.h"
 
 typedef enum type
 {
@@ -127,5 +127,6 @@ char		*ft_strdup_gnl(const char *src);
 // Minishell
 t_token		*ft_lstnewtoken(t_token_type type, char *content);
 void		ft_tokenadd_back(t_token **lst, t_token *new);
+char		*ft_strndup(const char *s, size_t n);
 
 #endif
