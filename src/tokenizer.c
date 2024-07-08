@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 11:09:15 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 11:21:28 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		lexer_control(t_data *data, int j)
 	return (0);
 }
 
-void	tokenize_string(t_data *data)
+t_token	*tokenize_string(t_data *data)
 {
 	char				*buffer;
 	char				*end;
@@ -70,11 +70,12 @@ void	tokenize_string(t_data *data)
 	}
 	ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_EOF, NULL));
 	// Debugging
-	while (tokens)
-	{
-		printf("%d : %s\n", tokens->type, tokens->value);
-		tokens = tokens->next;
-	}
+	// while (tokens)
+	// {
+	// 	printf("%d : %s\n", tokens->type, tokens->value);
+	// 	tokens = tokens->next;
+	// }
+	return (tokens);
 }
 
 int	special_cases_lexer(char *buffer, t_token **tokens)
