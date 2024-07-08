@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 11:21:28 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 15:15:04 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ t_token	*tokenize_string(t_data *data)
 	char				*end;
 	t_token				*tokens;
 
-
 	buffer = data->input;
 	init_state(data, &tokens);
 	while (*buffer)
@@ -52,7 +51,8 @@ t_token	*tokenize_string(t_data *data)
 			|| *buffer == REDIRECT_RIGHT
 			|| *buffer == PIPE
 			|| *buffer == SINGLE_QUOTES
-			|| *buffer == DOUBLE_QUOTES)
+			|| *buffer == DOUBLE_QUOTES
+			|| *buffer == DOLLAR_SIGN)
 		{
 			buffer = buffer + special_cases_lexer(buffer, &tokens);
 			continue;
@@ -64,21 +64,17 @@ t_token	*tokenize_string(t_data *data)
 		{
 			end++;
 		}
-		//printf("iteration position: %i\n", i);
-		ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_WORD, ft_strndup(buffer, end - buffer)));
+		if (*buffer == '-')
+			ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_OPTION, ft_strndup(buffer, end - buffer)));
+		else
+			ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_COMMAND, ft_strndup(buffer, end - buffer)));
 		buffer = end;
 	}
 	ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_EOF, NULL));
-	// Debugging
-	// while (tokens)
-	// {
-	// 	printf("%d : %s\n", tokens->type, tokens->value);
-	// 	tokens = tokens->next;
-	// }
 	return (tokens);
 }
 
-int	special_cases_lexer(char *buffer, t_token **tokens)
+int	special_cases_lexer(t_data *data, char *buffer, t_token **tokens)
 {
 	char	*end;
 
@@ -113,5 +109,27 @@ int	special_cases_lexer(char *buffer, t_token **tokens)
 		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_PIPE, ft_strndup(buffer, 1)));
 		return (1);
 	}
+
+	// State must wait for it's closure
+
+	if (*buffer == DOLLAR_SIGN)
+	{
+		ft_printf("Ready for variable expansion!");
+		data->state = STATE_DOLLAR;
+		ft_printf("State switched to dollar state!");
+	}
+
+	if (*buffer == SINGLE_QUOTES)
+	{
+		ft_printf("State switched to single quotes!");
+		data->state = STATE_SINGLE_QUOTES;
+	}
+
+	if (*buffer == DOUBLE_QUOTES)
+	{
+		ft_printf("State switched to double quotes!");
+		data->state = STATE_DOUBLE_QUOTES;
+	}
+	
 	return (1);
 }

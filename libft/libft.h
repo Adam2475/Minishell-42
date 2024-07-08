@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:27:20 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 09:54:58 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 14:43:49 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@
 
 typedef enum type
 {
-	TOKEN_WORD,
+	TOKEN_COMMAND,
+	TOKEN_OPTION,
 	TOKEN_PIPE,
 	TOKEN_REDIRECT_IN,
 	TOKEN_REDIRECT_OUT,

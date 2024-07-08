@@ -16,12 +16,14 @@
 # define REDIRECT_LEFT '<'
 # define REDIRECT_RIGHT '>'
 # define PIPE '|'
+# define DOLLAR_SIGN '$'
 
 typedef enum state
 {
 	NORMAL,
 	STATE_DOUBLE_QUOTES,
-	STATE_SINGLE_QUOTES
+	STATE_SINGLE_QUOTES,
+	STATE_DOLLAR
 }	t_state;
 
 typedef struct s_data
@@ -36,6 +38,6 @@ int			parse_input(t_data *data);
 t_token		*tokenize_string(t_data *data);
 int			lexer_control(t_data *data, int j);
 void		init_state(t_data *data, t_token **tokens);
-int			special_cases_lexer(char *buffer, t_token **tokens);
+int			special_cases_lexer(t_data *data, char *buffer, t_token **tokens);
 
 #endif
