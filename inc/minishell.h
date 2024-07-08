@@ -24,17 +24,6 @@ typedef enum state
 	STATE_SINGLE_QUOTES
 }	t_state;
 
-typedef enum type
-{
-	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_REDIRECT_IN,
-	TOKEN_REDIRECT_OUT,
-	TOKEN_APPEND,
-	TOKEN_HEREDOC,
-	TOKEN_EOF
-}	t_token_type;
-
 typedef struct s_data
 {
 	char			*input;
@@ -42,18 +31,11 @@ typedef struct s_data
 	t_state			state;
 }	t_data;
 
-typedef struct s_token
-{
-	t_token_type	type;
-	char			*value;
-	struct s_token	*next;
-}	t_token;
-
 void	free_exit(t_data *data);
 int		parse_input(t_data *data);
 void	tokenize_string(t_data *data);
 int		lexer_control(t_data *data, int j);
-void	init_state(t_data *data, t_token_type *tokens);
+void	init_state(t_data *data, t_token *tokens);
 int		special_cases_lexer(t_data *data, int i);
 
 #endif

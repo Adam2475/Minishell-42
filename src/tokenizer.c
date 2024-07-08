@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/06 18:39:02 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 09:00:53 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ int		lexer_control(t_data *data, int j)
 void	tokenize_string(t_data *data)
 {
 	char				*buffer;
-	t_token_type		*tokens;
+	char				*end;
+	t_token				*tokens;
 	int					i;
 
 	i = 0;
@@ -62,8 +63,14 @@ void	tokenize_string(t_data *data)
 				&& *end != REDIRECT_LEFT && *end != PIPE
 				&& *end != REDIRECT_RIGHT)
 				end++;
+
+		ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_WORD, ft_strdup(buffer)));
 		//ft_printf("%c", buffer[i]);
 		i++;
+	}
+	while (tokens) {
+		printf("%-15s %-20s\n", token_type_to_string(tokens->type), tokens->value ? tokens->value : "NULL");
+		tokens = tokens->next;
 	}
 }
 
@@ -80,7 +87,7 @@ int	special_cases_lexer(t_data *data, int i)
 		if (buffer[i + 1] == REDIRECT_LEFT)
 		{
 			//add_token('<<')
-			ft_printf("case herdoc\n");		
+			ft_printf("case herdoc\n");
 			return (2);
 		}
 		else

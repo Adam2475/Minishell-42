@@ -58,6 +58,7 @@ clean:
 fclean: clean
 		$(RM) $(NAME)
 		$(RM) -r $(OBJ_DIR)
+		cd libft && make fclean
 		@echo "$(CIANO)directory OBJ rimossa...$(DEFAULT)"
 		@echo "$(RED)$(NAME) rimossa con successo❗️ ❌$(DEFAULT)"
 

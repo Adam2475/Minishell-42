@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:27:20 by adapassa          #+#    #+#             */
-/*   Updated: 2024/02/08 19:34:55 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 08:57:21 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,33 @@
 # include <stdbool.h>
 # include <stddef.h>
 # include <string.h>
+# include "../inc/minishell.h"
+
+typedef enum type
+{
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIRECT_IN,
+	TOKEN_REDIRECT_OUT,
+	TOKEN_APPEND,
+	TOKEN_HEREDOC,
+	TOKEN_EOF
+}	t_token_type;
+
 ////////////////////////////////////////////////
 typedef struct s_list
 {
 	void			*content;
 	struct s_list	*next;
 }	t_list;
+
+typedef struct s_token
+{
+	t_token_type	type;
+	char			*value;
+	struct s_token	*next;
+}	t_token;
+
 ////////////////////////////////////////////////
 # define TRUE 1
 # define FALSE 0
@@ -68,39 +89,43 @@ char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 //////////////////////////////////////////////
-int		ft_atoi(const char *str);
-char	*ft_itoa(int n);
+int			ft_atoi(const char *str);
+char		*ft_itoa(int n);
 //////////////////////////////////////////////
-void	*ft_calloc(size_t nmemb, size_t size);
+void		*ft_calloc(size_t nmemb, size_t size);
 //////////////////////////////////////////////
-void	ft_putchar_fd(char c, int fd);
-void	ft_putstr_fd(char *s, int fd);
-void	ft_putendl_fd(char *s, int fd);
-void	ft_putnbr_fd(int n, int fd);
+void		ft_putchar_fd(char c, int fd);
+void		ft_putstr_fd(char *s, int fd);
+void		ft_putendl_fd(char *s, int fd);
+void		ft_putnbr_fd(int n, int fd);
 //////////////////////////////////////////////
-t_list	*ft_lstnew(void *content);
-void	ft_lstadd_front(t_list **lst, t_list *new);
-int		ft_lstsize(t_list *lst);
-t_list	*ft_lstlast(t_list *lst);
-void	ft_lstadd_back(t_list **lst, t_list *new);
-void	ft_lstdelone(t_list *lst, void (*del)(void*));
-void	ft_lstclear(t_list **lst, void (*del)(void*));
-void	ft_lstiter(t_list *lst, void (*f)(void *));
-t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+t_list		*ft_lstnew(void *content);
+void		ft_lstadd_front(t_list **lst, t_list *new);
+int			ft_lstsize(t_list *lst);
+t_list		*ft_lstlast(t_list *lst);
+void		ft_lstadd_back(t_list **lst, t_list *new);
+void		ft_lstdelone(t_list *lst, void (*del)(void*));
+void		ft_lstclear(t_list **lst, void (*del)(void*));
+void		ft_lstiter(t_list *lst, void (*f)(void *));
+t_list		*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 //////////////////////////////////////////////
-int		ft_printf(const char *format, ...);
-int		ft_print_unsinged(unsigned long n);
-int		ft_printptr(unsigned long address);
-int		ft_printhex(unsigned long nbr, int maiusc);
+int			ft_printf(const char *format, ...);
+int			ft_print_unsinged(unsigned long n);
+int			ft_printptr(unsigned long address);
+int			ft_printhex(unsigned long nbr, int maiusc);
 //////////////////////////////////////////////
-int		ft_putchar(char c);
-int		ft_putstr(char *str);
+int			ft_putchar(char c);
+int			ft_putstr(char *str);
 //////////////////////////////////////////////
-char	*get_next_line(int fd);
-char	**ft_minisplit(char *str);
-void	*ft_free_mat(char **mat, char *str);
-void	*ft_custom_function(size_t nmemb, size_t size, char *str, bool flag);
-char	*ft_strjoin_gnl(char const *s1, char const *s2);
-char	*ft_strdup_gnl(const char *src);
+char		*get_next_line(int fd);
+char		**ft_minisplit(char *str);
+void		*ft_free_mat(char **mat, char *str);
+void		*ft_custom_function(size_t nmemb, size_t size, char *str, bool flag);
+char		*ft_strjoin_gnl(char const *s1, char const *s2);
+char		*ft_strdup_gnl(const char *src);
+//////////////////////////////////////////////
+// Minishell
+t_token		*ft_lstnewtoken(t_token_type type, char *content);
+void		ft_tokenadd_back(t_token **lst, t_token *new);
 
 #endif

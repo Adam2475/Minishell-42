@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 19:30:25 by adapassa          #+#    #+#             */
-/*   Updated: 2023/12/20 19:30:54 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/08 09:00:35 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,3 +37,17 @@ char	*ft_strdup(const char *s)
 	pt1[l] = '\0';
 	return (pt1);
 }
+
+// char	*ft_strndup(const char *s, int n)
+// {
+// 	char	*pt1;
+// 	int		l;
+
+// 	l = ft_strlen(s);
+// 	pt1 = malloc(sizeof(char) * (l + 1));
+// 	if (!pt1)
+// 		return (0);
+// 	ft_memcpy(pt1, s, l);
+// 	pt1[l] = '\0';
+// 	return (pt1);
+// }
