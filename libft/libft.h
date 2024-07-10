@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:27:20 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 14:43:49 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/10 14:01:13 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,10 @@ typedef enum type
 	TOKEN_REDIRECT_OUT,
 	TOKEN_APPEND,
 	TOKEN_HEREDOC,
-	TOKEN_EOF
+	TOKEN_EOF,
+	TOKEN_DOLLAR,
+	TOKEN_DOUBLE_QUOTES,
+	TOKEN_SINGLE_QUOTES
 }	t_token_type;
 
 ////////////////////////////////////////////////

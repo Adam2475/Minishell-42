@@ -6,31 +6,11 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 15:15:04 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/10 14:25:26 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-int		lexer_control(t_data *data, int j)
-{
-	int	i;
-	t_data *endpoint;
-
-	endpoint = data;
-	i = j;
-	if (endpoint->input[i] == DOUBLE_QUOTES)
-	{
-		data->state = STATE_DOUBLE_QUOTES;
-		ft_printf("Actual lexer state :%d\n", data->state);
-	}
-	else if (endpoint->input[i] == SINGLE_QUOTES)
-	{
-		data->state = STATE_DOUBLE_QUOTES;
-		ft_printf("Actual lexer state :%d\n", data->state);
-	}
-	return (0);
-}
 
 t_token	*tokenize_string(t_data *data)
 {
@@ -54,13 +34,15 @@ t_token	*tokenize_string(t_data *data)
 			|| *buffer == DOUBLE_QUOTES
 			|| *buffer == DOLLAR_SIGN)
 		{
-			buffer = buffer + special_cases_lexer(buffer, &tokens);
+			buffer = buffer + special_cases_lexer(data, buffer, &tokens);
 			continue;
 		}
 		end = buffer;
 		while (*end && *end != WHITESPACE
 				&& *end != REDIRECT_LEFT && *end != PIPE
-				&& *end != REDIRECT_RIGHT)
+				&& *end != REDIRECT_RIGHT
+				&& *end != DOUBLE_QUOTES
+				&& *end != SINGLE_QUOTES)
 		{
 			end++;
 		}
@@ -111,25 +93,20 @@ int	special_cases_lexer(t_data *data, char *buffer, t_token **tokens)
 	}
 
 	// State must wait for it's closure
-
 	if (*buffer == DOLLAR_SIGN)
 	{
-		ft_printf("Ready for variable expansion!");
-		data->state = STATE_DOLLAR;
-		ft_printf("State switched to dollar state!");
+		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
+		return (1);
 	}
-
 	if (*buffer == SINGLE_QUOTES)
 	{
-		ft_printf("State switched to single quotes!");
-		data->state = STATE_SINGLE_QUOTES;
+		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_SINGLE_QUOTES, ft_strndup(buffer, 1)));
+		return (1);
 	}
-
 	if (*buffer == DOUBLE_QUOTES)
 	{
-		ft_printf("State switched to double quotes!");
-		data->state = STATE_DOUBLE_QUOTES;
+		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOUBLE_QUOTES, ft_strndup(buffer, 1)));
+		return (1);
 	}
-	
-	return (1);
+	return (0);
 }

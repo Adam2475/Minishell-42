@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 11:22:39 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/10 14:39:01 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,16 @@ int main(int argc, char **argv, char **envp)
 		exit(1);
 	
 	tokens = tokenize_string(&data);
-	// Debug
+	t_token	*head = tokens;
+	//Debug
 	while (tokens)
 	{
 		printf("%d : %s\n", tokens->type, tokens->value);
 		tokens = tokens->next;
 	}
-	parse_input(&data);
+	// resets the list pointer to it's head
+	tokens = head;
+	token_parser(&data, &tokens);
 	// Free and exit program
 	free_exit(&data);
 	return (0);

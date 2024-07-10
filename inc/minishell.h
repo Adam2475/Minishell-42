@@ -39,5 +39,6 @@ t_token		*tokenize_string(t_data *data);
 int			lexer_control(t_data *data, int j);
 void		init_state(t_data *data, t_token **tokens);
 int			special_cases_lexer(t_data *data, char *buffer, t_token **tokens);
+void		token_parser(t_data *data, t_token **tokens);
 
 #endif
