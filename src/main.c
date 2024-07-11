@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/10 16:22:31 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/11 18:45:00 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ int main(int argc, char **argv, char **envp)
 		exit(1);
 	
 	tokens = tokenize_string(&data);
-	token_parser(&data, &tokens, envp);
+	//tokens = token_reformatting(&tokens);
+
+	//token_parser(&data, &tokens, envp);
+	//exit(1);
 
 	t_token	*head = tokens;
 	//Debug
