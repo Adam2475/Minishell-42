@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/12 16:47:03 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/17 17:28:26 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,36 +112,33 @@ int	special_cases_lexer(t_data *data, char *buffer, t_token **tokens)
 	return (0);
 }
 
-// t_token	*token_reformatting(t_token **tokens)
-// {
-// 	t_token	*tmp;
-// 	t_token	*head;
-// 	t_token	*current;
-// 	char	*buffer;
+void	*token_reformatting(t_token **tokens)
+{
+	t_token		*head;
+	t_token		*current;
+	char	*buffer;
 
-// 	head = *tokens;
-// 	current = head;
-// 	tmp = NULL;
-// 	buffer = NULL;
-// 	while (current != NULL)
-// 	{
-// 		if (current->type == TOKEN_DOUBLE_QUOTES)
-// 		{
-// 			buffer = ft_strjoin_gnl(buffer, current->value);
-// 			current = current->next;
-// 			if (current->type == TOKEN_WORD)	
-// 			{
-// 				buffer = ft_strjoin_gnl(buffer, current->value);
-// 			}
-// 		}
-
-// 		if (current->type == TOKEN_WORD)	
-// 		{
-// 			buffer = ft_strjoin_gnl(buffer, current->value);
-// 		}
-
-// 		printf("%s\n", buffer);
-// 		current = current->next;
-// 	}
-// 	return (tmp);
-// }
+	head = *tokens;
+	current = *tokens;
+	while (current != NULL)
+	{
+		if (current->type != 0)
+		{
+			printf("ciao");
+			current = current->next;
+			if (current->type == 0)
+				current->type = TOKEN_APPENDICE;
+			current = current->next;
+			break;
+		}
+		if (current->type == 0)
+		{
+			current->type = TOKEN_COMMAND;
+			current = current->next;
+			if (current->type == 0)
+				current->type = TOKEN_APPENDICE;
+		}
+		current = current->next;
+	} 
+	return NULL;
+}
