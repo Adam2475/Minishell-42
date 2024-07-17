@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:27:20 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 14:43:49 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/12 18:08:09 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,28 @@
 # include <string.h>
 //# include "../inc/minishell.h"
 
+typedef enum quote_states
+{
+	EXIT_CLOSE_DQUOTES,
+	EXIT_OPENED_DQUOTES,
+	EXIT_CLOSE_SQUOTES,
+	EXIT_OPEN_SQUOTES
+}	t_quote_state;
+
 typedef enum type
 {
-	TOKEN_COMMAND,
+	TOKEN_WORD,
 	TOKEN_OPTION,
 	TOKEN_PIPE,
 	TOKEN_REDIRECT_IN,
 	TOKEN_REDIRECT_OUT,
 	TOKEN_APPEND,
 	TOKEN_HEREDOC,
-	TOKEN_EOF
+	TOKEN_EOF,
+	TOKEN_DOLLAR,
+	TOKEN_DOUBLE_QUOTES,
+	TOKEN_SINGLE_QUOTES,
+	TOKEN_WHITESPACE
 }	t_token_type;
 
 ////////////////////////////////////////////////

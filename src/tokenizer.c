@@ -6,31 +6,11 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 15:15:04 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/12 16:47:03 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-int		lexer_control(t_data *data, int j)
-{
-	int	i;
-	t_data *endpoint;
-
-	endpoint = data;
-	i = j;
-	if (endpoint->input[i] == DOUBLE_QUOTES)
-	{
-		data->state = STATE_DOUBLE_QUOTES;
-		ft_printf("Actual lexer state :%d\n", data->state);
-	}
-	else if (endpoint->input[i] == SINGLE_QUOTES)
-	{
-		data->state = STATE_DOUBLE_QUOTES;
-		ft_printf("Actual lexer state :%d\n", data->state);
-	}
-	return (0);
-}
 
 t_token	*tokenize_string(t_data *data)
 {
@@ -45,29 +25,32 @@ t_token	*tokenize_string(t_data *data)
 		if ((*buffer) == WHITESPACE)
 		{
 			buffer++;
+			//ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_WHITESPACE, " "));
 			continue; // Skip the rest of the loop body
 		}
 		if (*buffer == REDIRECT_LEFT
 			|| *buffer == REDIRECT_RIGHT
 			|| *buffer == PIPE
-			|| *buffer == SINGLE_QUOTES
-			|| *buffer == DOUBLE_QUOTES
+			//|| *buffer == SINGLE_QUOTES
+			//|| *buffer == DOUBLE_QUOTES
 			|| *buffer == DOLLAR_SIGN)
 		{
-			buffer = buffer + special_cases_lexer(buffer, &tokens);
+			buffer = buffer + special_cases_lexer(data, buffer, &tokens);
 			continue;
 		}
 		end = buffer;
 		while (*end && *end != WHITESPACE
 				&& *end != REDIRECT_LEFT && *end != PIPE
 				&& *end != REDIRECT_RIGHT)
+				// && *end != DOUBLE_QUOTES
+				// && *end != SINGLE_QUOTES)
 		{
 			end++;
 		}
 		if (*buffer == '-')
 			ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_OPTION, ft_strndup(buffer, end - buffer)));
 		else
-			ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_COMMAND, ft_strndup(buffer, end - buffer)));
+			ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_WORD, ft_strndup(buffer, end - buffer)));
 		buffer = end;
 	}
 	ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_EOF, NULL));
@@ -110,26 +93,55 @@ int	special_cases_lexer(t_data *data, char *buffer, t_token **tokens)
 		return (1);
 	}
 
-	// State must wait for it's closure
-
-	if (*buffer == DOLLAR_SIGN)
-	{
-		ft_printf("Ready for variable expansion!");
-		data->state = STATE_DOLLAR;
-		ft_printf("State switched to dollar state!");
-	}
-
-	if (*buffer == SINGLE_QUOTES)
-	{
-		ft_printf("State switched to single quotes!");
-		data->state = STATE_SINGLE_QUOTES;
-	}
-
-	if (*buffer == DOUBLE_QUOTES)
-	{
-		ft_printf("State switched to double quotes!");
-		data->state = STATE_DOUBLE_QUOTES;
-	}
-	
-	return (1);
+	// // State must wait for it's closure
+	// if (*buffer == DOLLAR_SIGN)
+	// {
+	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
+	// 	return (1);
+	// }
+	// if (*buffer == SINGLE_QUOTES)
+	// {
+	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_SINGLE_QUOTES, ft_strndup(buffer, 1)));
+	// 	return (1);
+	// }
+	// if (*buffer == DOUBLE_QUOTES)
+	// {
+	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOUBLE_QUOTES, ft_strndup(buffer, 1)));
+	// 	return (1);
+	// }
+	return (0);
 }
+
+// t_token	*token_reformatting(t_token **tokens)
+// {
+// 	t_token	*tmp;
+// 	t_token	*head;
+// 	t_token	*current;
+// 	char	*buffer;
+
+// 	head = *tokens;
+// 	current = head;
+// 	tmp = NULL;
+// 	buffer = NULL;
+// 	while (current != NULL)
+// 	{
+// 		if (current->type == TOKEN_DOUBLE_QUOTES)
+// 		{
+// 			buffer = ft_strjoin_gnl(buffer, current->value);
+// 			current = current->next;
+// 			if (current->type == TOKEN_WORD)	
+// 			{
+// 				buffer = ft_strjoin_gnl(buffer, current->value);
+// 			}
+// 		}
+
+// 		if (current->type == TOKEN_WORD)	
+// 		{
+// 			buffer = ft_strjoin_gnl(buffer, current->value);
+// 		}
+
+// 		printf("%s\n", buffer);
+// 		current = current->next;
+// 	}
+// 	return (tmp);
+// }
