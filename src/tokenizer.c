@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/17 17:28:26 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/18 18:19:51 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,25 +120,38 @@ void	*token_reformatting(t_token **tokens)
 
 	head = *tokens;
 	current = *tokens;
-	while (current != NULL)
+	while (current->type != TOKEN_EOF)
 	{
-		if (current->type != 0)
+		if (current->type == TOKEN_EOF)
+			return (NULL);
+		if (current->type == TOKEN_PIPE)
 		{
-			printf("ciao");
+			current = current->next;
+			if (current->type == TOKEN_WORD)
+				current->type = TOKEN_COMMAND;
+			current = current->next;
+			continue;
+		}
+		if (current->type != TOKEN_WORD)
+		{
 			current = current->next;
 			if (current->type == 0)
 				current->type = TOKEN_APPENDICE;
 			current = current->next;
-			break;
+			if (current->type == 0)
+				current->type = TOKEN_COMMAND;
+			continue;
 		}
-		if (current->type == 0)
+		if (current->type == TOKEN_WORD)
 		{
 			current->type = TOKEN_COMMAND;
 			current = current->next;
 			if (current->type == 0)
 				current->type = TOKEN_APPENDICE;
+			current = current->next;
+			continue;
 		}
-		current = current->next;
-	} 
+		break;
+	}
 	return NULL;
 }
