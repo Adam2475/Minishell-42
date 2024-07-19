@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/18 18:19:51 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/19 19:24:18 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,9 @@ void	*token_reformatting(t_token **tokens)
 			if (current->type == TOKEN_WORD)
 				current->type = TOKEN_COMMAND;
 			current = current->next;
+			if (current->type == TOKEN_WORD)
+				current->type = TOKEN_APPENDICE;
+			current = current->next;
 			continue;
 		}
 		if (current->type != TOKEN_WORD)
@@ -146,9 +149,11 @@ void	*token_reformatting(t_token **tokens)
 		{
 			current->type = TOKEN_COMMAND;
 			current = current->next;
-			if (current->type == 0)
+			if (current->type == 0 && current->type != 7)
+			{
 				current->type = TOKEN_APPENDICE;
-			current = current->next;
+				current = current->next;
+			}
 			continue;
 		}
 		break;

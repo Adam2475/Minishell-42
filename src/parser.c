@@ -6,11 +6,12 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/16 17:43:03 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/19 19:12:48 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+//echo lyc < ciao | cat -e > merda
 
 // static t_token resolve_quotes(char *str)
 // {
@@ -85,3 +86,37 @@
 // 	}
 // 	return (result);
 // }
+
+void	token_parser(t_token **tokens, t_data *data, char **envp)
+{
+	t_token		*current;
+	char		*command[2];
+	// int *pipe;
+
+	printf("starting parser: ------------------------->\n");
+	current = *tokens;
+	while (current->type != 7)
+	{
+		if (current->type == 12)
+		{
+			printf("command execuion started\n");
+			command[0] = current->value;
+			command[1] = current->next->value;
+			printf("%s\n", command[0]);
+			printf("%s\n", command[1]);
+			current = current->next->next;
+			continue;
+		}
+		if (current->type == TOKEN_REDIRECT_IN || current->type == TOKEN_REDIRECT_OUT)
+		{
+			printf("ititializing redirection\n");
+			command[0] = current->value;
+			command[1] = current->next->value;
+			printf("%s\n", command[0]);
+			printf("%s\n", command[1]);
+			current = current->next->next;
+			continue;
+		}
+		current = current->next;
+	}
+}
