@@ -29,8 +29,13 @@ typedef enum state
 typedef struct s_data
 {
 	char			*input;
-	struct s_token	*token_string;
 	t_state			state;
+	
+	/////////////
+	// From Pipex
+	char *my_line;
+	char *path_from_envp;
+	char **my_paths;
 }	t_data;
 
 void		free_exit(t_data *data);

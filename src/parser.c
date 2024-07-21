@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/19 19:12:48 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/21 18:07:23 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,47 @@
 // 	return (result);
 // }
 
+char	*find_cmd(char *cmd, t_data *data)
+{
+	int		i;
+	char	*tmp;
+	char	*holder;
+
+	i = 0;
+	while (data->my_paths[i])
+	{
+		tmp = ft_strjoin(data->my_paths[i], "/");
+		holder = ft_strjoin(tmp, cmd);
+		if (access(holder, X_OK) == 0)
+			return (free(tmp), holder);
+		free(tmp);
+		free(holder);
+		i++;
+	}
+	write(2, "command not found : ", 20);
+	write(2, cmd, ft_strlen(cmd));
+	write(2, "\n", 1);
+	return (NULL);
+}
+
+static void	execute_command(char *command[], t_data *data, char **envp)
+{
+	char *cmd;
+	char **cmd_args;
+	char *tmp;
+
+	cmd = find_cmd(command[0], data);
+	tmp = ft_strjoin_gnl(command[0], " ");
+	tmp = ft_strjoin_gnl(tmp, command[1]);
+	cmd_args = ft_split(tmp, 32);
+	// Debug
+	 //printf("%s\n", cmd);
+	 //printf("%s\n", cmd_args[0]);
+	execve(cmd, cmd_args, envp);
+	//exit(1);
+	return ;
+}
+
 void	token_parser(t_token **tokens, t_data *data, char **envp)
 {
 	t_token		*current;
@@ -102,8 +143,13 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 			printf("command execuion started\n");
 			command[0] = current->value;
 			command[1] = current->next->value;
-			printf("%s\n", command[0]);
-			printf("%s\n", command[1]);
+			 //printf("%s\n", command[0]);
+			 //printf("%s\n", command[1]);
+			
+			// handle pipes and split the token list (?)
+			// handle redirection before executing the command;
+			 
+			execute_command(command, data, envp);
 			current = current->next->next;
 			continue;
 		}
