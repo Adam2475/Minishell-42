@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/21 17:08:15 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/07/23 17:35:36 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,19 @@ static void	env_parser(t_data *data, char **envp)
 	// exit(0);
 }
 
+static int piper(t_token **tokens)
+{
+	t_token *current = *tokens;
+	
+	while (current->type != TOKEN_EOF)
+	{
+		if (current->type == TOKEN_PIPE)
+			return (1);
+		current = current->next;
+	}
+	return (0);
+}
+
 int main(int argc, char **argv, char **envp)
 {
 	t_data		data;
@@ -54,11 +67,17 @@ int main(int argc, char **argv, char **envp)
 	tokens = tokenize_string(&data);
 	token_reformatting(&tokens);
 	env_parser(&data, envp);
-	token_parser(&tokens, &data, envp);
-
+	if (piper(&tokens) == 0)
+		token_parser(&tokens, &data, envp);
+	else 
+	{
+		printf("found pipe case!\n");
+		//pipe_splitter(&data, &tokens);
+		exit(1);
+		// pipe_token_parser(&data);
+	}
 	//token_parser(&data, &tokens, envp);
 	//exit(1);
-	
 	printf("debug: -------------------------------->\n");
 	t_token	*head = tokens;
 	//Debug

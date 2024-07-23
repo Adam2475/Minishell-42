@@ -32,11 +32,23 @@ typedef struct s_data
 	t_state			state;
 	
 	/////////////
+	// Commands splitted by pipe
+	struct s_command *commands;
+	/////////////
 	// From Pipex
 	char *my_line;
 	char *path_from_envp;
 	char **my_paths;
 }	t_data;
+
+typedef struct s_command
+{
+	char *cmd1;
+	char **args1;
+	char redirect;
+	char *cmd2;
+	char *args2;
+}	t_command;
 
 void		free_exit(t_data *data);
 int			parse_input(t_data *data);
