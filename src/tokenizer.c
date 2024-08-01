@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/23 17:38:59 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/01 18:29:16 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ int	special_cases_lexer(t_data *data, char *buffer, t_token **tokens)
 		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_PIPE, ft_strndup(buffer, 1)));
 		return (1);
 	}
-
 	// // State must wait for it's closure
 	// if (*buffer == DOLLAR_SIGN)
 	// {
@@ -149,12 +148,9 @@ void	*token_reformatting(t_token **tokens)
 		if (current->type == TOKEN_WORD)
 		{
 			current->type = TOKEN_COMMAND;
-			//printf("ciao\n");
 			current = current->next;
-			//printf("mondos\n");
-			if (current->type == 0 && current->type != 7)
+			while (current->type == 0 && current->type != 7)
 			{
-				//printf("merdas\n");
 				current->type = TOKEN_APPENDICE;
 				current = current->next;
 			}

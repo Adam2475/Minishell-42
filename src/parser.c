@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/23 17:51:19 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/01 18:45:36 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,22 +110,58 @@ char	*find_cmd(char *cmd, t_data *data)
 	return (NULL);
 }
 
-static void	execute_command(char *command[], t_data *data, char **envp)
+static int child_process(char *cmd, char **cmd_args, t_data *data, char **envp)
+{
+	execve(cmd, cmd_args, envp);
+	return (EXIT_SUCCESS);
+}
+
+static int parent_process(char *cmd, char **cmd_args, t_data *data, char **envp)
+{			//printf("ciao\n");
+	int status;
+	waitpid(-1, &status, 0);
+	return (EXIT_SUCCESS);
+}
+
+
+static void	execute_command(char **command, t_data *data, char **envp)
 {
 	char *cmd;
 	char **cmd_args;
 	char *tmp;
+	int	 end[2];
+	pid_t parent;
 
+	//printf("hello motherfucker");
+
+	//if (pipe(end) < 0)
+	//	exit(ft_printf("pipe init error!"));
+
+	parent = fork();
+
+	if (parent < 0)
+		exit(ft_printf("error with the fork"));
+	
 	cmd = NULL;
 	cmd = find_cmd(command[0], data);
 	tmp = ft_strjoin_gnl(command[0], " ");
-	if (command[1] != NULL)
+	int i = 0;
+	while (command[i] != NULL)
+	{
 		tmp = ft_strjoin_gnl(tmp, command[1]);
+		i++;
+	}
 	cmd_args = ft_split(tmp, 32);
 	// Debug
 	 //printf("%s\n", cmd);
 	 //printf("%s\n", cmd_args[0]);
-	execve(cmd, cmd_args, envp);
+
+	if (!parent)
+		child_process(cmd, cmd_args, data, envp);
+	else
+		parent_process(cmd, cmd_args, data, envp);
+	 
+	
 	//exit(1);
 	return ;
 }
@@ -133,26 +169,39 @@ static void	execute_command(char *command[], t_data *data, char **envp)
 void	token_parser(t_token **tokens, t_data *data, char **envp)
 {
 	t_token		*current;
-	char		*command[2];
+	char		**command;
+	int i = 0;
 	// int *pipe;
 
+	command = (char **)malloc(sizeof(char *) * 3);
 	printf("starting parser: ------------------------->\n");
 	current = *tokens;
 	while (current->type != 7)
 	{
 		if (current->type == 12)
 		{
-			printf("command execuion started\n");
-			command[0] = current->value;
-			command[1] = current->next->value;
+			//printf("command execuion started\n");
+			command[i] = ft_strdup(current->value);
+			i++;
+			current = current->next;
+			//printf("%s\n", current->value);
+			//printf("%s\n", command[0]);
+			//command[1] = current->next->value;
+			while (current->type == 13)
+			{
+				command[i] = ft_strdup(current->value);
+				current = current->next;
+				printf("%s\n", command[i]);
+				i++;
+			}
 			//printf("%s\n", command[0]);
 			//printf("%s\n", command[1]);
 			// handle pipes and split the token list (?)
 			// handle redirection before executing the command;
 			execute_command(command, data, envp);
 			return ;
-			current = current->next->next;
-			continue;
+			//current = current->next->next;
+			//continue;
 		}
 		if (current->type == TOKEN_REDIRECT_IN || current->type == TOKEN_REDIRECT_OUT)
 		{
