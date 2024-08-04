@@ -31,6 +31,7 @@ typedef enum state
 typedef struct s_data
 {
 	char			*input;
+	int				fd;
 	t_state			state;
 	
 	/////////////
@@ -51,6 +52,8 @@ typedef struct s_command
 	char *cmd2;
 	char *args2;
 }	t_command;
+
+
 
 void		free_exit(t_data *data);
 int			parse_input(t_data *data);

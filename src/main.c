@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/23 18:00:03 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/04 16:50:19 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,37 +58,40 @@ int main(int argc, char **argv, char **envp)
 	t_data		data;
 	t_token		*tokens;
 
-	data.input = readline("$ ");
-	//data.state = NORMAL;
-
-	if (!data.input)
-		exit(1);
+	while (1)
+	{
+		data.input = readline("$ ");
+		//data.state = NORMAL;
 	
-	tokens = tokenize_string(&data);
-	token_reformatting(&tokens);
-	env_parser(&data, envp);
-	if (piper(&tokens) == 0)
-		token_parser(&tokens, &data, envp);
-	else 
-	{
-		printf("found pipe case!\n");
-		//pipe_splitter(&data, &tokens);
-		exit(1);
-		// pipe_token_parser(&data);
+		if (!data.input)
+			exit(1);
+		
+		tokens = tokenize_string(&data);
+		token_reformatting(&tokens);
+		env_parser(&data, envp);
+		if (piper(&tokens) == 0)
+			token_parser(&tokens, &data, envp);
+		else 
+		{
+			printf("found pipe case!\n");
+			//pipe_splitter(&data, &tokens);
+			exit(1);
+			// pipe_token_parser(&data);
+		}
+		//token_parser(&data, &tokens, envp);
+		//exit(1);
+		printf("debug: -------------------------------->\n");
+		t_token	*head = tokens;
+		//Debug
+		while (tokens)
+		{
+			printf("%d : %s\n", tokens->type, tokens->value);
+			tokens = tokens->next;
+		}
+		// resets the list pointer to it's head
+		tokens = head;
+		// Free and exit program
+		free_exit(&data);
 	}
-	//token_parser(&data, &tokens, envp);
-	//exit(1);
-	printf("debug: -------------------------------->\n");
-	t_token	*head = tokens;
-	//Debug
-	while (tokens)
-	{
-		printf("%d : %s\n", tokens->type, tokens->value);
-		tokens = tokens->next;
-	}
-	// resets the list pointer to it's head
-	tokens = head;
-	// Free and exit program
-	free_exit(&data);
 	return (0);
 }

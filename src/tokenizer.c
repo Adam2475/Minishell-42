@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/01 18:29:16 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/04 17:41:03 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ void	*token_reformatting(t_token **tokens)
 				current = current->next;
 			continue;
 		}
-		if (current->type != TOKEN_WORD)
+		if (current->type != TOKEN_WORD && current->type != TOKEN_OPTION)
 		{
 			current = current->next;
 			if (current->type == 0)
