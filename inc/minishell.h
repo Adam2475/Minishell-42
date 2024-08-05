@@ -33,7 +33,7 @@ typedef struct s_data
 	char			*input;
 	int				fd;
 	t_state			state;
-	
+	int				redirect_state;
 	/////////////
 	// Commands splitted by pipe
 	struct s_command *commands;

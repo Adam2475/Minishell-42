@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/04 16:50:19 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:52:03 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,9 @@ int main(int argc, char **argv, char **envp)
 
 	while (1)
 	{
-		data.input = readline("$ ");
+		data.input = NULL;
+		data.input = readline("myprompt$ ");
+		data.fd = -1;
 		//data.state = NORMAL;
 	
 		if (!data.input)

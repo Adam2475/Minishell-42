@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/04 18:03:46 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/05 17:35:11 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,20 @@ char	*find_cmd(char *cmd, t_data *data)
 
 static int child_process(char *cmd, char **cmd_args, t_data *data, char **envp)
 {
-	if (dup2(data->fd, STDOUT_FILENO) < 0)
-		return (-1);
+	if (!(data->fd < 0))
+	{
+		if (data->redirect_state == 1)
+		{
+			if (dup2(data->fd, STDOUT_FILENO) < 0)
+				return (-1);
+		}
+		if (data->redirect_state == 0)
+		{
+			if (dup2(data->fd, STDIN_FILENO) < 0)
+				return (-1);
+		}
+	}
+	ft_printf("proceding to execve: \n");
 	execve(cmd, cmd_args, envp);
 	return (EXIT_SUCCESS);
 }
@@ -135,25 +147,11 @@ static void	execute_command(char **command, t_data *data, char **envp)
 	pid_t parent;
 	int status;
 
-	//printf("hello motherfucker");
-
-	//if (pipe(end) < 0)
-	//	exit(ft_printf("pipe init error!"));
-	
 	cmd = NULL;
 	cmd = find_cmd(command[0], data);
 	tmp = ft_strjoin_gnl(command[0], " ");
-
-	// ft_printf("%s\n", cmd);
-	// ft_printf("%s\n", tmp);
-	//ft_printf("%s\n", command[0]);
-	//ft_printf("%s\n", command[1]);
-	//ft_printf("%s\n", command[2]);
-	//ft_printf("%s\n", command[3]);
-	
-	//exit(1);
 	int i = 1;
-	while (command[i] != NULL)
+	while (command[i])
 	{
 		//ft_printf("%s\n", command[i]);
 		tmp = ft_strjoin_gnl(tmp, command[i]);
@@ -161,21 +159,17 @@ static void	execute_command(char **command, t_data *data, char **envp)
 	}
 	cmd_args = ft_split(tmp, 32);
 	// Debug
-	 //printf("%s\n", cmd);
-	 //printf("%s\n", cmd_args[0]);
-
+	//printf("%s\n", cmd);
+	//printf("%s\n", cmd_args[0]);
 	parent = fork();
-
+	//ft_printf("%d\n", parent);
 	if (parent < 0)
 		exit(ft_printf("error with the fork"));
-
 	//ft_printf("%d\n", status);
-
 	if (!parent)
 		child_process(cmd, cmd_args, data, envp);
 	else
 		status = parent_process(cmd, cmd_args, data, envp);
-	 
 	//ft_printf("%d\n", status);
 	//exit(1);
 	return ;
@@ -215,25 +209,37 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 	while (current->type != TOKEN_EOF)
 	{
 
-   		while (current != NULL)
+		// Case for handling redirections
+		while (current != NULL)
 		{
-        // Check if the current node's data is '>'
-			if (current->type == 4)
+			if (current->type == TOKEN_REDIRECT_OUT)
 			{
-				printf("%s\n%s\n", current->value,"Found '>' character in the linked list.\n");
+				//printf("%s\n%s\n", current->value,"Found '>' character in the linked list.\n");
 				current = current->next;
 				printf("%s\n%d\n", current->value, current->type);
+				data->redirect_state = 1;
 				if (current->type == TOKEN_APPENDICE)
 				{
-					printf("ciao cane\n");
+					//printf("ciao cane\n");
 					data->fd = open(current->value, O_CREAT | O_RDWR | O_TRUNC, 0644);
 					printf("%d\n", data->fd);
-					// if (dup2(fd, STDOUT_FILENO) < 0)
-					// 	exit(printf("dup2 error!\n"));
 				}
 			}
-        	current = current->next;
-    	}
+			else if (current->type == TOKEN_REDIRECT_IN)
+			{
+				//printf("%s\n%s\n", current->value,"Found '<' character in the linked list.\n");
+				current = current->next;
+				printf("%s\n%d\n", current->value, current->type);
+				data->redirect_state = 0;
+				if (current->type == TOKEN_APPENDICE)
+				{
+					//printf("ciao cane\n");
+					data->fd = open(current->value, O_RDONLY);
+					printf("%d\n", data->fd);
+				}
+			}
+			current = current->next;
+		}
 
 		current = head;
 		
@@ -246,30 +252,30 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 			{
 				command[i] = ft_strdup(current->value);
 				current = current->next;
-				///Debug
+				////////
+				//Debug
 				//printf("%s\n", command[i]);
 				i++;
-			}
-
-			
+			}		
 			// handle pipes and split the token list (?)
 			// handle redirection before executing the command;
+			ft_printf("executing command: ----------------------->\n");
 			execute_command(command, data, envp);
 			close(data->fd);
 			return ;
 			//current = current->next->next;
 			//continue;
 		}
-		if (current->type == TOKEN_REDIRECT_IN || current->type == TOKEN_REDIRECT_OUT)
-		{
-			printf("ititializing redirection\n");
-			command[0] = current->value;
-			command[1] = current->next->value;
-			printf("%s\n", command[0]);
-			printf("%s\n", command[1]);
-			current = current->next->next;
-			continue;
-		}
+		// if (current->type == TOKEN_REDIRECT_IN || current->type == TOKEN_REDIRECT_OUT)
+		// {
+		// 	printf("ititializing redirection\n");
+		// 	command[0] = current->value;
+		// 	command[1] = current->next->value;
+		// 	printf("%s\n", command[0]);
+		// 	printf("%s\n", command[1]);
+		// 	current = current->next->next;
+		// 	continue;
+		// }
 		current = current->next;
 	}
 }
