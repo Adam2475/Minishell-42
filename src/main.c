@@ -53,6 +53,44 @@ static int piper(t_token **tokens)
 	return (0);
 }
 
+
+// Function to count occurrences of '|' in linked list nodes
+static int countPipes(t_token* head)
+{
+    int count = 0;
+    t_token* current = head;
+    
+    while (current != NULL) {
+        if (current->type == TOKEN_PIPE) {
+            count++;
+        }
+        current = current->next;
+    }
+    
+    return count;
+}
+
+static int child_process_pipe(char *data, char **envp)
+{
+	int i = 0;
+	ft_printf("hello from %d\n iteration");
+	return (0);
+}
+
+static void pipe_case(t_token **tokens, t_data *data, char **envp)
+{
+	int pipes = countPipes(*tokens);
+	int end[pipes + 1];
+	char **commands;
+	int i = 0;
+
+	commands = ft_split(data->input, '|');
+	while (i < (pipes + 1))
+	{
+		child_process_pipe(commands[i++], envp);
+	}
+}
+
 int main(int argc, char **argv, char **envp)
 {
 	t_data		data;
@@ -77,6 +115,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			printf("found pipe case!\n");
 			//pipe_splitter(&data, &tokens);
+			pipe_case(&tokens, &data, envp);
 			exit(1);
 			// pipe_token_parser(&data);
 		}
