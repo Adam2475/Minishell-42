@@ -1,0 +1,8 @@
+proceding to execve: 
+debug: -------------------------------->
+12 : echo
+13 : cane
+4 : >
+13 : outfile.txt
+7 : (null)
+myprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ [Kmyprompt$ 
