@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/20 16:51:09 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/20 17:42:53 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,38 +70,75 @@ static int countPipes(t_token* head)
     return count;
 }
 
+static char *trim_whitespace(char *str)
+{
+    char *end;
+
+    // Trim leading spaces (ASCII 32)
+    while (*str == 32) str++;
+
+    // If all spaces or an empty string
+    if (*str == 0)  
+        return str;
+
+    // Trim trailing spaces (ASCII 32)
+    end = str + strlen(str) - 1;
+    while (end > str && *end == 32) end--;
+
+    // Write new null terminator character
+    *(end + 1) = '\0';
+
+    return str;
+}
+
+
 static int execute_command(char *command, t_data *data, char **envp)
 {
 	char *cmd;
 	char **cmd_args;
+	char *tmp;
 
 	cmd_args = ft_split(command, 32);
 	cmd = cmd_args[0];
-	
 	find_cmd(cmd, data);
+	tmp = NULL;
 
+	int i = 1;
+	while (cmd_args[i])
+	{
+		tmp = ft_strjoin_gnl(tmp, trim_whitespace(cmd_args[i]));
+		//printf("%s\n", tmp);
+		i++;
+	}
+
+	free(cmd_args);
+	cmd_args = ft_split(tmp, 32);
 	/////////
 	// Debug
-	printf("%s\n", cmd);
-	printf("%s\n", command);
+	//printf("%s\n", cmd);
+	//printf("%s\n", command);
 
-	//printf("diocane");
-	//printf("execve placeholder\n");
+	//printf("%s\n", cmd);
+	i = 0;
+	while (cmd_args[i])
+	{
+		printf("%s\n", cmd_args[i]);
+		i++;
+	}
+
 	printf ("%d\n", execve(cmd, cmd_args, envp));
 	return(EXIT_SUCCESS);
-	//printf("ciao");
-	//exit(1);
 }
 
 static int child_process_pipe(char *command, char **envp, t_data *data)
 {
-	static int i = 0;
+	static int i = 1;
 	////////
 	//Debug
-	//ft_printf("hello from %d\n iteration\n", i);
+	ft_printf("Process no: %d\n", i);
+	i++;
 	//ft_printf("my command: %s\n", command);
 	execute_command(command, data, envp);
-	i++;
 	return (EXIT_SUCCESS);
 }
 
@@ -137,12 +174,12 @@ static void pipe_case(t_token **tokens, t_data *data, char **envp, t_token_list 
 	while (i < (pipes + 1))
 	{
 		parent[i] = fork();
-		printf("%d\n", parent[i]);
+		//printf("%d\n", parent[i]);
 		if (!parent[i])
 			child_process_pipe(commands[i], envp, data);
 		else
 			parent_process_pipe(commands[i], envp, data);
-		i++;
+		i++;																																																																										
 	}
 	//exit(1);
 }
