@@ -20,6 +20,11 @@
 # define PIPE '|'
 # define DOLLAR_SIGN '$'
 
+typedef struct s_token_list {
+	t_token		*head;
+	struct s_token_list *next;
+}	t_token_list;
+
 typedef enum state
 {
 	NORMAL,
@@ -65,5 +70,7 @@ void		token_parser(t_token **tokens,t_data *data, char **envp);
 char		*expand_variable(t_token **current, char **envp);
 void		*token_reformatting(t_token **tokens);
 //void		token_parser(t_token **tokens, t_data *data);
+char		*find_cmd(char *cmd, t_data *data);
+int			ft_lstsize_token(t_token *lst);
 
 #endif
