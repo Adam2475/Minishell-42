@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/05 17:44:27 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/20 17:38:55 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,18 @@ static int child_process(char *cmd, char **cmd_args, t_data *data, char **envp)
 				return (-1);
 		}
 	}
-	ft_printf("proceding to execve: \n");
+
+	// Debug
+	// int i = 0;
+	// printf("%s\n", cmd);
+	// while (cmd_args[i])
+	// {
+	// 	printf("%s\n", cmd_args[i]);
+	// 	i++;
+	// }
+	// exit(1);
+
+	//ft_printf("proceding to execve: \n");
 	execve(cmd, cmd_args, envp);
 	return (EXIT_SUCCESS);
 }
