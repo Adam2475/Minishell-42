@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/20 17:38:55 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/21 19:57:14 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,57 @@ char	*find_cmd(char *cmd, t_data *data)
 	return (NULL);
 }
 
+int	conf_man_cmd(char *str)
+{
+	if (ft_strncmp(str, "cd", ft_strlen(str)) == 0)
+		return (1);
+	if (!ft_strncmp(str, "echo", ft_strlen(str)))
+		return (2);
+	if (!ft_strncmp(str, "export", ft_strlen(str)))
+		return (3);
+	if (!ft_strncmp(str, "unset", ft_strlen(str)))
+		return (4);
+	if (ft_strncmp(str, "env", ft_strlen(str)) == 0)
+		return (5);
+	if (!ft_strncmp(str, "exit", ft_strlen(str)))
+		return (6);
+	if (!ft_strncmp(str, "pwd", ft_strlen(str)))
+		return (7);
+	else
+		return (0);
+}
+
+int	manual_cmd(char **cmd_args, t_data **data)
+{
+	int	i;
+	t_data *tmp;
+
+	tmp = *data;
+	i = 0;
+	tmp->cmd = conf_man_cmd(cmd_args[0]);
+	if (tmp->cmd == CH_DIR)
+		return (cd_cmd(cmd_args, data));
+		// return (1);
+	if (tmp->cmd == ECHO)
+		return (1);
+		// return (echo_cmd(cmd_args));
+	if (tmp->cmd == EXPORT)
+		return (1);
+		// return (export_cmd(cmd_args));
+	if (tmp->cmd == UNSET)
+		return (1);
+		// return (unset_cmd(cmd_args));
+	if (tmp->cmd == ENV)
+		return (env_cmd(data));
+		// return (env_cmd(cmd_args));
+	if (tmp->cmd == EXIT)
+		return (1);
+	if (tmp->cmd == PWD)
+		return (pwd_cmd(data));
+		// return (exit_cmd(cmd_args));
+	return (0);
+}
+
 static int child_process(char *cmd, char **cmd_args, t_data *data, char **envp)
 {
 	if (!(data->fd < 0))
@@ -50,19 +101,11 @@ static int child_process(char *cmd, char **cmd_args, t_data *data, char **envp)
 				return (-1);
 		}
 	}
-
-	// Debug
-	// int i = 0;
-	// printf("%s\n", cmd);
-	// while (cmd_args[i])
-	// {
-	// 	printf("%s\n", cmd_args[i]);
-	// 	i++;
-	// }
-	// exit(1);
-
-	//ft_printf("proceding to execve: \n");
-	execve(cmd, cmd_args, envp);
+	ft_printf("proceding to execve: \n");
+	if (manual_cmd(cmd_args, &data))
+		return (0);
+	else
+		execve(cmd, cmd_args, envp);
 	return (EXIT_SUCCESS);
 }
 
@@ -70,44 +113,53 @@ static int parent_process(char *cmd, char **cmd_args, t_data *data, char **envp)
 {
 	int status;
 	waitpid(-1, &status, 0);
+	ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), data->parent);
 	return (status);
 }
 
+/*
+/ *  
+/ * TODO: 
+/ * -	the child and the parent process are passing from the same 
+/ * 	execution of the commands so the command get executed two times
+/ * 
+/ * -	the export command id hell on earth
+*/
 
+	// char **cmd_args;
+	// char *tmp;
+	// tmp = ft_strjoin_gnl(command[0], " ");
+	// int i = 1;
+	// while (command[i] && command[i][0])
+	// {
+	// 	ft_printf("%s\n", command[i]);
+	// 	tmp = ft_strjoin_gnl(tmp, command[i]);
+	// 	i++;
+	// }
+	// cmd_args = ft_split(tmp, 32);
+	// Debug
+	//printf("%s\n", cmd);
+	//printf("%s\n", cmd_args[0]);
 static void	execute_command(char **command, t_data *data, char **envp)
 {
 	char *cmd;
-	char **cmd_args;
-	char *tmp;
-	int	 end[2];
 	pid_t parent;
 	int status;
 
 	cmd = NULL;
 	cmd = find_cmd(command[0], data);
-	tmp = ft_strjoin_gnl(command[0], " ");
-	int i = 1;
-	while (command[i])
-	{
-		//ft_printf("%s\n", command[i]);
-		tmp = ft_strjoin_gnl(tmp, command[i]);
-		i++;
-	}
-	cmd_args = ft_split(tmp, 32);
-	// Debug
-	//printf("%s\n", cmd);
-	//printf("%s\n", cmd_args[0]);
+	data->parent = getpid();
 	parent = fork();
-	//ft_printf("%d\n", parent);
+	// ft_printf("%d\n", data->parent);
 	if (parent < 0)
 		exit(ft_printf("error with the fork"));
 	//ft_printf("%d\n", status);
 	if (!parent)
-		child_process(cmd, cmd_args, data, envp);
+		child_process(cmd, command, data, envp);
 	else
-		status = parent_process(cmd, cmd_args, data, envp);
+		status = parent_process(cmd, command, data, envp);
 	//ft_printf("%d\n", status);
-	//exit(1);
+	// exit(1);
 	return ;
 }
 
@@ -195,6 +247,7 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 			// handle redirection before executing the command;
 			ft_printf("executing command: ----------------------->\n");
 			execute_command(command, data, envp);
+			// exit(1);
 			close(data->fd);
 			return ;
 			//current = current->next->next;

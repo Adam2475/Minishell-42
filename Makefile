@@ -6,7 +6,7 @@ CFLAGS = -g
 SRC_DIR = src
 LIB = ./libft/libft.a
 SRCS = main exit_handle tokenizer states redirection init \
-		utils parser\
+		utils parser cmd_chdir cmd_env cmd_pwd\
 
 SRC = $(addprefix $(SRC_DIR)/, $(addsuffix .c, $(SRCS)))
 # Object file generation
@@ -38,7 +38,7 @@ $(DEFAULT)"
 all: banner lib $(OBJ_DIR) $(NAME)
 
 lib:
-		make -s -C libft
+		make -sC libft
 
 $(OBJ_DIR):
 		mkdir -p $(OBJ_DIR)

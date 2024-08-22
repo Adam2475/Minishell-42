@@ -1,40 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   cmd_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/03 20:57:35 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/09 19:51:26 by mapichec         ###   ########.fr       */
+/*   Created: 2024/08/18 21:08:15 by marco             #+#    #+#             */
+/*   Updated: 2024/08/22 15:52:09 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../inc/minishell.h"
 
-int	ft_atoi(const char *str)
+int	env_cmd(t_data **data)
 {
-	int	sign;
+	t_data *tmp;
 	int	i;
-	int	res;
 
 	i = 0;
-	sign = 1;
-	res = 0;
-	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
+	// ft_printf(" \033[0;92m-------- %d --------\n", getpid());
+	tmp = (*data);
+	while (tmp->env_var[i] != NULL)
 	{
-		if (str[i] == '-')
-		{
-			sign *= -1;
-		}
+		ft_printf("\033[0;91m%s\n", tmp->env_var[i]);
 		i++;
 	}
-	while (str[i] >= 48 && str[i] <= 57)
-	{
-		res = res * 10 + str[i] - 48;
-		i++;
-	}
-	return (sign * res);
+	ft_printf("\033[0;39m");
+	return (1);
 }
