@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 21:08:15 by marco             #+#    #+#             */
-/*   Updated: 2024/08/22 15:52:09 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/22 18:06:24 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,13 @@
 
 int	env_cmd(t_data **data)
 {
-	t_data *tmp;
-	int	i;
+	t_env_list	*node;
 
-	i = 0;
-	// ft_printf(" \033[0;92m-------- %d --------\n", getpid());
-	tmp = (*data);
-	while (tmp->env_var[i] != NULL)
+	node = (*data)->env_list;
+	while (node != NULL)
 	{
-		ft_printf("\033[0;91m%s\n", tmp->env_var[i]);
-		i++;
+		ft_printf("\033[0;93m%s\n", node->content);
+		node = node->next;
 	}
 	ft_printf("\033[0;39m");
 	return (1);

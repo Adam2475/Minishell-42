@@ -42,6 +42,15 @@ typedef enum cmd
 	PWD
 }	t_cmd;
 
+typedef struct s_env_list
+{
+	char				*var;
+	char				*value;
+	char				*content;
+	struct s_env_list	*pre;
+	struct s_env_list	*next;
+}	t_env_list;
+
 typedef struct s_data
 {
 	char			*input;
@@ -56,7 +65,7 @@ typedef struct s_data
 	/////////////
 	// From Pipex
 	char *my_line;
-	char **env_var;
+	t_env_list	*env_list;
 	char *path_from_envp;
 	char **my_paths;
 }	t_data;
@@ -84,6 +93,11 @@ void		*token_reformatting(t_token **tokens);
 //void		token_parser(t_token **tokens, t_data *data);
 
 //// built_in ////
+t_env_list	*lstlast_env(t_env_list *lst);
+void		gen_list_env(t_data *data, char **envp);
+void		add_back_env(t_env_list **lst, t_env_list *new);
+t_env_list	*new_node_env(char *content);
+void		split_var_env(t_env_list **node, int len);
 int			cd_cmd(char **cmd_args, t_data **data);
 int			env_cmd(t_data **data);
 int			pwd_cmd(t_data **data);

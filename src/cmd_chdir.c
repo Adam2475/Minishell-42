@@ -6,11 +6,27 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:29:32 by marco             #+#    #+#             */
-/*   Updated: 2024/08/21 17:01:09 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/22 18:47:44 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+
+/*
+/ * TODO: 
+/ *		chdir need to change even the path inside the env var PWD e OLDPWD
+/ *
+*/
+
+// void	chpwd_env(t_data **data, char *new_path)
+// {
+// 	t_env_list	*node;
+
+// 	node = (*data)->env_list;
+// 	while (strncmp(node->content, "PWD=", 4))
+// 		node = node->next;
+	
+// }
 
 int cd_cmd(char **cmd_args, t_data **data)
 {
@@ -32,5 +48,6 @@ int cd_cmd(char **cmd_args, t_data **data)
 			return (close(fd),
 			ft_printf("bash: cd: %s: Not a directory\n", cmd_args[1]));
 	}
+	// chpwd_env(data, cmd_args[1]);
 	return(close(fd), 1);
 }

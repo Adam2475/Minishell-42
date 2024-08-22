@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/21 19:57:14 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:30:22 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	conf_man_cmd(char *str)
 
 int	manual_cmd(char **cmd_args, t_data **data)
 {
-	int	i;
+	int		i;
 	t_data *tmp;
 
 	tmp = *data;
