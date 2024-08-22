@@ -47,6 +47,9 @@ typedef struct s_data
 	char *my_line;
 	char *path_from_envp;
 	char **my_paths;
+	/////////////
+	// 	For Pipe
+	int *end;
 }	t_data;
 
 typedef struct s_command
@@ -72,5 +75,11 @@ void		*token_reformatting(t_token **tokens);
 //void		token_parser(t_token **tokens, t_data *data);
 char		*find_cmd(char *cmd, t_data *data);
 int			ft_lstsize_token(t_token *lst);
+void		print_token_lists(t_token_list *list);
+char		*reformat_command(char *command, t_token_list *token_list);
+t_token		*flatten_token_list(t_token_list *token_list);
+t_token		*extract_command_and_appendices(t_token *tokens);
+void		print_tokens(t_token *tokens);
+void		append_token_list(t_token_list **list, t_token *head);
 
 #endif

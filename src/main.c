@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/22 17:10:27 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/22 18:57:46 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,6 @@ static void	env_parser(t_data *data, char **envp)
 		exit(write(1, "PATH not found\n", 15));
 	data->path_from_envp = ft_substr(data->my_line, 5, 500);
 	data->my_paths = ft_split(data->path_from_envp, ':');
-
-	/////////
-	// Debug
-	// printf("%s\n", data->path_from_envp);
-	// exit(0);
 }
 
 static int piper(t_token **tokens)
@@ -53,21 +48,20 @@ static int piper(t_token **tokens)
 	return (0);
 }
 
-
-// Function to count occurrences of '|' in linked list nodes
 static int countPipes(t_token* head)
 {
-    int count = 0;
-    t_token* current = head;
-    
-    while (current != NULL) {
-        if (current->type == TOKEN_PIPE) {
-            count++;
-        }
-        current = current->next;
-    }
-    
-    return count;
+	int count = 0;
+	t_token* current = head;
+
+	while (current != NULL)
+	{
+		if (current->type == TOKEN_PIPE)
+		{
+			count++;
+		}
+		current = current->next;
+	}
+	return (count);
 }
 
 static char *trim_whitespace(char *str)
@@ -108,39 +102,26 @@ static int execute_command(char *command, t_data *data, char **envp)
 	while (cmd_args[i])
 	{
 		tmp = ft_strjoin_gnl(tmp, trim_whitespace(cmd_args[i]));
-		//printf("%s\n", tmp);
 		i++;
 	}
-
-	//free(cmd_args);
-	//cmd_args = ft_split(tmp, 32);
-	/////////
-	// Debug
-	//printf("%s\n", cmd);
-	//printf("%s\n", command);
-
-	//printf("------------------- due\n");
-	//printf("%s\n", holder);
-	// i = 0;
-	// while (cmd_args[i])
-	// {
-	// 	printf("%s\n", cmd_args[i]);
-	// 	i++;
-	// }
-	// char message[3000];
 	execve(holder, cmd_args, envp);
-	//fprintf(stderr, "%s\n", );
 	return(EXIT_SUCCESS);
 }
 
-static int child_process_pipe(char *command, char **envp, t_data *data)
+static int child_process_pipe(char *command, char **envp, t_data *data, t_token *tokens)
 {
-	static int i = 1;
-	////////
-	//Debug
-	ft_printf("Process no: %d\n", i);
-	i++;
+	char *holder;
+	t_token *new_tokens;
+	t_token *tmp;
+
+	//holder = reformat_command(command, token_list);
+	//tmp = flatten_token_list(token_list);
+	new_tokens = extract_command_and_appendices(tokens); 
+	//print_token_lists(*token_list);
 	//ft_printf("my command: %s\n", command);
+	print_tokens(new_tokens);
+	//print_token_lists(token_list);
+	printf("prceding to execve: ---------------------------->\n");
 	execute_command(command, data, envp);
 	return (EXIT_SUCCESS);
 }
@@ -152,17 +133,13 @@ static int parent_process_pipe(char *command, char **envp, t_data *data)
 	return (status);
 }
 
-static void print_token_lists(t_token_list *list) {
-    while (list) {
-        t_token *current = list->head;
-        printf("Token List:\n");
-        while (current) {
-            printf("Type: %d, Value: %s\n", current->type, current->value);
-            current = current->next;
-        }
-        list = list->next;
-        printf("----\n");
-    }
+char *reformat_command(char *command, t_token_list *token_list)
+{
+	//apply_redirection(token_list);
+	//print_token_lists(*token_list);
+	//printf("%s\n", command);
+	printf("reformatting the tokens!\n");
+	return (NULL);
 }
 
 static void pipe_case(t_token **tokens, t_data *data, char **envp, t_token_list **token_list)
@@ -172,19 +149,73 @@ static void pipe_case(t_token **tokens, t_data *data, char **envp, t_token_list 
 	char **commands;
 	int i = 0;
 	pid_t parent[pipes + 1];
+	t_token_list *current = *token_list;
 
 	commands = ft_split(data->input, '|');
 	while (i < (pipes + 1))
 	{
+		//printf("%s\n", commands[i]);
 		parent[i] = fork();
 		//printf("%d\n", parent[i]);
 		if (!parent[i])
-			child_process_pipe(commands[i], envp, data);
+			child_process_pipe(commands[i], envp, data, current->head);
 		else
 			parent_process_pipe(commands[i], envp, data);
 		i++;
+		current = current->next;
 	}
-	//exit(1);
+}
+static t_token *create_token(t_token_type type, char *value)
+{
+    t_token *new_token = (t_token *)malloc(sizeof(t_token));
+    if (!new_token)
+        return NULL;
+    new_token->type = type;
+    new_token->value = strdup(value);
+    new_token->next = NULL;
+    return new_token;
+}
+
+static void append_token(t_token **list, t_token *new_token)
+{
+    if (!*list)
+    {
+        *list = new_token;
+        return;
+    }
+    t_token *temp = *list;
+    while (temp->next)
+        temp = temp->next;
+    temp->next = new_token;
+}
+
+// Function to filter tokens and return the command and its appendices
+t_token *extract_command_and_appendices(t_token *tokens)
+{
+    t_token *result = NULL;
+    t_token *current = tokens;
+    int command_found = 0;
+
+    while (current)
+    {
+        if (current->type == TOKEN_COMMAND)
+        {
+            command_found = 1;
+            append_token(&result, create_token(current->type, current->value));
+        }
+        else if (command_found && (current->type == TOKEN_APPENDICE || current->type == TOKEN_OPTION))
+        {
+            append_token(&result, create_token(current->type, current->value));
+        }
+        else if (command_found)
+        {
+            // Stop processing if command is found and current token is not an appendice
+            break;
+        }
+        current = current->next;
+    }
+
+    return result;
 }
 
 static t_token_list	*create_token_list_node(t_token *head)
@@ -197,22 +228,24 @@ static t_token_list	*create_token_list_node(t_token *head)
 	return new_node;
 }
 
-static void	append_token_list(t_token_list **list, t_token *head)
+t_token *flatten_token_list(t_token_list *token_list)
 {
-	t_token_list *new_node = create_token_list_node(head);
-	if (!new_node)
-		return;
+    t_token *result = NULL;
+    t_token_list *current_list = token_list;
 
-	if (*list == NULL) {
-		*list = new_node;
-	} else {
-		t_token_list *current = *list;
-		while (current->next)
-			current = current->next;
-		current->next = new_node;
-	}
+    while (current_list)
+    {
+        t_token *current_token = current_list->head;
+        while (current_token)
+        {
+            append_token(&result, create_token(current_token->type, current_token->value));
+            current_token = current_token->next;
+        }
+        current_list = current_list->next;
+    }
+
+    return result;
 }
-
 
 static t_token_list	*split_tokens_by_pipe(t_token *tokens)
 {

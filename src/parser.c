@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/22 16:19:02 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:33:30 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ static void	execute_command(char **command, t_data *data, char **envp)
 	return ;
 }
 
-static int find_redirect(t_token* head)
+int	find_redirect(t_token* head)
 {
     t_token	*current = head;
 
