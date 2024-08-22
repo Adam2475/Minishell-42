@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/20 17:38:55 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:19:02 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,16 @@ static void	execute_command(char **command, t_data *data, char **envp)
 	// Debug
 	//printf("%s\n", cmd);
 	//printf("%s\n", cmd_args[0]);
+
+	//printf("------------------- due\n");
+	//printf("%s\n", cmd);
+	// i = 0;
+	// while (cmd_args[i])
+	// {
+	// 	printf("%s\n", cmd_args[i]);
+	// 	i++;
+	// }
+
 	parent = fork();
 	//ft_printf("%d\n", parent);
 	if (parent < 0)

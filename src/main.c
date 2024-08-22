@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/20 17:42:53 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:10:27 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,11 +97,12 @@ static int execute_command(char *command, t_data *data, char **envp)
 	char *cmd;
 	char **cmd_args;
 	char *tmp;
+	char *holder;
 
 	cmd_args = ft_split(command, 32);
 	cmd = cmd_args[0];
-	find_cmd(cmd, data);
 	tmp = NULL;
+	holder = find_cmd(cmd, data);
 
 	int i = 1;
 	while (cmd_args[i])
@@ -111,22 +112,24 @@ static int execute_command(char *command, t_data *data, char **envp)
 		i++;
 	}
 
-	free(cmd_args);
-	cmd_args = ft_split(tmp, 32);
+	//free(cmd_args);
+	//cmd_args = ft_split(tmp, 32);
 	/////////
 	// Debug
 	//printf("%s\n", cmd);
 	//printf("%s\n", command);
 
-	//printf("%s\n", cmd);
-	i = 0;
-	while (cmd_args[i])
-	{
-		printf("%s\n", cmd_args[i]);
-		i++;
-	}
-
-	printf ("%d\n", execve(cmd, cmd_args, envp));
+	//printf("------------------- due\n");
+	//printf("%s\n", holder);
+	// i = 0;
+	// while (cmd_args[i])
+	// {
+	// 	printf("%s\n", cmd_args[i]);
+	// 	i++;
+	// }
+	// char message[3000];
+	execve(holder, cmd_args, envp);
+	//fprintf(stderr, "%s\n", );
 	return(EXIT_SUCCESS);
 }
 
@@ -179,7 +182,7 @@ static void pipe_case(t_token **tokens, t_data *data, char **envp, t_token_list 
 			child_process_pipe(commands[i], envp, data);
 		else
 			parent_process_pipe(commands[i], envp, data);
-		i++;																																																																										
+		i++;
 	}
 	//exit(1);
 }
