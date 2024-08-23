@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 17:18:31 by mapichec          #+#    #+#             */
-/*   Updated: 2024/08/22 18:47:03 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/23 17:20:24 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	split_var_env(t_env_list **node, int len)
 	int	j;
 
 	i = 0;
-	while (i <= len)
+	while (i <= len && (*node)->content[i] != '\0')
 	{
 		(*node)->var[i] = (*node)->content[i];
 		i++;
@@ -89,17 +89,20 @@ t_env_list	*new_node_env(char *content)
 	return (new);
 }
 
-void	gen_list_env(t_data *data, char **envp)
+void	gen_list_env(t_data **data, char **envp)
 {
 	int			i;
 	t_env_list	*node;
+	t_env_list	*head;
 
 	i = 0;
-	data->env_list = NULL;
+	(*data)->env_list = NULL;
+	head = (*data)->env_list;
 	while (envp[i] != NULL)
 	{
 		node = new_node_env(envp[i]);
-		add_back_env(&data->env_list, node);
+		add_back_env(&head, node);
 		i++;
 	}
+	(*data)->env_list = head;
 }

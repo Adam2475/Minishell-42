@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/22 17:36:39 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/23 18:59:54 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static	char	*retrieve_line(char **envp)
 
 static void	env_parser(t_data *data, char **envp)
 {
-	gen_list_env(data, envp);
+	gen_list_env(&data, envp);
 	data->my_line = retrieve_line(envp);
 	if (!data->my_line)
 		exit(write(1, "PATH not found\n", 15));
