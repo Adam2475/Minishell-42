@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/22 17:30:22 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/24 18:59:09 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,15 @@ int	manual_cmd(char **cmd_args, t_data **data)
 	int		i;
 	t_data *tmp;
 
-	tmp = *data;
+	tmp = (*data);
 	i = 0;
 	tmp->cmd = conf_man_cmd(cmd_args[0]);
 	if (tmp->cmd == CH_DIR)
 		return (cd_cmd(cmd_args, data));
 		// return (1);
 	if (tmp->cmd == ECHO)
-		return (1);
-		// return (echo_cmd(cmd_args));
+		return (echo_cmd(data, cmd_args, &tmp->tokens));
+		// return (1);
 	if (tmp->cmd == EXPORT)
 		return (1);
 		// return (export_cmd(cmd_args));
@@ -190,7 +190,8 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 	int i = 0;
 	// int *pipe;
 
-	command = (char **)malloc(sizeof(char *) * 3);
+	command = (char **)ft_calloc(3, sizeof(char *));
+	command[3] = (char*)ft_calloc(1, 1);
 	printf("starting parser: ------------------------->\n");
 	current = *tokens;
 	head = *tokens;
@@ -234,7 +235,7 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 			command[i] = ft_strdup(current->value);
 			i++;
 			current = current->next;
-			while (current->type == 13 || current->type == 1)
+			while (current->type == 13 || current->type == 1 || current->type == 8)
 			{
 				command[i] = ft_strdup(current->value);
 				current = current->next;
@@ -242,9 +243,10 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 				//Debug
 				//printf("%s\n", command[i]);
 				i++;
-			}		
+			}
 			// handle pipes and split the token list (?)
 			// handle redirection before executing the command;
+			data->tokens = (*tokens);
 			ft_printf("executing command: ----------------------->\n");
 			execute_command(command, data, envp);
 			// exit(1);

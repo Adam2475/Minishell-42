@@ -3,6 +3,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <limits.h>
 # include <errno.h>
 # include <ctype.h> 
 # include <readline/readline.h>
@@ -20,7 +21,6 @@
 # define REDIRECT_RIGHT '>'
 # define PIPE '|'
 # define DOLLAR_SIGN '$'
-# define MAX_SIZE_T 4294967295
 
 typedef enum state
 {
@@ -62,11 +62,13 @@ typedef struct s_data
 	int				redirect_state;
 	/////////////
 	// Commands splitted by pipe
+	t_env_list		*env_list;
+	t_token			*tokens;
+	int				err_state;
 	struct s_command *commands;
 	/////////////
 	// From Pipex
 	char *my_line;
-	t_env_list	*env_list;
 	char *path_from_envp;
 	char **my_paths;
 }	t_data;
@@ -103,5 +105,8 @@ int			cd_cmd(char **cmd_args, t_data **data);
 void		chpwd_env(t_data **data, char *new_path, int path_len);
 int			env_cmd(t_data **data);
 int			pwd_cmd(t_data **data);
+int			echo_doll(char *str, t_data **data);
+int			echo_basic(char *str);
+int			echo_cmd(t_data **data, char **cmd_args, t_token **tokens);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/04 17:41:03 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/24 17:51:51 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,11 @@ int	special_cases_lexer(t_data *data, char *buffer, t_token **tokens)
 		return (1);
 	}
 	// // State must wait for it's closure
-	// if (*buffer == DOLLAR_SIGN)
-	// {
-	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
-	// 	return (1);
-	// }
+	if (*buffer == DOLLAR_SIGN)
+	{
+		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
+		return (1);
+	}
 	// if (*buffer == SINGLE_QUOTES)
 	// {
 	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_SINGLE_QUOTES, ft_strndup(buffer, 1)));

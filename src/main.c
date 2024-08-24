@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/23 18:59:54 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/24 15:58:12 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int main(int argc, char **argv, char **envp)
 			exit(1);
 			// pipe_token_parser(&data);
 		}
-		token_parser(&tokens, &data, envp);
+		// token_parser(&tokens, &data, envp);
 		//exit(1);
 		printf("debug: -------------------------------->\n");
 		t_token	*head = tokens;
