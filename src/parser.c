@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/22 17:33:30 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/26 11:29:45 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static int parent_process(char *cmd, char **cmd_args, t_data *data, char **envp)
 }
 
 
-static void	execute_command(char **command, t_data *data, char **envp)
+static void	execute_command_single(char **command, t_data *data, char **envp)
 {
 	char *cmd;
 	char **cmd_args;
@@ -94,18 +94,6 @@ static void	execute_command(char **command, t_data *data, char **envp)
 		i++;
 	}
 	cmd_args = ft_split(tmp, 32);
-	// Debug
-	//printf("%s\n", cmd);
-	//printf("%s\n", cmd_args[0]);
-
-	//printf("------------------- due\n");
-	//printf("%s\n", cmd);
-	// i = 0;
-	// while (cmd_args[i])
-	// {
-	// 	printf("%s\n", cmd_args[i]);
-	// 	i++;
-	// }
 
 	parent = fork();
 	//ft_printf("%d\n", parent);
@@ -149,7 +137,7 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 	// int *pipe;
 
 	command = (char **)malloc(sizeof(char *) * 3);
-	printf("starting parser: ------------------------->\n");
+	//printf("starting parser: ------------------------->\n");
 	current = *tokens;
 	head = *tokens;
 	while (current->type != TOKEN_EOF)
@@ -203,8 +191,8 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 			}		
 			// handle pipes and split the token list (?)
 			// handle redirection before executing the command;
-			ft_printf("executing command: ----------------------->\n");
-			execute_command(command, data, envp);
+			//ft_printf("executing command: ----------------------->\n");
+			execute_command_single(command, data, envp);
 			close(data->fd);
 			return ;
 			//current = current->next->next;
