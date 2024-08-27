@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/24 15:58:12 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/27 16:07:46 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ static	char	*retrieve_line(char **envp)
 	return (NULL);
 }
 
-static void	env_parser(t_data *data, char **envp)
+static void	env_parser(t_data **data, char **envp)
 {
-	gen_list_env(&data, envp);
-	data->my_line = retrieve_line(envp);
-	if (!data->my_line)
+	gen_list_env(data, envp);
+	(*data)->my_line = retrieve_line(envp);
+	if (!(*data)->my_line)
 		exit(write(1, "PATH not found\n", 15));
-	data->path_from_envp = ft_substr(data->my_line, 5, 500);
-	data->my_paths = ft_split(data->path_from_envp, ':');
+	(*data)->path_from_envp = ft_substr((*data)->my_line, 5, 500);
+	(*data)->my_paths = ft_split((*data)->path_from_envp, ':');
 
 	/////////
 	// Debug
@@ -71,40 +71,43 @@ static int countPipes(t_token* head)
     return count;
 }
 
-static int child_process_pipe(char *data, char **envp)
+static int child_process_pipe(char *data)
 {
-	int i = 0;
-	ft_printf("hello from %d\n iteration");
+	// int i = 0;
+	ft_printf("hello from %s\n iteration", data);
 	return (0);
 }
 
-static void pipe_case(t_token **tokens, t_data *data, char **envp)
+static void pipe_case(t_token **tokens, t_data **data)
 {
 	int pipes = countPipes(*tokens);
-	int end[pipes + 1];
+	// int end[pipes + 1];
 	char **commands;
 	int i = 0;
 
-	commands = ft_split(data->input, '|');
+	commands = ft_split((*data)->input, '|');
 	while (i < (pipes + 1))
 	{
-		child_process_pipe(commands[i++], envp);
+		child_process_pipe(commands[i++]);
 	}
 }
 
 int main(int argc, char **argv, char **envp)
 {
-	t_data		data;
+	t_data		*data;
 	t_token		*tokens;
 
+	argc = 0;
+	argv = NULL;
+	data = malloc(sizeof(t_data) * 1);
 	while (1)
 	{
-		data.input = NULL;
-		data.input = readline("myprompt$ ");
-		data.fd = -1;
-		//data.state = NORMAL;
+		(data)->input = NULL;
+		(data)->input = readline("myprompt$ ");
+		(data)->fd = -1;
+		//(data)->state = NORMAL;
 	
-		if (!data.input)
+		if (!(data)->input)
 			exit(1);
 		
 		tokens = tokenize_string(&data);
@@ -116,7 +119,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			printf("found pipe case!\n");
 			//pipe_splitter(&data, &tokens);
-			pipe_case(&tokens, &data, envp);
+			pipe_case(&tokens, &data);
 			exit(1);
 			// pipe_token_parser(&data);
 		}
@@ -125,13 +128,26 @@ int main(int argc, char **argv, char **envp)
 		printf("debug: -------------------------------->\n");
 		t_token	*head = tokens;
 		//Debug
-		while (tokens)
-		{
-			printf("%d : %s\n", tokens->type, tokens->value);
-			tokens = tokens->next;
-		}
+		// while (tokens)
+		// {
+		// 	printf("%d : %s\n", tokens->type, tokens->value);
+		// 	tokens = tokens->next;
+		// }
+		// t_env_list *node = (data)->env_list;
+		// while (node != NULL)
+		// {
+		// 	printf("var %s && value %s\n", node->var, node->value);
+		// 	node = node->next;
+		// }
 		// resets the list pointer to it's head
 		tokens = head;
+		/* PROVA LISTA ENV*/
+		t_env_list *node = (data)->env_list;
+		while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
+		{
+			node = node->next;
+		}
+		ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
 		// Free and exit program
 		free_exit(&data);
 	}

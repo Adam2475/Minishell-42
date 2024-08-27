@@ -6,22 +6,22 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/24 18:59:09 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/27 16:15:43 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-char	*find_cmd(char *cmd, t_data *data)
+char	*find_cmd(char *cmd, t_data **data)
 {
 	int		i;
 	char	*tmp;
 	char	*holder;
 
 	i = 0;
-	while (data->my_paths[i])
+	while ((*data)->my_paths[i])
 	{
-		tmp = ft_strjoin(data->my_paths[i], "/");
+		tmp = ft_strjoin((*data)->my_paths[i], "/");
 		holder = ft_strjoin(tmp, cmd);
 		if (access(holder, X_OK) == 0)
 			return (free(tmp), holder);
@@ -86,34 +86,34 @@ int	manual_cmd(char **cmd_args, t_data **data)
 	return (0);
 }
 
-static int child_process(char *cmd, char **cmd_args, t_data *data, char **envp)
+static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 {
-	if (!(data->fd < 0))
+	if (!((*data)->fd < 0))
 	{
-		if (data->redirect_state == 1)
+		if ((*data)->redirect_state == 1)
 		{
-			if (dup2(data->fd, STDOUT_FILENO) < 0)
+			if (dup2((*data)->fd, STDOUT_FILENO) < 0)
 				return (-1);
 		}
-		if (data->redirect_state == 0)
+		if ((*data)->redirect_state == 0)
 		{
-			if (dup2(data->fd, STDIN_FILENO) < 0)
+			if (dup2((*data)->fd, STDIN_FILENO) < 0)
 				return (-1);
 		}
 	}
 	ft_printf("proceding to execve: \n");
-	if (manual_cmd(cmd_args, &data))
+	if (manual_cmd(cmd_args, data))
 		return (0);
 	else
 		execve(cmd, cmd_args, envp);
 	return (EXIT_SUCCESS);
 }
 
-static int parent_process(char *cmd, char **cmd_args, t_data *data, char **envp)
+static int parent_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 {
 	int status;
 	waitpid(-1, &status, 0);
-	ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), data->parent);
+	ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), (*data)->parent);
 	return (status);
 }
 
@@ -140,7 +140,7 @@ static int parent_process(char *cmd, char **cmd_args, t_data *data, char **envp)
 	// Debug
 	//printf("%s\n", cmd);
 	//printf("%s\n", cmd_args[0]);
-static void	execute_command(char **command, t_data *data, char **envp)
+static void	execute_command(char **command, t_data **data, char **envp)
 {
 	char *cmd;
 	pid_t parent;
@@ -148,7 +148,7 @@ static void	execute_command(char **command, t_data *data, char **envp)
 
 	cmd = NULL;
 	cmd = find_cmd(command[0], data);
-	data->parent = getpid();
+	(*data)->parent = getpid();
 	parent = fork();
 	// ft_printf("%d\n", data->parent);
 	if (parent < 0)
@@ -158,12 +158,19 @@ static void	execute_command(char **command, t_data *data, char **envp)
 		child_process(cmd, command, data, envp);
 	else
 		status = parent_process(cmd, command, data, envp);
+			/* PROVA LISTA ENV*/
+	t_env_list *node = (*data)->env_list;
+	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
+	{
+		node = node->next;
+	}
+		ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
 	//ft_printf("%d\n", status);
 	// exit(1);
 	return ;
 }
 
-static int find_redirect(t_token* head)
+static int find_redirect(t_token *head)
 {
     t_token	*current = head;
 
@@ -182,7 +189,7 @@ static int find_redirect(t_token* head)
 	return (0);
 }
 
-void	token_parser(t_token **tokens, t_data *data, char **envp)
+void	token_parser(t_token **tokens, t_data **data, char **envp)
 {
 	t_token		*current;
 	t_token		*head;
@@ -206,11 +213,11 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 				//printf("%s\n%s\n", current->value,"Found '>' character in the linked list.\n");
 				current = current->next;
 				printf("%s\n%d\n", current->value, current->type);
-				data->redirect_state = 1;
+				(*data)->redirect_state = 1;
 				if (current->type == TOKEN_APPENDICE)
 				{
-					data->fd = open(current->value, O_CREAT | O_RDWR | O_TRUNC, 0644);
-					printf("%d\n", data->fd);
+					(*data)->fd = open(current->value, O_CREAT | O_RDWR | O_TRUNC, 0644);
+					printf("%d\n", (*data)->fd);
 				}
 			}
 			else if (current->type == TOKEN_REDIRECT_IN)
@@ -218,11 +225,11 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 				//printf("%s\n%s\n", current->value,"Found '<' character in the linked list.\n");
 				current = current->next;
 				printf("%s\n%d\n", current->value, current->type);
-				data->redirect_state = 0;
+				(*data)->redirect_state = 0;
 				if (current->type == TOKEN_APPENDICE)
 				{
-					data->fd = open(current->value, O_RDONLY);
-					printf("%d\n", data->fd);
+					(*data)->fd = open(current->value, O_RDONLY);
+					printf("%d\n", (*data)->fd);
 				}
 			}
 			current = current->next;
@@ -246,11 +253,18 @@ void	token_parser(t_token **tokens, t_data *data, char **envp)
 			}
 			// handle pipes and split the token list (?)
 			// handle redirection before executing the command;
-			data->tokens = (*tokens);
+			(*data)->tokens = (*tokens);
 			ft_printf("executing command: ----------------------->\n");
 			execute_command(command, data, envp);
 			// exit(1);
-			close(data->fd);
+			close((*data)->fd);
+			/* PROVA LISTA ENV*/
+			t_env_list *node = (*data)->env_list;
+			while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
+			{
+				node = node->next;
+			}
+			ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
 			return ;
 			//current = current->next->next;
 			//continue;

@@ -6,19 +6,19 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/24 17:51:51 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/27 15:47:31 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-t_token	*tokenize_string(t_data *data)
+t_token	*tokenize_string(t_data **data)
 {
 	char				*buffer;
 	char				*end;
 	t_token				*tokens;
 
-	buffer = data->input;
+	buffer = (*data)->input;
 	init_state(data, &tokens);
 	while (*buffer)
 	{
@@ -57,11 +57,11 @@ t_token	*tokenize_string(t_data *data)
 	return (tokens);
 }
 
-int	special_cases_lexer(t_data *data, char *buffer, t_token **tokens)
+int	special_cases_lexer(t_data **data, char *buffer, t_token **tokens)
 {
-	char	*end;
+	// char	*end;
 
-	if (*buffer == REDIRECT_LEFT)
+	if (*buffer == REDIRECT_LEFT && data)
 	{
 		if (*(buffer + 1) == REDIRECT_LEFT)
 		{
@@ -115,7 +115,7 @@ void	*token_reformatting(t_token **tokens)
 {
 	t_token		*head;
 	t_token		*current;
-	char	*buffer;
+	// char	*buffer;
 
 	head = *tokens;
 	current = *tokens;
