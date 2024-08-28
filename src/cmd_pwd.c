@@ -1,40 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   cmd_pwd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/03 20:57:35 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/09 19:51:26 by mapichec         ###   ########.fr       */
+/*   Created: 2024/08/21 19:09:53 by mapichec          #+#    #+#             */
+/*   Updated: 2024/08/24 16:46:03 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../inc/minishell.h"
 
-int	ft_atoi(const char *str)
+int	pwd_cmd(t_data **data)
 {
-	int	sign;
-	int	i;
-	int	res;
+	t_env_list	*node;
 
-	i = 0;
-	sign = 1;
-	res = 0;
-	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-		{
-			sign *= -1;
-		}
-		i++;
-	}
-	while (str[i] >= 48 && str[i] <= 57)
-	{
-		res = res * 10 + str[i] - 48;
-		i++;
-	}
-	return (sign * res);
+	node = (*data)->env_list;
+	ft_printf("\033[0;91mPWD_CMD\033[0;39m\n");
+	while (ft_strncmp(node->var, "PWD=", 4))
+		node = node->next;
+	ft_printf("%s\n", node->value);
+	return ((*data)->err_state = 0, 1);
 }

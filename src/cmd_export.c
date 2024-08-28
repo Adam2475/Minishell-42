@@ -1,40 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   cmd_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/03 20:57:35 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/09 19:51:26 by mapichec         ###   ########.fr       */
+/*   Created: 2024/08/28 15:06:36 by mapichec          #+#    #+#             */
+/*   Updated: 2024/08/28 15:11:41 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../inc/minishell.h"
 
-int	ft_atoi(const char *str)
+int	cmd_export(char **args, t_data **data)
 {
-	int	sign;
-	int	i;
-	int	res;
-
-	i = 0;
-	sign = 1;
-	res = 0;
-	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
+	t_env_list *node;
+	
+	node = (*data)->env_list;
+	// if ()
+	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
 	{
-		if (str[i] == '-')
-		{
-			sign *= -1;
-		}
-		i++;
+		node = node->next;
 	}
-	while (str[i] >= 48 && str[i] <= 57)
-	{
-		res = res * 10 + str[i] - 48;
-		i++;
-	}
-	return (sign * res);
+	return(0);
+	// ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
 }

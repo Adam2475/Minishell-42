@@ -1,12 +1,13 @@
 NAME = minishell
 CC = cc
-#CFLAGS = -Wall -Wextra -Werror -g
+# CFLAGS = -Wall -Wextra -Werror -g
 CFLAGS = -g
 # Source files
 SRC_DIR = src
 LIB = ./libft/libft.a
 SRCS = main exit_handle tokenizer states redirection init \
-		utils parser pipe_case utils2 utils3 utils4 \
+		utils parser cmd_chdir cmd_env cmd_pwd env_list cmd_echo \
+		cmd_export  pipe_case utils2 utils3 utils4 \
 
 SRC = $(addprefix $(SRC_DIR)/, $(addsuffix .c, $(SRCS)))
 # Object file generation
@@ -38,7 +39,7 @@ $(DEFAULT)"
 all: banner lib $(OBJ_DIR) $(NAME)
 
 lib:
-		make -s -C libft
+		make -sC libft
 
 $(OBJ_DIR):
 		mkdir -p $(OBJ_DIR)
