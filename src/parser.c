@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/27 16:15:43 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:21:51 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	manual_cmd(char **cmd_args, t_data **data)
 		// return (1);
 	if (tmp->cmd == EXPORT)
 		return (1);
-		// return (export_cmd(cmd_args));
+		// return (export_cmd(cmd_args, data));
 	if (tmp->cmd == UNSET)
 		return (1);
 		// return (unset_cmd(cmd_args));
@@ -103,7 +103,7 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 	}
 	ft_printf("proceding to execve: \n");
 	if (manual_cmd(cmd_args, data))
-		return (0);
+		return (printf("\033[0;92mchild %p\n\033[0;39m", data), 0);
 	else
 		execve(cmd, cmd_args, envp);
 	return (EXIT_SUCCESS);
@@ -159,12 +159,12 @@ static void	execute_command(char **command, t_data **data, char **envp)
 	else
 		status = parent_process(cmd, command, data, envp);
 			/* PROVA LISTA ENV*/
-	t_env_list *node = (*data)->env_list;
-	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
-	{
-		node = node->next;
-	}
-		ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
+	// t_env_list *node = (*data)->env_list;
+	// while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
+	// {
+	// 	node = node->next;
+	// }
+	// 	ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
 	//ft_printf("%d\n", status);
 	// exit(1);
 	return ;
@@ -259,12 +259,13 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 			// exit(1);
 			close((*data)->fd);
 			/* PROVA LISTA ENV*/
-			t_env_list *node = (*data)->env_list;
-			while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
-			{
-				node = node->next;
-			}
-			ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
+			// t_env_list *node = (*data)->env_list;
+			// while (node->next != NULL)
+			// {
+			// 	node = node->next;
+			// }
+			// ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
+			printf("\033[0;92mtokenizer %p\n\033[0;39m", data);
 			return ;
 			//current = current->next->next;
 			//continue;

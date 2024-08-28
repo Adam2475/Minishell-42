@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/27 16:07:46 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:36:59 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,14 @@ static	char	*retrieve_line(char **envp)
 	return (NULL);
 }
 
-static void	env_parser(t_data **data, char **envp)
+void	env_parser(t_data **data, char **envp)
 {
-	gen_list_env(data, envp);
+	static int	flag = 0;
+	if (!flag)
+	{
+		gen_list_env(data, envp);
+		flag = 1;
+	}
 	(*data)->my_line = retrieve_line(envp);
 	if (!(*data)->my_line)
 		exit(write(1, "PATH not found\n", 15));
@@ -128,26 +133,21 @@ int main(int argc, char **argv, char **envp)
 		printf("debug: -------------------------------->\n");
 		t_token	*head = tokens;
 		//Debug
-		// while (tokens)
-		// {
-		// 	printf("%d : %s\n", tokens->type, tokens->value);
-		// 	tokens = tokens->next;
-		// }
-		// t_env_list *node = (data)->env_list;
-		// while (node != NULL)
-		// {
-		// 	printf("var %s && value %s\n", node->var, node->value);
-		// 	node = node->next;
-		// }
-		// resets the list pointer to it's head
-		tokens = head;
-		/* PROVA LISTA ENV*/
-		t_env_list *node = (data)->env_list;
-		while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
+		while (tokens)
 		{
+			printf("%d : %s\n", tokens->type, tokens->value);
+			tokens = tokens->next;
+		}
+		printf("%p\n", &data);
+	/* PROVA LISTA ENV*/
+		t_env_list *node = (data)->env_list;
+		while (node != NULL)
+		{
+			printf("var %s && value %s\n", node->var, node->value);
 			node = node->next;
 		}
-		ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
+		// resets the list pointer to it's head
+		tokens = head;
 		// Free and exit program
 		free_exit(&data);
 	}
