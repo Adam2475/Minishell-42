@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 18:39:05 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/08 09:46:17 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/28 18:02:29 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,5 @@
 
 void	init_state(t_data *data, t_token **tokens)
 {
-	data->state = NORMAL;
 	*tokens = NULL;
 }

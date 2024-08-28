@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:27:20 by adapassa          #+#    #+#             */
-/*   Updated: 2024/07/17 16:40:23 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:43:15 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,16 @@
 # include <string.h>
 //# include "../inc/minishell.h"
 
-typedef enum quote_states
+// single quotes inhibit the dollar double don't
+
+typedef enum state
 {
-	EXIT_CLOSE_DQUOTES,
-	EXIT_OPENED_DQUOTES,
-	EXIT_CLOSE_SQUOTES,
-	EXIT_OPEN_SQUOTES
-}	t_quote_state;
+	STATE_NORMAL,
+	STATE_DOLLAR,
+	STATE_SINGLE_QUOTES,
+	STATE_DOUBLE_QUOTES,
+	STATE_DOLLAR_DOUBLE_QUOTES
+}	t_token_state;
 
 typedef enum type
 {
@@ -65,6 +68,7 @@ typedef struct s_token
 {
 	t_token_type	type;
 	char			*value;
+	t_token_state	state;
 	struct s_token	*next;
 }	t_token;
 

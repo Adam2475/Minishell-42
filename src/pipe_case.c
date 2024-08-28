@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 10:12:13 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/26 12:25:48 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:05:20 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,6 @@ static int child_process_pipe(char *command, char **envp, t_data *data, t_token 
 	holder = token_to_command(new_tokens);
 
 	t_token *current = tokens;
-
-	//printf("tokens: \n");
-	//print_tokens(tokens);
 
 	if (!(data->fd < 0))
 	{
@@ -50,16 +47,10 @@ static int child_process_pipe(char *command, char **envp, t_data *data, t_token 
 static int parent_process_pipe(char *command, t_token *tokens, char **envp, t_data *data, int *end, int i)
 {
 	int status;
-	waitpid(-1, &status, 0);
 
-	//printf("%d\n", i);
+	waitpid(-1, &status, 0);
 	if (dup2(end[i + 1], STDIN_FILENO) < 0)
 		return (-1);
-	//printf("%s\n", command);
-	//exit(1);
-
-	//printf("tokens: \n");
-	//print_tokens(tokens);
 	return (status);
 }
 
@@ -116,19 +107,12 @@ void pipe_case(t_token **tokens, t_data *data, char **envp, t_token_list **token
 		}
 		j++;
 	}
-
-	//print_token_lists(current);
-	//exit(1);
 	int x = 0;
-	
 	commands = ft_split(data->input, '|');
 	while (i < (pipes + 1))
 	{
-
-		//printf("%s\n", commands[i]);
 		set_redirection(current->head, data);
 		parent[i] = fork();
-		//printf("%d\n", parent[i]);
 		if (!parent[i])
 			child_process_pipe(commands[i], envp, data, current->head, end, x);
 		else

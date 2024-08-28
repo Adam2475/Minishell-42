@@ -25,19 +25,10 @@ typedef struct s_token_list {
 	struct s_token_list *next;
 }	t_token_list;
 
-typedef enum state
-{
-	NORMAL,
-	STATE_DOUBLE_QUOTES,
-	STATE_SINGLE_QUOTES,
-	STATE_DOLLAR
-}	t_state;
-
 typedef struct s_data
 {
 	char			*input;
 	int				fd;
-	t_state			state;
 	int				redirect_state;
 	/////////////
 	// Commands splitted by pipe
@@ -60,8 +51,6 @@ typedef struct s_command
 	char *cmd2;
 	char *args2;
 }	t_command;
-
-
 
 void			free_exit(t_data *data);
 int				parse_input(t_data *data);
@@ -89,5 +78,12 @@ size_t			calculate_command_length(t_token *head);
 char			*token_to_command(t_token *head);
 t_token			*copy_token_list(t_token *tokens);
 t_token			*copy_token(t_token *token);
+t_token_list	*split_tokens_by_pipe(t_token *tokens);
+char			*retrieve_line(char **envp);
+int				piper(t_token **tokens);
+t_token			*create_token(t_token_type type, char *value);
+void			append_token(t_token **list, t_token *new_token);
+void			env_parser(t_data *data, char **envp);
+int				set_token_state(t_token **tokens);
 
 #endif

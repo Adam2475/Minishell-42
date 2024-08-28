@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 18:17:57 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/26 10:38:26 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/28 17:37:32 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void	print_tokens(t_token *tokens)
 	while (temp)
 	{
 		printf("Type: %d, Value: %s\n", temp->type, temp->value);
+		//printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
 		temp = temp->next;
 	}
 }
