@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 18:39:05 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/28 18:33:02 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/29 13:42:36 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,5 +15,6 @@
 
 void	init_state(t_data **data, t_token **tokens)
 {
-	*tokens = NULL;
+	if (data)
+		*tokens = NULL;
 }

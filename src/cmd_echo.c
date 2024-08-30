@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 17:32:27 by mapichec          #+#    #+#             */
-/*   Updated: 2024/08/24 19:02:58 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/29 13:46:40 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int	echo_basic(char *str)
 
 int	echo_cmd(t_data **data, char **cmd_args, t_token **tokens)
 {
-	int			i;
 	t_token		*current;
 
 	current = (*tokens);

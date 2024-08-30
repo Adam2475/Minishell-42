@@ -6,20 +6,36 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:06:36 by mapichec          #+#    #+#             */
-/*   Updated: 2024/08/28 15:11:41 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:15:12 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+// declare -x SSH_AGENT_PID="1140490"
+
 int	cmd_export(char **args, t_data **data)
 {
-	t_env_list *node;
+	t_env_list	*node;
+	char		*tmp;
 	
 	node = (*data)->env_list;
-	// if ()
-	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
+	tmp = NULL;
+	if (args[1])
+		return (1);
+		// return (add_var_env(args, data));
+	while (node->next)
 	{
+		if (!tmp)
+		{
+			tmp = node->var;
+			ft_printf("declare -x %s\"%s\"", node->var, node->value);
+		}
+		else if (tmp)
+		{
+			
+			ft_printf("declare -x %s\"%s\"", node->var, node->value);
+		}
 		node = node->next;
 	}
 	return(0);
