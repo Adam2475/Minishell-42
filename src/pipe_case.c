@@ -6,18 +6,20 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 10:12:13 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/28 16:05:20 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/30 07:54:53 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-static int child_process_pipe(char *command, char **envp, t_data *data, t_token *tokens, int *end, int i)
+static int child_process_pipe(char *command, char **envp, t_data **data_ptr, t_token *tokens, int *end, int i)
 {
-	char *holder;
-	t_token *new_tokens;
-	t_token *tmp;
+	char		*holder;
+	t_token		*new_tokens;
+	t_token		*tmp;
+	t_data		*data;
 
+	data = *data_ptr;
 	new_tokens = extract_command_and_appendices(tokens);
 	holder = token_to_command(new_tokens);
 
@@ -44,7 +46,7 @@ static int child_process_pipe(char *command, char **envp, t_data *data, t_token 
 	return (EXIT_SUCCESS);
 }
 
-static int parent_process_pipe(char *command, t_token *tokens, char **envp, t_data *data, int *end, int i)
+static int parent_process_pipe(char *command, t_token *tokens, char **envp, t_data **data, int *end, int i)
 {
 	int status;
 
@@ -83,21 +85,27 @@ static void set_redirection(t_token *tokens, t_data *data)
 				}
 			}
 		}
+		else if (current->type == TOKEN_APPEND)
+			exit(printf("found append in the command!\n"));
+		else if (current->type == TOKEN_HEREDOC)
+			exit(printf("found heredoc in the command!\n"));
 		current = current->next;
 	}
 }
 
-void pipe_case(t_token **tokens, t_data *data, char **envp, t_token_list **token_list)
+void pipe_case(t_token **tokens, t_data **data_ptr, char **envp, t_token_list **token_list)
 {
-	int pipes = count_pipes(*tokens);
-	int end[pipes + 1];
-	char **commands;
-	int i = 0;
-	int j = 0;
-	int status;
-	pid_t parent[pipes * 2];
-	t_token_list *current = *token_list;
+	int				pipes = count_pipes(*tokens);
+	int				end[pipes + 1];
+	char			**commands;
+	int				i = 0;
+	int				j = 0;
+	int				status;
+	pid_t			parent[pipes * 2];
+	t_token_list	*current = *token_list;
+	t_data			*data;
 
+	data = *data_ptr;
 	while (j < pipes)
 	{
 		if (pipe(end + (j * 2)) < 0)
@@ -114,9 +122,9 @@ void pipe_case(t_token **tokens, t_data *data, char **envp, t_token_list **token
 		set_redirection(current->head, data);
 		parent[i] = fork();
 		if (!parent[i])
-			child_process_pipe(commands[i], envp, data, current->head, end, x);
+			child_process_pipe(commands[i], envp, &data, current->head, end, x);
 		else
-			parent_process_pipe(commands[i], current->head, envp, data, end, x);
+			parent_process_pipe(commands[i], current->head, envp, &data, end, x);
 		i++;
 		x = i * 2;
 		current = current->next;

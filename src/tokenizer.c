@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/28 18:56:22 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 06:55:13 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,9 @@ t_token	*tokenize_string(t_data **data)
 		}
 		if (*buffer == REDIRECT_LEFT
 			|| *buffer == REDIRECT_RIGHT
-			|| *buffer == PIPE
+			|| *buffer == PIPE)
 			//|| *buffer == SINGLE_QUOTES
 			//|| *buffer == DOUBLE_QUOTES
-			|| *buffer == DOLLAR_SIGN)
 		{
 			buffer = buffer + special_cases_lexer(data, buffer, &tokens);
 			continue;
@@ -59,8 +58,6 @@ t_token	*tokenize_string(t_data **data)
 
 int	special_cases_lexer(t_data **data, char *buffer, t_token **tokens)
 {
-	// char	*end;
-
 	if (*buffer == REDIRECT_LEFT && data)
 	{
 		if (*(buffer + 1) == REDIRECT_LEFT)
@@ -93,11 +90,11 @@ int	special_cases_lexer(t_data **data, char *buffer, t_token **tokens)
 		return (1);
 	}
 	// // State must wait for it's closure
-	if (*buffer == DOLLAR_SIGN)
-	{
-		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
-		return (1);
-	}
+	// if (*buffer == DOLLAR_SIGN)
+	// {
+	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
+	// 	return (1);
+	// }
 	// if (*buffer == SINGLE_QUOTES)
 	// {
 	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_SINGLE_QUOTES, ft_strndup(buffer, 1)));

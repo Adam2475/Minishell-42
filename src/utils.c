@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 18:17:57 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/28 17:37:32 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/30 06:50:49 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	execute_command(char *command, t_data *data, char **envp)
 	cmd_args = ft_split(command, 32);
 	cmd = cmd_args[0];
 	tmp = NULL;
-	holder = find_cmd(cmd, data);
+	holder = find_cmd(cmd, &data);
 
 	int i = 1;
 	while (cmd_args[i])
