@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 07:53:53 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:20:09 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,9 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 static int parent_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 {
 	int status;
+	
+	if (!cmd || !cmd_args || !envp)
+		return (0);
 	waitpid(-1, &status, 0);
 	//ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), (*data)->parent);
 	return (status);
@@ -148,35 +151,36 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	else
 		status = parent_process(cmd, command, data, envp);
 			/* PROVA LISTA ENV*/
-	// t_env_list *node = (*data)->env_list;
-	// while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
-	// {
-	// 	node = node->next;
-	// }
-	// 	ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
+	t_env_list *node = (*data)->env_list;
+	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
+	{
+		node = node->next;
+	}
+		ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
 	//ft_printf("%d\n", status);
 	// exit(1);
 	return ;
 }
 
-static int find_redirect(t_token *head)
-{
-    t_token	*current = head;
+/*NOT USED FT*/
+// static int find_redirect(t_token *head)
+// {
+//     t_token	*current = head;
 
-    // Traverse the linked list
-    while (current != NULL) {
-        // Check if the current node's data is '>'
-        if (current->type == 4) {
-            printf("Found '>' character in the linked list.\n");
-            // Uncomment below if you want to stop after finding the first '>'
-            return (1);
-        }
-        // Move to the next node
-        current = current->next;
-    }
-    printf("Finished searching.\n");
-	return (0);
-}
+//     // Traverse the linked list
+//     while (current != NULL) {
+//         // Check if the current node's data is '>'
+//         if (current->type == 4) {
+//             printf("Found '>' character in the linked list.\n");
+//             // Uncomment below if you want to stop after finding the first '>'
+//             return (1);
+//         }
+//         // Move to the next node
+//         current = current->next;
+//     }
+//     printf("Finished searching.\n");
+// 	return (0);
+// }
 
 void	token_parser(t_token **tokens, t_data **data, char **envp)
 {

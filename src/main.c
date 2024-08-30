@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 07:46:57 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:24:54 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int main(int argc, char **argv, char **envp)
 	t_data			*data;
 	t_token			*tokens;
 	t_token_list	*token_list;
-	t_token			*tmp;
+	// t_token			*tmp;
 
 	argc = 0;
 	argv = NULL;
@@ -119,7 +119,7 @@ int main(int argc, char **argv, char **envp)
 			token_parser(&tokens, &data, envp);
 		else
 		{
-			token_list = split_tokens_by_pipe(tmp);
+			// token_list = split_tokens_by_pipe(tmp);
 			pipe_case(&tokens, &data, envp, &token_list);
 		}
 		free_exit(&data);
