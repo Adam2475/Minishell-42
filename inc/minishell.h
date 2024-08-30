@@ -71,42 +71,27 @@ typedef struct s_data
 	int *end;
 }	t_data;
 
-typedef struct s_command
-{
-	char *cmd1;
-	char **args1;
-	char redirect;
-	char *cmd2;
-	char *args2;
-}	t_command;
-
-
-
-void		free_exit(t_data **data);
-t_token		*tokenize_string(t_data **data);
-// int			lexer_control(t_data **data, int j);
-void		init_state(t_data **data, t_token **tokens);
-int			special_cases_lexer(t_data **data, char *buffer, t_token **tokens);
-void		token_parser(t_token **tokens,t_data **data, char **envp);
-char		*expand_variable(t_token **current, char **envp);
-void		env_parser(t_data **data, char **envp);
-void		*token_reformatting(t_token **tokens);
-char		*find_cmd(char *cmd, t_data **data);
-//void		token_parser(t_token **tokens, t_data *data);
-
-//// built_in ////
-t_env_list	*lstlast_env(t_env_list *lst);
-void		gen_list_env(t_data **data, char **envp);
-void		add_back_env(t_env_list **lst, t_env_list *new);
-t_env_list	*new_node_env(char *content);
-void		split_var_env(t_env_list **node, int len);
-int			cd_cmd(char **cmd_args, t_data **data);
-void		chpwd_env(t_data **data, char *new_path);
-int			env_cmd(t_data **data);
-int			pwd_cmd(t_data **data);
-int			echo_doll(char *str, t_data **data);
-int			echo_basic(char *str);
-int			echo_cmd(t_data **data, char **cmd_args, t_token **tokens);
+void			free_exit(t_data **data);
+t_token			*tokenize_string(t_data **data);
+void			init_state(t_data **data, t_token **tokens);
+int				special_cases_lexer(t_data **data, char *buffer, t_token **tokens);
+void			token_parser(t_token **tokens,t_data **data, char **envp);
+char			*expand_variable(t_token **current, char **envp);
+void			env_parser(t_data **data, char **envp);
+void			*token_reformatting(t_token **tokens);
+char			*find_cmd(char *cmd, t_data **data);
+t_env_list		*lstlast_env(t_env_list *lst);
+void			gen_list_env(t_data **data, char **envp);
+void			add_back_env(t_env_list **lst, t_env_list *new);
+t_env_list		*new_node_env(char *content);
+void			split_var_env(t_env_list **node, int len);
+int				cd_cmd(char **cmd_args, t_data **data);
+void			chpwd_env(t_data **data, char *new_path);
+int				env_cmd(t_data **data);
+int				pwd_cmd(t_data **data);
+int				echo_doll(char *str, t_data **data);
+int				echo_basic(char *str);
+int				echo_cmd(t_data **data, char **cmd_args, t_token **tokens);
 void			free_exit(t_data **data);
 int				parse_input(t_data *data);
 int				lexer_control(t_data *data, int j);
@@ -137,5 +122,6 @@ int				piper(t_token **tokens);
 t_token			*create_token(t_token_type type, char *value);
 void			append_token(t_token **list, t_token *new_token);
 int				set_token_state(t_token **tokens);
+int				check_double_redirects(const char *str);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/29 16:37:56 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:20:09 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 				return (-1);
 		}
 	}
-	ft_printf("proceding to execve: \n");
+	//ft_printf("proceding to execve: \n");
 	if (manual_cmd(cmd_args, data))
 		return (printf("\033[0;92mchild %p\n\033[0;39m", data), 0);
 	else
@@ -116,7 +116,7 @@ static int parent_process(char *cmd, char **cmd_args, t_data **data, char **envp
 	if (!cmd || !cmd_args || !envp)
 		return (0);
 	waitpid(-1, &status, 0);
-	ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), (*data)->parent);
+	//ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), (*data)->parent);
 	return (status);
 }
 
@@ -203,28 +203,22 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 		{
 			if (current->type == TOKEN_REDIRECT_OUT)
 			{
-				//printf("%s\n%s\n", current->value,"Found '>' character in the linked list.\n");
 				current = current->next;
-				printf("%s\n%d\n", current->value, current->type);
 				(*data)->redirect_state = 1;
 				if (current->type == TOKEN_APPENDICE)
-				{
 					(*data)->fd = open(current->value, O_CREAT | O_RDWR | O_TRUNC, 0644);
-					printf("%d\n", (*data)->fd);
-				}
 			}
 			else if (current->type == TOKEN_REDIRECT_IN)
 			{
-				//printf("%s\n%s\n", current->value,"Found '<' character in the linked list.\n");
 				current = current->next;
-				printf("%s\n%d\n", current->value, current->type);
 				(*data)->redirect_state = 0;
 				if (current->type == TOKEN_APPENDICE)
-				{
 					(*data)->fd = open(current->value, O_RDONLY);
-					printf("%d\n", (*data)->fd);
-				}
 			}
+			else if (current->type == TOKEN_APPEND)
+				exit(printf("found append in the command!\n"));
+			else if (current->type == TOKEN_HEREDOC)
+				exit(printf("found heredoc in the command!\n"));
 			current = current->next;
 		}
 
@@ -244,14 +238,9 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				//printf("%s\n", command[i]);
 				i++;
 			}
-			// handle pipes and split the token list (?)
-			// handle redirection before executing the command;
-			//ft_printf("executing command: ----------------------->\n");
 			execute_command_single(command, data, envp);
 			close((*data)->fd);
 			return ;
-			//current = current->next->next;
-			//continue;
 		}
 		current = current->next;
 	}

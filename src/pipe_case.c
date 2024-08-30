@@ -6,18 +6,17 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 10:12:13 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/29 15:15:04 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:29:32 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-int child_process_pipe(char *command, char **envp, t_data **data, t_token *tokens, int *end, int i)
+static int child_process_pipe(char *command, char **envp, t_data **data, t_token *tokens, int *end, int i)
 {
-	char *holder;
-	t_token *new_tokens;
-	// t_token *tmp;
-	// t_token *current = tokens;
+	char		*holder;
+	t_token		*new_tokens;
+	t_token		*tmp;
 
 	new_tokens = extract_command_and_appendices(tokens);
 	holder = token_to_command(new_tokens);
@@ -87,6 +86,10 @@ static void set_redirection(t_token *tokens, t_data **data)
 				}
 			}
 		}
+		else if (current->type == TOKEN_APPEND)
+			exit(printf("found append in the command!\n"));
+		else if (current->type == TOKEN_HEREDOC)
+			exit(printf("found heredoc in the command!\n"));
 		current = current->next;
 	}
 }
@@ -118,9 +121,9 @@ void pipe_case(t_token **tokens, t_data **data, char **envp, t_token_list **toke
 		set_redirection(current->head, data);
 		parent[i] = fork();
 		if (!parent[i])
-			child_process_pipe(commands[i], envp, data, current->head, end, x);
+			child_process_pipe(commands[i], envp, &data, current->head, end, x);
 		else
-			parent_process_pipe(commands[i], current->head, envp, data, end, x);
+			parent_process_pipe(commands[i], current->head, envp, &data, end, x);
 		i++;
 		x = i * 2;
 		current = current->next;

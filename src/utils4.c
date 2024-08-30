@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:23:17 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/29 13:39:58 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:20:55 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ int	set_token_state(t_token **tokens)
 	int				i;
 	t_token_state	current_state;
 	current_state = STATE_NORMAL;
-	i = 0;
 	while (current->next != NULL)
 	{
+		i = 0;
 		while (current->value[i] != '\0')
 		{
 			if (current->value[i] == '$')
@@ -85,39 +85,14 @@ int	set_token_state(t_token **tokens)
 				}
 			}
 			else if (current->value[i] == '\'')
-			{
-				if (current_state == STATE_SINGLE_QUOTES)
-				{
-					current_state = STATE_NORMAL; // Closing single quotes
-				}
-				else if (current_state == STATE_NORMAL)
-				{
-					current_state = STATE_SINGLE_QUOTES; // Opening single quotes
-				}
-			}
-			else if (current->value[i] == '\"')
-			{
-				if (current_state == STATE_DOUBLE_QUOTES)
-				{
-					current_state = STATE_NORMAL; // Closing double quotes
-				}
-				else if (current_state == STATE_NORMAL)
-				{
-					current_state = STATE_DOUBLE_QUOTES; // Opening double quotes
-				}
-			}
+				current_state = STATE_SINGLE_QUOTES;
+			else if (current->value[i] == '\"' && current_state != STATE_DOLLAR_DOUBLE_QUOTES)
+				current_state = STATE_DOUBLE_QUOTES;
 			i++;
 		}
 		current->state = current_state;
 		current = current->next;
+		current_state = STATE_NORMAL;
 	}
-    // // Check for unclosed quotes after processing all tokens
-    // if (current_state == STATE_SINGLE_QUOTES) {
-    //     fprintf(stderr, "Error: Unclosed single quotes detected.\n");
-    //     return -1;
-	// } else if (current_state == STATE_DOUBLE_QUOTES) {
-	// 	fprintf(stderr, "Error: Unclosed double quotes detected.\n");
-	// 	return -1;
-	// }
-	return 0;
+	return (0);
 }

@@ -6,42 +6,78 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/29 15:23:24 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:24:54 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-/*DOUBLE FT*/
-// char	*retrieve_line(char **envp)
-// {
-// 	int	i;
+int check_double_redirects(const char *str)
+{
+    // Check if the string contains ">>"
+    if (ft_strnstr(str, ">>", 2) != NULL)
+    {
+        return 1; // Found ">>"
+    }
 
-// 	i = 0;
-// 	while (envp[i] != NULL)
-// 	{
-// 		if (ft_strnstr(envp[i], "PATH=", 5))
-// 			return (ft_strdup(envp[i]));
-// 		i++;
-// 	}
-// 	return (NULL);
-// }
+    // Check if the string contains "<<"
+    if (ft_strnstr(str, "<<", 2) != NULL)
+    {
+        return 1; // Found "<<"
+    }
 
-/*DOUBLE FT*/
-// static int piper(t_token **tokens)
-// {
-// 	t_token *temp = tokens;
-// 	while (temp)
-// 	{
-// 		//printf("Type: %d, Value: %s\n", temp->type, temp->value);
-// 		printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
-// 		temp = temp->next;
-// 	}
-// }
+    return 0; // Neither ">>" nor "<<" found
+}
+
+static int check_unclosed_quotes(t_token *token)
+{
+	int single_quote_count = 0;
+	int double_quote_count = 0;
+
+	while (*token->value)
+	{
+		if (*token->value == '\'')
+			single_quote_count++;
+		else if (*token->value == '"')
+			double_quote_count++;
+		token->value++;
+	}
+
+	if (single_quote_count % 2 != 0 || double_quote_count % 2 != 0)
+		return 1; // Error: Unclosed quotes
+	return 0; // No error
+}
+
+static int check_quotes(t_token *tokens)
+{
+	t_token *current = tokens;
+
+	while (current)
+	{
+		if (current->state > STATE_NORMAL) // Only check if state is greater than 0
+		{
+			if (check_unclosed_quotes(current))
+				return 1; // Error found
+		}
+		current = current->next;
+	}
+	return 0; // No errors found
+}
+
+static void	print_tokens_state(t_token *tokens)
+{
+	t_token *temp = tokens;
+	while (temp)
+	{
+		printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
+		//printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
+		temp = temp->next;
+	}
+}
 
 int main(int argc, char **argv, char **envp)
 {
-	t_data		*data;
+	t_data			*data;
 	t_token			*tokens;
 	t_token_list	*token_list;
 	// t_token			*tmp;
@@ -67,13 +103,18 @@ int main(int argc, char **argv, char **envp)
 		//exit(1);
 
 		set_token_state(&tokens);
-		
-		/*NOT USED FT & NOT PRESENT IN .H
-			print_tokens_state(tokens);
-		*/		
-		//printf("ciao");
-		//exit(1);
-		
+		if (check_quotes(tokens) != 0 )
+			exit(printf("unclosed quotes found!!\n"));
+
+		/////////////////////////////
+		// To Do
+		// Implement Expander
+		// single quotes treated as literal have no difference
+		// if state is $ of "" then go to expander
+
+		/////////////////////////////
+		//Debug
+		print_tokens_state(tokens);
 		if (piper(&tokens) == 0)
 			token_parser(&tokens, &data, envp);
 		else

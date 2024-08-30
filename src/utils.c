@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 18:17:57 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/29 13:36:10 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:29:38 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	execute_command(char *command, t_data **data, char **envp)
 	cmd_args = ft_split(command, 32);
 	cmd = cmd_args[0];
 	tmp = NULL;
-	holder = find_cmd(cmd, data);
+	holder = find_cmd(cmd, &data);
 
 	int i = 1;
 	while (cmd_args[i])

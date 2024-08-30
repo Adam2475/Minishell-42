@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:27:20 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/28 18:32:00 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 06:41:59 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,5 +147,6 @@ char		*ft_strdup_gnl(const char *src);
 t_token		*ft_lstnewtoken(t_token_type type, char *content);
 void		ft_tokenadd_back(t_token **lst, t_token *new);
 char		*ft_strndup(const char *s, size_t n);
+int			ft_lstsize_token(t_token *lst);
 
 #endif
