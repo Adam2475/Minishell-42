@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:23:17 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 12:56:51 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:58:34 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,7 @@ t_token_list	*create_token_list_node(t_token *head)
 }
 
 void	env_parser(t_data **data, char **envp)
-void	env_parser(t_data **data, char **envp)
 {
-	static int	flag = 0;
 	static int	flag = 0;
 
 	if (flag == 0)
