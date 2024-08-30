@@ -3,63 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/28 18:44:52 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 06:36:15 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-static	char	*retrieve_line(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp[i] != NULL)
-	{
-		if (ft_strnstr(envp[i], "PATH=", 5))
-			return (ft_strdup(envp[i]));
-		i++;
-	}
-	return (NULL);
-}
-
-void	env_parser(t_data **data, char **envp)
-{
-	static int	flag = 0;
-	if (!flag)
-	{
-		gen_list_env(data, envp);
-		flag = 1;
-	}
-	(*data)->my_line = retrieve_line(envp);
-	if (!(*data)->my_line)
-		exit(write(1, "PATH not found\n", 15));
-	(*data)->path_from_envp = ft_substr((*data)->my_line, 5, 500);
-	(*data)->my_paths = ft_split((*data)->path_from_envp, ':');
-
-	/////////
-	// Debug
-	// printf("%s\n", data->path_from_envp);
-	// exit(0);
-}
-
-static int piper(t_token **tokens)
+static void	print_tokens_state(t_token *tokens)
 {
 	t_token *temp = tokens;
 	while (temp)
 	{
-		//printf("Type: %d, Value: %s\n", temp->type, temp->value);
 		printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
+		//printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
 		temp = temp->next;
 	}
 }
 
 int main(int argc, char **argv, char **envp)
 {
-	t_data		*data;
+	t_data			*data;
 	t_token			*tokens;
 	t_token_list	*token_list;
 	t_token			*tmp;

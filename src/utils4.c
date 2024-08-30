@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:23:17 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/28 18:06:19 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/30 06:38:39 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,11 @@ t_token_list	*create_token_list_node(t_token *head)
 	return new_node;
 }
 
-void	env_parser(t_data *data, char **envp)
+void	env_parser(t_data **data_ptr, char **envp)
 {
+	t_data *data;
+
+	data = *data_ptr;
 	data->my_line = retrieve_line(envp);
 	if (!data->my_line)
 		exit(write(1, "PATH not found\n", 15));
