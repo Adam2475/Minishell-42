@@ -6,7 +6,7 @@
 /*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:29:32 by marco             #+#    #+#             */
-/*   Updated: 2024/08/28 17:53:29 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:43:35 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,19 @@ int cd_cmd(char **cmd_args, t_data **data)
 	if (chdir(cmd_args[1]) != 0)
 	{
 		if (errno == ENOENT)
-			return (close(fd), (*data)->err_state = errno,
-			ft_printf("bash: cd: %s: No such file or directory\n", cmd_args[1]));
+		{
+			(*data)->err_state = errno;
+			ft_printf("bash: cd: %s: No such file or directory\n", cmd_args[1]);
+		}
 		else if (errno == ENOTDIR)
-			return (close(fd), (*data)->err_state = errno,
-			ft_printf("bash: cd: %s: Not a directory\n", cmd_args[1]));
+		{
+			(*data)->err_state = errno;
+			ft_printf("bash: cd: %s: Not a directory\n", cmd_args[1]);			
+		}
+		if (fd >= 0)
+			return (close(fd), 1);
+		else
+			return (1);
 	}
 	ft_printf("\033[0;91mCD_CMD\033[0;39m\n");
 	chpwd_env(data, cmd_args[1]);

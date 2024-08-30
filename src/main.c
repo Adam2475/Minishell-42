@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 11:51:34 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:55:54 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int main(int argc, char **argv, char **envp)
 	t_data			*data;
 	t_token			*tokens;
 	t_token_list	*token_list;
-	t_token			*tmp;
+	// t_token			*tmp;
 
 	argc = 0;
 	argv = NULL;

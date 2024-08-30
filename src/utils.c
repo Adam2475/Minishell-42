@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 18:17:57 by adapassa          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/08/30 11:50:04 by adapassa         ###   ########.fr       */
+=======
+/*   Updated: 2024/08/30 12:29:38 by mapichec         ###   ########.fr       */
+>>>>>>> 51b02d8404efa3c282c4f23401ee598a229c63b5
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +30,7 @@ char	*trim_whitespace(char *str)
 	return str;
 }
 
-int	execute_command(char *command, t_data *data, char **envp)
+int	execute_command(char *command, t_data **data, char **envp)
 {
 	char *cmd;
 	char **cmd_args;
