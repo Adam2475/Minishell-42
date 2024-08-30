@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 18:54:18 by adapassa          #+#    #+#             */
-/*   Updated: 2024/01/04 18:18:26 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/21 16:53:48 by mapichec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_strncmp(char *s1, char *s2, size_t n)
 	i = 0;
 	if (n == 0)
 		return (0);
-	while ((s1[i] || s2[i]) && (i < n - 1))
+	while ((s1[i] || s2[i]) && i < n)
 	{
 		if (s1[i] != s2[i] || i >= n)
 			break ;
