@@ -120,6 +120,8 @@ int				piper(t_token **tokens);
 t_token			*create_token(t_token_type type, char *value);
 void			append_token(t_token **list, t_token *new_token);
 int				set_token_state(t_token **tokens);
-int				check_double_redirects(const char *str);
+int				check_unclosed_quotes(t_token *token);
+void			print_tokens_state(t_token *tokens);
+int				check_quotes(t_token *tokens);
 
 #endif

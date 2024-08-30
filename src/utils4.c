@@ -6,13 +6,13 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:23:17 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 07:37:51 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/30 11:55:49 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-t_token *create_token(t_token_type type, char *value)
+t_token	*create_token(t_token_type type, char *value)
 {
 	t_token *new_token = (t_token *)malloc(sizeof(t_token));
 	if (!new_token)
@@ -23,7 +23,7 @@ t_token *create_token(t_token_type type, char *value)
 	return new_token;
 }
 
-void append_token(t_token **list, t_token *new_token)
+void	append_token(t_token **list, t_token *new_token)
 {
 	if (!*list)
 	{
@@ -46,16 +46,13 @@ t_token_list	*create_token_list_node(t_token *head)
 	return new_node;
 }
 
-void	env_parser(t_data **data_ptr, char **envp)
+void	env_parser(t_data **data, char **envp)
 {
-	t_data *data;
-
-	data = *data_ptr;
-	data->my_line = retrieve_line(envp);
-	if (!data->my_line)
+	(*data)->my_line = retrieve_line(envp);
+	if (!(*data)->my_line)
 		exit(write(1, "PATH not found\n", 15));
-	data->path_from_envp = ft_substr(data->my_line, 5, 500);
-	data->my_paths = ft_split(data->path_from_envp, ':');
+	(*data)->path_from_envp = ft_substr((*data)->my_line, 5, 500);
+	(*data)->my_paths = ft_split((*data)->path_from_envp, ':');
 }
 
 int	set_token_state(t_token **tokens)
