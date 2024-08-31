@@ -66,9 +66,6 @@ typedef struct s_data
 	char *my_line;
 	char *path_from_envp;
 	char **my_paths;
-	/////////////
-	// 	For Pipe
-	int *end;
 }	t_data;
 
 void			free_exit(t_data **data);
@@ -99,8 +96,8 @@ void			init_state(t_data **data, t_token **tokens);
 char			*expand_variable(t_token **current, char **envp);
 void			*token_reformatting(t_token **tokens);
 int				ft_lstsize_token(t_token *tokens);
-int				child_process_pipe(char *command, char **envp, t_data **data, t_token *tokens, int *end, int i);
-int				parent_process_pipe(char *command, t_token *tokens, char **envp, t_data **data, int *end, int i);
+//int				child_process_pipe(char *command, char **envp, t_data **data, t_token *tokens, int *end, int i);
+//int				parent_process_pipe(char *command, t_token *tokens, char **envp, t_data **data, int *end, int i);
 void			print_token_lists(t_token_list *list);
 char			*reformat_command(char *command, t_token_list *token_list);
 t_token			*flatten_token_list(t_token_list *token_list);

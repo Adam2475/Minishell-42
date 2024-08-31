@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 12:55:54 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/31 12:47:41 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ int main(int argc, char **argv, char **envp)
 	t_data			*data;
 	t_token			*tokens;
 	t_token_list	*token_list;
-	// t_token			*tmp;
+	t_token			*tmp;
 
 	argc = 0;
 	argv = NULL;
 	data = malloc(sizeof(t_data) * 1);
-
+	tmp = NULL;
 	while (1)
 	{
 		(data)->input = NULL;
@@ -57,16 +57,23 @@ int main(int argc, char **argv, char **envp)
 		/////////////////////////////
 		//Debug
 		//print_tokens_state(tokens);
+		tmp = copy_token_list(tokens);
+
 		if (piper(&tokens) == 0)
 			token_parser(&tokens, &data, envp);
 		else
 		{
+			// print_tokens(tmp);
 			// errors to fix in the split
-			// cmd: grep int main.c | wc -w > outfile
+			// cmd: grep int src/main.c | wc -w > outfile
 			token_list = split_tokens_by_pipe(tmp);
+			//print_tokens(tokens);
 			pipe_case(&tokens, &data, envp, &token_list);
 		}
 		free_exit(&data);
 	}
 	return (0);
 }
+
+// Gdb process follow mode:
+// set follow-fork-mode [parent|child]

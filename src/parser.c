@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 12:56:20 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:15:20 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,25 +109,24 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 	return (EXIT_SUCCESS);
 }
 
-static int parent_process(char *cmd, char **cmd_args, t_data **data, char **envp)
+static int parent_process(char *cmd, char **cmd_args, char **envp)
 {
 	int status;
 	
 	if (!cmd || !cmd_args || !envp)
 		return (0);
 	waitpid(-1, &status, 0);
-	//ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), (*data)->parent);
 	return (status);
 }
 
 
 static void	execute_command_single(char **command, t_data **data, char **envp)
 {
-	char *cmd;
-	pid_t parent;
-	char *tmp;
-	char **cmd_args;
-	int status;
+	char	*cmd;
+	pid_t	parent;
+	char	*tmp;
+	char	**cmd_args;
+	int		status;
 
 	cmd = NULL;
 	cmd = find_cmd(command[0], data);
@@ -149,7 +148,7 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	if (!parent)
 		child_process(cmd, command, data, envp);
 	else
-		status = parent_process(cmd, command, data, envp);
+		status = parent_process(cmd, command, envp);
 			/* PROVA LISTA ENV*/
 	t_env_list *node = (*data)->env_list;
 	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
@@ -192,12 +191,11 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 
 	command = (char **)ft_calloc(3, sizeof(char *));
 	command[3] = (char*)ft_calloc(1, 1);
-	printf("starting parser: ------------------------->\n");
+	//printf("starting parser: ------------------------->\n");
 	current = *tokens;
-	head = *tokens;
+	head = *tokens;	
 	while (current->type != TOKEN_EOF)
 	{
-
 		// Case for handling redirections
 		while (current != NULL)
 		{
