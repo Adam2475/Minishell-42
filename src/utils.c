@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 18:17:57 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/31 11:21:10 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/01 11:09:41 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int	execute_command(char *command, t_data **data, char **envp)
 		tmp = ft_strjoin_gnl(tmp, trim_whitespace(cmd_args[i]));
 		i++;
 	}
+	//add_to_history(command, data);
 	return(execve(holder, cmd_args, envp));
 }
 

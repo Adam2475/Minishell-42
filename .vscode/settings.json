@@ -2,7 +2,8 @@
     "files.associations": {
         "readline.h": "c",
         "minishell.h": "c",
-        "libft.h": "c"
+        "libft.h": "c",
+        "stdio.h": "c"
     },
     "search.useParentIgnoreFiles": false
 }
