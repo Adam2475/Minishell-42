@@ -30,7 +30,7 @@ t_token	*tokenize_string(t_data **data)
 		}
 		if (*buffer == REDIRECT_LEFT
 			|| *buffer == REDIRECT_RIGHT
-			|| *buffer == PIPE)
+			|| *buffer == PIPE || *buffer == DOLLAR_SIGN)
 			//|| *buffer == SINGLE_QUOTES
 			//|| *buffer == DOUBLE_QUOTES
 		{
@@ -90,11 +90,11 @@ int	special_cases_lexer(t_data **data, char *buffer, t_token **tokens)
 		return (1);
 	}
 	// // State must wait for it's closure
-	// if (*buffer == DOLLAR_SIGN)
-	// {
-	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
-	// 	return (1);
-	// }
+	if (*buffer == DOLLAR_SIGN)
+	{
+		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
+		return (1);
+	}
 	// if (*buffer == SINGLE_QUOTES)
 	// {
 	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_SINGLE_QUOTES, ft_strndup(buffer, 1)));
@@ -116,37 +116,37 @@ void	*token_reformatting(t_token **tokens)
 
 	head = *tokens;
 	current = *tokens;
-	while (current->type != TOKEN_EOF)
+	while (current && current->type != TOKEN_EOF)
 	{
-		if (current->type == TOKEN_EOF)
+		if (current && current->type == TOKEN_EOF)
 			return (NULL);
-		if (current->type == TOKEN_PIPE)
+		if (current && current->type == TOKEN_PIPE)
 		{
 			current = current->next;
-			if (current->type == TOKEN_WORD)
+			if (current && current->type == TOKEN_WORD)
 				current->type = TOKEN_COMMAND;
 			current = current->next;
-			if (current->type == TOKEN_WORD)
+			if (current && current->type == TOKEN_WORD)
 				current->type = TOKEN_APPENDICE;
-			if (current->next)
+			if (current && current->next)
 				current = current->next;
 			continue;
 		}
-		if (current->type != TOKEN_WORD && current->type != TOKEN_OPTION)
+		if (current && current->type != TOKEN_WORD && current->type != TOKEN_OPTION)
 		{
 			current = current->next;
-			if (current->type == 0)
+			if (current && current->type == 0)
 				current->type = TOKEN_APPENDICE;
 			current = current->next;
-			if (current->type == 0)
+			if (current && current->type == 0)
 				current->type = TOKEN_COMMAND;
 			continue;
 		}
-		if (current->type == TOKEN_WORD)
+		if (current && current->type == TOKEN_WORD)
 		{
 			current->type = TOKEN_COMMAND;
 			current = current->next;
-			while ((current->type == 0 && current->type != 7) || current->type == TOKEN_OPTION)
+			while (current && (current->type == 0 && current->type != 7) || current->type == TOKEN_OPTION)
 			{
 				current->type = TOKEN_APPENDICE;
 				current = current->next;

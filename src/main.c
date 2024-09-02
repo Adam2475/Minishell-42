@@ -33,14 +33,15 @@ static int check_unclosed_quotes(t_token *token)
 {
 	int single_quote_count = 0;
 	int double_quote_count = 0;
+	int	i = 0;
 
-	while (*token->value)
+	while (token->value[i])
 	{
-		if (*token->value == '\'')
+		if (token->value[i] == '\'')
 			single_quote_count++;
-		else if (*token->value == '"')
+		else if (token->value[i] == '"')
 			double_quote_count++;
-		token->value++;
+		i++;
 	}
 
 	if (single_quote_count % 2 != 0 || double_quote_count % 2 != 0)
@@ -95,9 +96,9 @@ int main(int argc, char **argv, char **envp)
 	
 		if (!(data)->input)
 			exit(1);
+		env_parser(&data, envp);
 		tokens = tokenize_string(&data);
 		token_reformatting(&tokens);
-		env_parser(&data, envp);
 		data->tokens = tokens;
 
 		//print_tokens(tokens);

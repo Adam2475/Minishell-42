@@ -148,5 +148,6 @@ t_token		*ft_lstnewtoken(t_token_type type, char *content);
 void		ft_tokenadd_back(t_token **lst, t_token *new);
 char		*ft_strndup(const char *s, size_t n);
 int			ft_lstsize_token(t_token *lst);
+int			ft_strlen_char(char *str, int c);
 
 #endif

@@ -62,6 +62,10 @@ void	env_parser(t_data **data, char **envp)
 	(*data)->my_paths = ft_split((*data)->path_from_envp, ':');
 }
 
+/* 
+	Da finire? manca la combo STATE_DOLLAR_SINGLE_QUATES che inibisce l'espansione
+	
+*/
 int	set_token_state(t_token **tokens)
 {
 	t_token 		*current = *tokens;
@@ -76,13 +80,9 @@ int	set_token_state(t_token **tokens)
 			if (current->value[i] == '$')
 			{
 				if (current_state == STATE_DOUBLE_QUOTES)
-				{
 					current_state = STATE_DOLLAR_DOUBLE_QUOTES;
-				}
 				else
-				{
 					current_state = STATE_DOLLAR;
-				}
 			}
 			else if (current->value[i] == '\'')
 				current_state = STATE_SINGLE_QUOTES;

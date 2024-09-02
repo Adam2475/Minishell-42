@@ -21,3 +21,15 @@ int	ft_strlen(const char *str)
 		i++;
 	return (i);
 }
+
+int	ft_strlen_char(char *str, int c)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0' && str[i] != c)
+		i++;
+	if (str[i] == c)
+		i++;
+	return (i);
+}

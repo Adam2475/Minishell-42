@@ -34,10 +34,23 @@ int	add_to_env(char *arg, t_data **data)
 	t_env_list	*node;
 	t_env_list	*head;
 
-	node = new_node_env(arg);
 	head = (*data)->env_list;
+	node = head;
+	// TODO: check if it works
+	while (node)
+	{
+		if (ft_strncmp(arg, node->var, ft_strlen_char(arg, '=')) == 0)
+		{
+			node->value = ft_strndup(arg + ft_strlen_char(arg, '='), ft_strlen_char(arg, '\0'));
+			break ;
+		}
+		if (!node->next)
+			break ;
+		node = node->next;
+	}
+	node = new_node_env(arg);
 	add_back_env(&head, node);
-	return (1);
+	return (0);
 }
 
 int	export_cmd(char **args, t_data **data)
