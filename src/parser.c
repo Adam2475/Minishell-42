@@ -70,8 +70,8 @@ int	manual_cmd(char **cmd_args, t_data **data)
 		return (echo_cmd(data, cmd_args, &tmp->tokens));
 		// return (1);
 	if (tmp->cmd == EXPORT)
-		return (1);
-		// return (export_cmd(cmd_args, data));
+		return (export_cmd(cmd_args, data));
+		// return (1);
 	if (tmp->cmd == UNSET)
 		return (1);
 		// return (unset_cmd(cmd_args));
@@ -113,7 +113,7 @@ static int parent_process(char *cmd, char **cmd_args, t_data **data, char **envp
 {
 	int status;
 	
-	if (!cmd || !cmd_args || !envp)
+	if (!cmd || !cmd_args || !envp || !data)
 		return (0);
 	waitpid(-1, &status, 0);
 	//ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), (*data)->parent);
@@ -151,12 +151,12 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	else
 		status = parent_process(cmd, command, data, envp);
 			/* PROVA LISTA ENV*/
-	t_env_list *node = (*data)->env_list;
-	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
-	{
-		node = node->next;
-	}
-		ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
+	// t_env_list *node = (*data)->env_list;
+	// while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
+	// {
+	// 	node = node->next;
+	// }
+	// 	ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
 	//ft_printf("%d\n", status);
 	// exit(1);
 	return ;

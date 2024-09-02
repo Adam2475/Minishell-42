@@ -36,7 +36,7 @@ int	execute_command(char *command, t_data **data, char **envp)
 	cmd_args = ft_split(command, 32);
 	cmd = cmd_args[0];
 	tmp = NULL;
-	holder = find_cmd(cmd, &data);
+	holder = find_cmd(cmd, data);
 
 	int i = 1;
 	while (cmd_args[i])

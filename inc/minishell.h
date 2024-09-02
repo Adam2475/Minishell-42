@@ -10,6 +10,7 @@
 # include "../libft/libft.h"
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 
 # define TRUE 1
 # define FALSE 0
@@ -123,5 +124,9 @@ t_token			*create_token(t_token_type type, char *value);
 void			append_token(t_token **list, t_token *new_token);
 int				set_token_state(t_token **tokens);
 int				check_double_redirects(const char *str);
+int				export_cmd(char **args, t_data **data);
+int				add_to_env(char *arg, t_data **data);
+int				ft_strsearch(char *str, int c);
+
 
 #endif

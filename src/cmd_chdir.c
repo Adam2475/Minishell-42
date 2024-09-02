@@ -45,14 +45,11 @@ void	chpwd_env(t_data **data, char *new_path)
 
 int cd_cmd(char **cmd_args, t_data **data)
 {
-	int			fd;
 	t_env_list	*node;
 
-	fd = open(cmd_args[1], O_RDONLY, O_WRONLY, O_RDONLY);
 	if (cmd_args[2] && (cmd_args[2][1] != '|' || cmd_args[2][1] != '>'
 		|| cmd_args[2][1] != '<'))
-		return (close(fd), (*data)->err_state = 1,
-			ft_printf("bash: cd: %s: too many arguments\n", cmd_args[1]));
+		return ((*data)->err_state = 1,	ft_printf("bash: cd: %s: too many arguments\n", cmd_args[1]));
 	node = (*data)->env_list;
 	if (!cmd_args[1] || cmd_args[1][0] == '~')
 	{
@@ -63,11 +60,9 @@ int cd_cmd(char **cmd_args, t_data **data)
 	if (chdir(cmd_args[1]) != 0)
 	{
 		if (errno == ENOENT)
-			return (close(fd), (*data)->err_state = errno,
-			ft_printf("bash: cd: %s: No such file or directory\n", cmd_args[1]));
+			return ((*data)->err_state = errno, ft_printf("bash: cd: %s: No such file or directory\n", cmd_args[1]));
 		else if (errno == ENOTDIR)
-			return (close(fd), (*data)->err_state = errno,
-			ft_printf("bash: cd: %s: Not a directory\n", cmd_args[1]));
+			return ((*data)->err_state = errno, ft_printf("bash: cd: %s: Not a directory\n", cmd_args[1]));
 	}
 	ft_printf("\033[0;91mCD_CMD\033[0;39m\n");
 	chpwd_env(data, cmd_args[1]);
@@ -80,11 +75,11 @@ int cd_cmd(char **cmd_args, t_data **data)
 	// ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
 
 	/* PROVA LISTA ENV*/
-	node = (*data)->env_list;
-	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
-	{
-		node = node->next;
-	}
-	ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
-	return(close(fd), (*data)->err_state = 0, 1);
+	// node = (*data)->env_list;
+	// while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
+	// {
+	// 	node = node->next;
+	// }
+	// ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
+	return((*data)->err_state = 0, 1);
 }

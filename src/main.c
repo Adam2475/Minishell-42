@@ -98,6 +98,7 @@ int main(int argc, char **argv, char **envp)
 		tokens = tokenize_string(&data);
 		token_reformatting(&tokens);
 		env_parser(&data, envp);
+		data->tokens = tokens;
 
 		//print_tokens(tokens);
 		//exit(1);
