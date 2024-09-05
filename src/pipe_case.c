@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 10:12:13 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/01 12:58:01 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/05 17:22:31 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,11 +91,13 @@ void pipe_case(t_token **tokens, t_data **data, char **envp, t_token_list **toke
 			// Closing all the pipes
 			while (z < (2 * pipes))
 			{
-				close(end[j]);
+				close(end[z]);
 				z++;
 			}
 			// Setting Redirections
 			set_redirection(current->head, data);
+			//if ((*data)->heredoc_flag)
+			//	write(end[1], (*data)->heredoc_content, strlen((*data)->heredoc_content));
 			// Command Execution
 			status = child_process_pipe(envp, data, current->head);
 		}

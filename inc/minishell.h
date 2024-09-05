@@ -73,6 +73,9 @@ typedef struct s_data
 	char *my_line;
 	char *path_from_envp;
 	char **my_paths;
+	/////////////
+	int	heredoc_flag;
+	char *heredoc_content;
 }	t_data;
 
 void			free_exit(t_data **data);
@@ -128,5 +131,6 @@ int				check_unclosed_quotes(t_token *token);
 void			print_tokens_state(t_token *tokens);
 int				check_quotes(t_token *tokens);
 void			set_redirection(t_token *tokens, t_data **data);
+void			handle_heredoc(char *delimiter, t_data **data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/31 14:43:02 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/05 18:05:36 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,17 +166,15 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 	t_token		*current;
 	t_token		*head;
 	char		**command;
-	int i = 0;
-	// int *pipe;
+	int			i;
 
+	i = 0;
 	command = (char **)ft_calloc(3, sizeof(char *));
 	command[3] = (char*)ft_calloc(1, 1);
-	//printf("starting parser: ------------------------->\n");
 	current = *tokens;
 	head = *tokens;	
 	while (current->type != TOKEN_EOF)
 	{
-		// Case for handling redirections
 		while (current != NULL)
 		{
 			if (current->type == TOKEN_REDIRECT_OUT)
@@ -194,9 +192,21 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 					(*data)->fd = open(current->value, O_RDONLY);
 			}
 			else if (current->type == TOKEN_APPEND)
-				exit(printf("found append in the command!\n"));
+			{
+				current = current->next;
+				(*data)->redirect_state = 1;
+				if (current->type == TOKEN_APPENDICE)
+				{
+					ft_printf("setting up the append!\n");
+					(*data)->fd = open(current->value, O_WRONLY | O_APPEND | O_CREAT, 0644);
+				}
+			}
 			else if (current->type == TOKEN_HEREDOC)
-				exit(printf("found heredoc in the command!\n"));
+			{
+				ft_printf("setting up the heredoc!\n");
+				current = current->next;
+				handle_heredoc(current->value, data);
+			}
 			current = current->next;
 		}
 
