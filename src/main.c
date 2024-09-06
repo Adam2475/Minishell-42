@@ -29,43 +29,69 @@ int check_double_redirects(const char *str)
     return 0; // Neither ">>" nor "<<" found
 }
 
-static int check_unclosed_quotes(t_token *token)
+
+// static int check_unclosed_quotes(t_token *token)
+// {
+// 	int single_quote_count = 0;
+// 	int double_quote_count = 0;
+// 	int	i = 0;
+
+// 	while (token->value[i])
+// 	{
+// 		if (token->value[i] == '\'')
+// 			single_quote_count++;
+// 		else if (token->value[i] == '"')
+// 			double_quote_count++;
+// 		i++;
+// 	}
+
+// 	if (single_quote_count % 2 != 0 || double_quote_count % 2 != 0)
+// 		return 1; // Error: Unclosed quotes
+// 	return 0; // No error
+// }
+
+static int check_quotes(t_token **tokens)
 {
-	int single_quote_count = 0;
-	int double_quote_count = 0;
-	int	i = 0;
+	t_token	*current;
+	t_token	*current_2;
 
-	while (token->value[i])
+	current = (*tokens);
+	current_2 = NULL;
+	while (current->type != TOKEN_EOF)
 	{
-		if (token->value[i] == '\'')
-			single_quote_count++;
-		else if (token->value[i] == '"')
-			double_quote_count++;
-		i++;
-	}
-
-	if (single_quote_count % 2 != 0 || double_quote_count % 2 != 0)
-		return 1; // Error: Unclosed quotes
-	return 0; // No error
-}
-
-static int check_quotes(t_token *tokens)
-{
-	t_token *current = tokens;
-
-	while (current)
-	{
-		if (current->state > STATE_NORMAL) // Only check if state is greater than 0
+		if (current->type == 10)
 		{
-			if (check_unclosed_quotes(current))
-				return 1; // Error found
+			current_2 = current->next;
+			while (current_2->type != 7 && current_2->type != 10)
+			{
+				current_2->type = 0;
+				current_2 = current_2->next;
+			}
+			if (current_2->type == 7)
+				return (ft_printf("check_quotes\n"), 1);
+			current = current_2;
+		}
+		if (current->type == 9)
+		{
+			current_2 = current->next;
+			while (current_2->type != 7 && current_2->type != 9)
+			{
+				if (current_2->type != 8)
+					current_2->type = 0;
+				else if (current->type == 8 && current->next->type == 13)
+					current_2 = current->next;
+				current_2 = current_2->next;
+			}
+			if (current_2->type == 7)
+				return (ft_printf("check_quotes\n"), 1);
+			current = current_2;
 		}
 		current = current->next;
 	}
-	return 0; // No errors found
+	return (0);
 }
 
-static void	print_tokens_state(t_token *tokens)
+void	print_tokens_state(t_token *tokens)
 {
 	t_token *temp = tokens;
 	while (temp)
@@ -105,7 +131,8 @@ int main(int argc, char **argv, char **envp)
 		//exit(1);
 
 		set_token_state(&tokens);
-		if (check_quotes(tokens) != 0 )
+		// print_tokens_state(tokens);
+		if (check_quotes(&tokens) != 0 )
 			exit(printf("unclosed quotes found!!\n"));
 
 		/////////////////////////////
@@ -113,10 +140,9 @@ int main(int argc, char **argv, char **envp)
 		// Implement Expander
 		// single quotes treated as literal have no difference
 		// if state is $ of "" then go to expander
-
+		expand_var(&tokens, &data);
 		/////////////////////////////
 		//Debug
-		print_tokens_state(tokens);
 		if (piper(&tokens) == 0)
 			token_parser(&tokens, &data, envp);
 		else

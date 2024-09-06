@@ -39,17 +39,17 @@ int	conf_man_cmd(char *str)
 {
 	if (ft_strncmp(str, "cd", ft_strlen(str)) == 0)
 		return (1);
-	if (!ft_strncmp(str, "echo", ft_strlen(str)))
+	if (ft_strncmp(str, "echo", ft_strlen(str)) == 0)
 		return (2);
-	if (!ft_strncmp(str, "export", ft_strlen(str)))
+	if (ft_strncmp(str, "export", ft_strlen(str)) == 0)
 		return (3);
-	if (!ft_strncmp(str, "unset", ft_strlen(str)))
+	if (ft_strncmp(str, "unset", ft_strlen(str)) == 0)
 		return (4);
 	if (ft_strncmp(str, "env", ft_strlen(str)) == 0)
 		return (5);
-	if (!ft_strncmp(str, "exit", ft_strlen(str)))
+	if (ft_strncmp(str, "exit", ft_strlen(str)) == 0)
 		return (6);
-	if (!ft_strncmp(str, "pwd", ft_strlen(str)))
+	if (ft_strncmp(str, "pwd", ft_strlen(str)) == 0)
 		return (7);
 	else
 		return (0);
@@ -62,12 +62,13 @@ int	manual_cmd(char **cmd_args, t_data **data)
 
 	tmp = (*data);
 	i = 0;
+	// ft_printf("\033[0;91mmanual cmd\033[0;39m\n");
 	tmp->cmd = conf_man_cmd(cmd_args[0]);
 	if (tmp->cmd == CH_DIR)
 		return (cd_cmd(cmd_args, data));
 		// return (1);
 	if (tmp->cmd == ECHO)
-		return (echo_cmd(data, cmd_args, &tmp->tokens));
+		return (echo_cmd(data, &tmp->tokens));
 		// return (1);
 	if (tmp->cmd == EXPORT)
 		return (export_cmd(cmd_args, data));
@@ -103,7 +104,7 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 	}
 	//ft_printf("proceding to execve: \n");
 	if (manual_cmd(cmd_args, data))
-		return (printf("\033[0;92mchild %p\n\033[0;39m", data), 0);
+		exit(0);
 	else
 		execve(cmd, cmd_args, envp);
 	return (EXIT_SUCCESS);

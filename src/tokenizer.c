@@ -30,9 +30,9 @@ t_token	*tokenize_string(t_data **data)
 		}
 		if (*buffer == REDIRECT_LEFT
 			|| *buffer == REDIRECT_RIGHT
-			|| *buffer == PIPE || *buffer == DOLLAR_SIGN)
-			//|| *buffer == SINGLE_QUOTES
-			//|| *buffer == DOUBLE_QUOTES
+			|| *buffer == PIPE || *buffer == '$'
+			|| *buffer == SINGLE_QUOTES
+			|| *buffer == DOUBLE_QUOTES)
 		{
 			buffer = buffer + special_cases_lexer(data, buffer, &tokens);
 			continue;
@@ -40,9 +40,9 @@ t_token	*tokenize_string(t_data **data)
 		end = buffer;
 		while (*end && *end != WHITESPACE
 				&& *end != REDIRECT_LEFT && *end != PIPE
-				&& *end != REDIRECT_RIGHT)
-				// && *end != DOUBLE_QUOTES
-				// && *end != SINGLE_QUOTES)
+				&& *end != REDIRECT_RIGHT && *end != '$'
+				&& *end != DOUBLE_QUOTES
+				&& *end != SINGLE_QUOTES)
 		{
 			end++;
 		}
@@ -58,6 +58,7 @@ t_token	*tokenize_string(t_data **data)
 
 int	special_cases_lexer(t_data **data, char *buffer, t_token **tokens)
 {
+	char *end = NULL;
 	if (*buffer == REDIRECT_LEFT && data)
 	{
 		if (*(buffer + 1) == REDIRECT_LEFT)
@@ -89,22 +90,30 @@ int	special_cases_lexer(t_data **data, char *buffer, t_token **tokens)
 		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_PIPE, ft_strndup(buffer, 1)));
 		return (1);
 	}
-	// // State must wait for it's closure
+	// State must wait for it's closure TODO:dio cane
 	if (*buffer == DOLLAR_SIGN)
 	{
-		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
+		int i = 1;
+		end = buffer;
+		while (*++end && *end != WHITESPACE
+				&& *end != REDIRECT_LEFT && *end != PIPE
+				&& *end != REDIRECT_RIGHT && *end != '$'
+				&& *end != DOUBLE_QUOTES
+				&& *end != SINGLE_QUOTES)
+			i++;
+		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, end - buffer)));
+		return (i);
+	}
+	if (*buffer == SINGLE_QUOTES)
+	{
+		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_SINGLE_QUOTES, ft_strndup(buffer, 1)));
 		return (1);
 	}
-	// if (*buffer == SINGLE_QUOTES)
-	// {
-	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_SINGLE_QUOTES, ft_strndup(buffer, 1)));
-	// 	return (1);
-	// }
-	// if (*buffer == DOUBLE_QUOTES)
-	// {
-	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOUBLE_QUOTES, ft_strndup(buffer, 1)));
-	// 	return (1);
-	// }
+	if (*buffer == DOUBLE_QUOTES)
+	{
+		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOUBLE_QUOTES, ft_strndup(buffer, 1)));
+		return (1);
+	}
 	return (0);
 }
 
@@ -132,7 +141,9 @@ void	*token_reformatting(t_token **tokens)
 				current = current->next;
 			continue;
 		}
-		if (current && current->type != TOKEN_WORD && current->type != TOKEN_OPTION)
+		if (current && current->type != TOKEN_WORD
+			&& current->type != TOKEN_OPTION
+			&& current->type != TOKEN_DOLLAR)
 		{
 			current = current->next;
 			if (current && current->type == 0)

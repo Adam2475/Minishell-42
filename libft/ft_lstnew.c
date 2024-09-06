@@ -33,7 +33,10 @@ t_token	*ft_lstnewtoken(t_token_type type, char *content)
 	if (!nodo)
 		return (0);
 	nodo->state = STATE_NORMAL;
-	nodo->type = type;
+	if (type == TOKEN_DOLLAR && content[1] == '\0')
+		nodo->type = 0;
+	else
+		nodo->type = type;
 	nodo->value = content;
 	nodo->next = 0;
 	return (nodo);
