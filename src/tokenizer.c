@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 06:55:13 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/11 15:44:46 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,11 @@ t_token	*tokenize_string(t_data **data)
 		if ((*buffer) == WHITESPACE)
 		{
 			buffer++;
-			//ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_WHITESPACE, " "));
-			continue; // Skip the rest of the loop body
+			continue;
 		}
 		if (*buffer == REDIRECT_LEFT
 			|| *buffer == REDIRECT_RIGHT
 			|| *buffer == PIPE)
-			//|| *buffer == SINGLE_QUOTES
-			//|| *buffer == DOUBLE_QUOTES
 		{
 			buffer = buffer + special_cases_lexer(data, buffer, &tokens);
 			continue;
@@ -41,8 +38,6 @@ t_token	*tokenize_string(t_data **data)
 		while (*end && *end != WHITESPACE
 				&& *end != REDIRECT_LEFT && *end != PIPE
 				&& *end != REDIRECT_RIGHT)
-				// && *end != DOUBLE_QUOTES
-				// && *end != SINGLE_QUOTES)
 		{
 			end++;
 		}
@@ -89,22 +84,6 @@ int	special_cases_lexer(t_data **data, char *buffer, t_token **tokens)
 		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_PIPE, ft_strndup(buffer, 1)));
 		return (1);
 	}
-	// // State must wait for it's closure
-	// if (*buffer == DOLLAR_SIGN)
-	// {
-	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOLLAR, ft_strndup(buffer, 1)));
-	// 	return (1);
-	// }
-	// if (*buffer == SINGLE_QUOTES)
-	// {
-	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_SINGLE_QUOTES, ft_strndup(buffer, 1)));
-	// 	return (1);
-	// }
-	// if (*buffer == DOUBLE_QUOTES)
-	// {
-	// 	ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_DOUBLE_QUOTES, ft_strndup(buffer, 1)));
-	// 	return (1);
-	// }
 	return (0);
 }
 
@@ -112,7 +91,6 @@ void	*token_reformatting(t_token **tokens)
 {
 	t_token		*head;
 	t_token		*current;
-	// char	*buffer;
 
 	head = *tokens;
 	current = *tokens;
