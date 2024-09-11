@@ -57,32 +57,32 @@ static int check_quotes(t_token **tokens)
 
 	current = (*tokens);
 	current_2 = NULL;
-	while (current->type != TOKEN_EOF)
+	while ((int)current->type != TOKEN_EOF)
 	{
-		if (current->type == 10)
+		if ((int)current->type == 10)
 		{
 			current_2 = current->next;
-			while (current_2->type != 7 && current_2->type != 10)
+			while ((int)current_2->type != 7 && (int)current_2->type != 10)
 			{
-				current_2->type = 0;
+				current_2->type = TOKEN_WORD;
 				current_2 = current_2->next;
 			}
-			if (current_2->type == 7)
+			if ((int)current_2->type == 7)
 				return (ft_printf("check_quotes\n"), 1);
 			current = current_2;
 		}
-		if (current->type == 9)
+		if ((int)current->type == 9)
 		{
 			current_2 = current->next;
-			while (current_2->type != 7 && current_2->type != 9)
+			while ((int)current_2->type != 7 && (int)current_2->type != 9)
 			{
-				if (current_2->type != 8)
-					current_2->type = 0;
-				else if (current->type == 8 && current->next->type == 13)
+				if ((int)current_2->type != 8)
+					current_2->type = TOKEN_WORD;
+				else if ((int)current->type == 8 && (int)current->next->type == 13)
 					current_2 = current->next;
 				current_2 = current_2->next;
 			}
-			if (current_2->type == 7)
+			if ((int)current_2->type == 7)
 				return (ft_printf("check_quotes\n"), 1);
 			current = current_2;
 		}
@@ -132,7 +132,7 @@ int main(int argc, char **argv, char **envp)
 
 		set_token_state(&tokens);
 		// print_tokens_state(tokens);
-		if (check_quotes(&tokens) != 0 )
+		if (check_quotes(&tokens) != 0)
 			exit(printf("unclosed quotes found!!\n"));
 
 		/////////////////////////////
@@ -140,8 +140,8 @@ int main(int argc, char **argv, char **envp)
 		// Implement Expander
 		// single quotes treated as literal have no difference
 		// if state is $ of "" then go to expander
-		expand_var(&tokens, &data);
 		/////////////////////////////
+		expand_var(&tokens, &data);
 		//Debug
 		if (piper(&tokens) == 0)
 			token_parser(&tokens, &data, envp);
@@ -150,6 +150,8 @@ int main(int argc, char **argv, char **envp)
 			// token_list = split_tokens_by_pipe(tmp);
 			pipe_case(&tokens, &data, envp, &token_list);
 		}
+		ft_printf("MAIN pwd\n\n");
+		print_env_pwd(&data);
 		free_exit(&data);
 	}
 	return (0);

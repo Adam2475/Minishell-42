@@ -21,23 +21,9 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*))
 // lst : is the node to clear
 // del : is the address of the function used to delete the content 
 
-void	tkn_delone(t_token **tokens, int num)
+void	tkn_delone(t_token **current, t_token *del)
 {
-	t_token	*current;
-	t_token	*tmp;
-
-	current = (*tokens);
-	tmp = NULL;
-	while (current->type != 7)
-	{
-		if ((int)current->next->type == num)
-		{
-			free(current->next->value);
-			tmp = current;
-			current->next = tmp->next;
-			free(tmp);
-			return ;
-		}
-		current = current->next;
-	}
+	(*current)->next = del->next;
+	free(del->value);
+	free(del);
 }

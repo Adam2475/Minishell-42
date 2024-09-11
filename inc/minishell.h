@@ -78,8 +78,7 @@ void			init_state(t_data **data, t_token **tokens);
 int				special_cases_lexer(t_data **data, char *buffer, t_token **tokens);
 void			token_parser(t_token **tokens,t_data **data, char **envp);
 int				expand_var(t_token **tkn_lst, t_data **data);
-void			expand_db_qt(t_data **data, t_token **exp);
-void			expand_s_qt(t_data **data, t_token **exp);
+void			expand_doll(t_token **current, t_data **data);
 void			env_parser(t_data **data, char **envp);
 void			*token_reformatting(t_token **tokens);
 char			*find_cmd(char *cmd, t_data **data);
@@ -127,6 +126,8 @@ int				check_double_redirects(const char *str);
 int				export_cmd(char **args, t_data **data);
 int				add_to_env(char *arg, t_data **data);
 int				ft_strsearch(char *str, int c);
-
+void			clean_tokens_qt(t_token **tkn_lst);
+/////////// DA ELIMINARE
+void	print_env_pwd(t_data **data);
 
 #endif

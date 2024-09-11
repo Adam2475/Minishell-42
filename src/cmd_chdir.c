@@ -12,34 +12,28 @@
 
 #include "../inc/minishell.h"
 
-/*
-	TODO:
-		- need to understand why if i echo $PWD it gves me 
-			back the same path even though I did a chdir
-*/
-
 void	chpwd_env(t_data **data, char *new_path)
 {
-	t_env_list	*head;
 	t_env_list	*node;
 	t_env_list	*node_old;
 	char		*tmp_str;
 
-	head = (*data)->env_list;
 	node = (*data)->env_list;
 	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
 		node = node->next;
-	(*data)->env_list = head;
 	node_old = (*data)->env_list;
 	while (node_old && ft_strncmp(node_old->var, "OLDPWD=", 7) != 0)
 		node_old = node_old->next;
 	free(node_old->value);
+	// free(node_old->content);
 	node_old->value = ft_strdup(node->value);
+	node_old->content = ft_strjoin(node_old->var, node->value);
 	free(node->value);
+	// free(node->content);
 	tmp_str = getcwd(new_path, UINT_MAX);
 	node->value = ft_strndup(tmp_str, ft_strlen(tmp_str));
+	node->content = ft_strjoin(node->var, node->value);
 	free(tmp_str);
-	(*data)->env_list = head;
 	return ;
 }
 
@@ -64,22 +58,7 @@ int cd_cmd(char **cmd_args, t_data **data)
 		else if (errno == ENOTDIR)
 			return ((*data)->err_state = errno, ft_printf("bash: cd: %s: Not a directory\n", cmd_args[1]));
 	}
-	ft_printf("\033[0;91mCD_CMD\033[0;39m\n");
+	ft_printf("\033[0;91mCD_CMD %s\033[0;39m\n", cmd_args[1]);
 	chpwd_env(data, cmd_args[1]);
-	
-	// t_env_list *node = (*data)->env_list;
-	// while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
-	// {
-	// 	node = node->next;
-	// }
-	// ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
-
-	/* PROVA LISTA ENV*/
-	// node = (*data)->env_list;
-	// while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
-	// {
-	// 	node = node->next;
-	// }
-	// ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
 	return((*data)->err_state = 0, 1);
 }

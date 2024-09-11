@@ -25,7 +25,6 @@ char	*find_cmd(char *cmd, t_data **data)
 		holder = ft_strjoin(tmp, cmd);
 		if (access(holder, X_OK) == 0)
 			return (free(tmp), holder);
-		free(tmp);
 		free(holder);
 		i++;
 	}
@@ -102,20 +101,15 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 				return (-1);
 		}
 	}
-	//ft_printf("proceding to execve: \n");
-	if (manual_cmd(cmd_args, data))
-		exit(0);
-	else
-		execve(cmd, cmd_args, envp);
+	execve(cmd, cmd_args, envp);
 	return (EXIT_SUCCESS);
 }
 
-static int parent_process(char *cmd, char **cmd_args, t_data **data, char **envp)
+// static int parent_process(char *cmd, char **cmd_args, t_data **data, char **envp)
+static int parent_process(void)
 {
 	int status;
-	
-	if (!cmd || !cmd_args || !envp || !data)
-		return (0);
+
 	waitpid(-1, &status, 0);
 	//ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), (*data)->parent);
 	return (status);
@@ -141,25 +135,26 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 		i++;
 	}
 	cmd_args = ft_split(tmp, 32);
-
+	if (manual_cmd(command, data))
+	{
+		ft_printf("CHILD PROCESS pwd\n\n");
+		print_env_pwd(data);
+		return ;
+	}
 	parent = fork();
 	// ft_printf("%d\n", data->parent);
 	if (parent < 0)
 		exit(ft_printf("error with the fork"));
 	//ft_printf("%d\n", status);
 	if (!parent)
+	{
 		child_process(cmd, command, data, envp);
+		ft_printf("EXECUTE_COMMAND_SINGLE pwd\n\n");
+		print_env_pwd(data);
+		exit(0);
+	}
 	else
-		status = parent_process(cmd, command, data, envp);
-			/* PROVA LISTA ENV*/
-	// t_env_list *node = (*data)->env_list;
-	// while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
-	// {
-	// 	node = node->next;
-	// }
-	// 	ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
-	//ft_printf("%d\n", status);
-	// exit(1);
+		status = parent_process();
 	return ;
 }
 
@@ -198,7 +193,6 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 	head = *tokens;
 	while (current->type != TOKEN_EOF)
 	{
-
 		// Case for handling redirections
 		while (current != NULL)
 		{
@@ -239,7 +233,11 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				//printf("%s\n", command[i]);
 				i++;
 			}
+			////// PROBLEMI CON IL PUNTATORE DATA E I PROCESSI
+			/* Si perdono i valori cambiati di data causando l'inutilita' delle modifiche
+				nelle builtin */
 			execute_command_single(command, data, envp);
+
 			close((*data)->fd);
 			return ;
 		}
