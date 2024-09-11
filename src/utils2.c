@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 10:39:34 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/29 15:00:16 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:40:16 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,14 +115,14 @@ t_token *copy_token_list(t_token *tokens)
 	t_token *current = tokens;
 	int total = ft_lstsize_token(tokens);
 
-	while (current && i < (total - 1)) {
+	while (current && i < (total))
+	{
 		t_token *new_token = copy_token(current);
 
-		if (!new_list) {
+		if (!new_list)
 			new_list = new_token;
-		} else {
+		else
 			last_copied->next = new_token;
-		}
 
 		last_copied = new_token;
 		current = current->next;

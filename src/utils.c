@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 18:17:57 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 12:29:38 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/09/11 15:45:51 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ char	*trim_whitespace(char *str)
 	end = str + strlen(str) - 1;
 	while (end > str && *end == 32) end--;
 	*(end + 1) = '\0';
-
-	return str;
+	return (str);
 }
 
 int	execute_command(char *command, t_data **data, char **envp)
@@ -57,8 +56,7 @@ int	execute_command(char *command, t_data **data, char **envp)
 		tmp = ft_strjoin_gnl(tmp, trim_whitespace(cmd_args[i]));
 		i++;
 	}
-	execve(holder, cmd_args, envp);
-	return(EXIT_SUCCESS);
+	return(execve(holder, cmd_args, envp));
 }
 
 void	print_token_lists(t_token_list *list)
@@ -83,7 +81,6 @@ void	print_tokens(t_token *tokens)
 	while (temp)
 	{
 		printf("Type: %d, Value: %s\n", temp->type, temp->value);
-		//printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
 		temp = temp->next;
 	}
 }
@@ -91,12 +88,13 @@ void	print_tokens(t_token *tokens)
 void	append_token_list(t_token_list **list, t_token *head)
 {
 	t_token_list *new_node = create_token_list_node(head);
+
 	if (!new_node)
 		return;
-
-	if (*list == NULL) {
+	if (*list == NULL)
 		*list = new_node;
-	} else {
+	else
+	{
 		t_token_list *current = *list;
 		while (current->next)
 			current = current->next;

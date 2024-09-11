@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:17:28 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/28 17:22:41 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:53:57 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,22 +90,23 @@ t_token_list	*split_tokens_by_pipe(t_token *tokens)
 	t_token			*segment_start = tokens;
 	t_token			*prev = NULL;
 
-	while (current) {
-		if (current->type == TOKEN_PIPE) {
+	while (current)
+	{
+		if (current->type == TOKEN_PIPE)
+		{
 			if (prev)
-				prev->next = NULL;  // End the current segment
+				prev->next = NULL;
 
 			append_token_list(&result, segment_start);
 
-			segment_start = current->next;  // Start of the new segment
+			segment_start = current;
 		}
 		prev = current;
 		current = current->next;
 	}
 
-	// Append the last segment
 	if (segment_start)
 		append_token_list(&result, segment_start);
 
-	return result;
+	return (result);
 }

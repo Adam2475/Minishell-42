@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 06:55:13 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/11 15:44:46 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ t_token	*tokenize_string(t_data **data)
 		if ((*buffer) == WHITESPACE)
 		{
 			buffer++;
-			//ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_WHITESPACE, " "));
-			continue; // Skip the rest of the loop body
+			continue;
 		}
 		if (*buffer == REDIRECT_LEFT
 			|| *buffer == REDIRECT_RIGHT
@@ -121,7 +120,6 @@ void	*token_reformatting(t_token **tokens)
 {
 	t_token		*head;
 	t_token		*current;
-	// char	*buffer;
 
 	head = *tokens;
 	current = *tokens;

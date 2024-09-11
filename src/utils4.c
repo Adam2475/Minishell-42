@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   utils4.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:23:17 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 12:20:55 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/08/30 12:58:34 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-t_token *create_token(t_token_type type, char *value)
+t_token	*create_token(t_token_type type, char *value)
 {
 	t_token *new_token = (t_token *)malloc(sizeof(t_token));
 	if (!new_token)
@@ -23,7 +23,7 @@ t_token *create_token(t_token_type type, char *value)
 	return new_token;
 }
 
-void append_token(t_token **list, t_token *new_token)
+void	append_token(t_token **list, t_token *new_token)
 {
 	if (!*list)
 	{
@@ -50,10 +50,10 @@ void	env_parser(t_data **data, char **envp)
 {
 	static int	flag = 0;
 
-	if (!flag)
+	if (flag == 0)
 	{
-		gen_list_env(data, envp);
 		flag = 1;
+		gen_list_env(data, envp);
 	}
 	(*data)->my_line = retrieve_line(envp);
 	if (!(*data)->my_line)

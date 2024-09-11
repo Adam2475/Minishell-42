@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 12:20:09 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/09/05 18:05:36 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,18 +111,17 @@ static int parent_process(void)
 	int status;
 
 	waitpid(-1, &status, 0);
-	//ft_printf("\033[0;92m %d getpid() --- %d pid.data\033[0;39m\n", getpid(), (*data)->parent);
 	return (status);
 }
 
 
 static void	execute_command_single(char **command, t_data **data, char **envp)
 {
-	char *cmd;
-	pid_t parent;
-	char *tmp;
-	char **cmd_args;
-	int status;
+	char	*cmd;
+	pid_t	parent;
+	char	*tmp;
+	char	**cmd_args;
+	int		status;
 
 	cmd = NULL;
 	cmd = find_cmd(command[0], data);
@@ -158,42 +157,20 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	return ;
 }
 
-/*NOT USED FT*/
-// static int find_redirect(t_token *head)
-// {
-//     t_token	*current = head;
-
-//     // Traverse the linked list
-//     while (current != NULL) {
-//         // Check if the current node's data is '>'
-//         if (current->type == 4) {
-//             printf("Found '>' character in the linked list.\n");
-//             // Uncomment below if you want to stop after finding the first '>'
-//             return (1);
-//         }
-//         // Move to the next node
-//         current = current->next;
-//     }
-//     printf("Finished searching.\n");
-// 	return (0);
-// }
-
 void	token_parser(t_token **tokens, t_data **data, char **envp)
 {
 	t_token		*current;
 	t_token		*head;
 	char		**command;
-	int i = 0;
-	// int *pipe;
+	int			i;
 
+	i = 0;
 	command = (char **)ft_calloc(3, sizeof(char *));
 	command[3] = (char*)ft_calloc(1, 1);
-	printf("starting parser: ------------------------->\n");
 	current = *tokens;
-	head = *tokens;
+	head = *tokens;	
 	while (current->type != TOKEN_EOF)
 	{
-		// Case for handling redirections
 		while (current != NULL)
 		{
 			if (current->type == TOKEN_REDIRECT_OUT)
@@ -211,9 +188,21 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 					(*data)->fd = open(current->value, O_RDONLY);
 			}
 			else if (current->type == TOKEN_APPEND)
-				exit(printf("found append in the command!\n"));
+			{
+				current = current->next;
+				(*data)->redirect_state = 1;
+				if (current->type == TOKEN_APPENDICE)
+				{
+					ft_printf("setting up the append!\n");
+					(*data)->fd = open(current->value, O_WRONLY | O_APPEND | O_CREAT, 0644);
+				}
+			}
 			else if (current->type == TOKEN_HEREDOC)
-				exit(printf("found heredoc in the command!\n"));
+			{
+				ft_printf("setting up the heredoc!\n");
+				current = current->next;
+				handle_heredoc(current->value, data);
+			}
 			current = current->next;
 		}
 

@@ -6,11 +6,14 @@
 # include <limits.h>
 # include <errno.h>
 # include <ctype.h> 
+# include <fcntl.h>
 # include <readline/readline.h>
 # include "../libft/libft.h"
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
 # define TRUE 1
 # define FALSE 0
@@ -23,7 +26,11 @@
 # define PIPE '|'
 # define DOLLAR_SIGN '$'
 
-typedef struct s_token_list {
+#define MAX_HISTORY 100
+#define MAX_COMMAND_LENGTH 1024
+
+typedef struct s_token_list
+{
 	t_token		*head;
 	struct s_token_list *next;
 }	t_token_list;
@@ -68,8 +75,8 @@ typedef struct s_data
 	char *path_from_envp;
 	char **my_paths;
 	/////////////
-	// 	For Pipe
-	int *end;
+	int	heredoc_flag;
+	char *heredoc_content;
 }	t_data;
 
 void			free_exit(t_data **data);
@@ -99,8 +106,6 @@ void			init_state(t_data **data, t_token **tokens);
 char			*expand_variable(t_token **current, char **envp);
 void			*token_reformatting(t_token **tokens);
 int				ft_lstsize_token(t_token *tokens);
-int				child_process_pipe(char *command, char **envp, t_data **data, t_token *tokens, int *end, int i);
-int				parent_process_pipe(char *command, t_token *tokens, char **envp, t_data **data, int *end, int i);
 void			print_token_lists(t_token_list *list);
 char			*reformat_command(char *command, t_token_list *token_list);
 t_token			*flatten_token_list(t_token_list *token_list);
@@ -128,6 +133,11 @@ int				add_to_env(char *arg, t_data **data);
 int				ft_strsearch(char *str, int c);
 void			clean_tokens_qt(t_token **tkn_lst);
 /////////// DA ELIMINARE
-void	print_env_pwd(t_data **data);
+void	    print_env_pwd(t_data **data);
+int				check_unclosed_quotes(t_token *token);
+void			print_tokens_state(t_token *tokens);
+int				check_quotes(t_token *tokens);
+void			set_redirection(t_token *tokens, t_data **data);
+void			handle_heredoc(char *delimiter, t_data **data);
 
 #endif

@@ -1,1 +1,8 @@
-proceding to execve: 
+total 104
+drwxr-xr-x 2 adapassa 2023_florence  4096 Sep  5 18:05 inc
+drwxr-xr-x 3 adapassa 2023_florence  4096 Sep  5 18:07 libft
+-rw-r--r-- 1 adapassa 2023_florence  1606 Sep  4 18:31 Makefile
+-rwxr-xr-x 1 adapassa 2023_florence 79960 Sep  5 18:07 minishell
+drwxr-xr-x 2 adapassa 2023_florence  4096 Sep  5 18:07 obj
+-rw-r--r-- 1 adapassa 2023_florence     0 Sep  5 18:09 outfile
+drwxr-xr-x 2 adapassa 2023_florence  4096 Sep  4 18:31 src

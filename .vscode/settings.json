@@ -4,6 +4,7 @@
         "minishell.h": "c",
         "libft.h": "c",
         "type_traits": "c"
+        "stdio.h": "c"
     },
     "search.useParentIgnoreFiles": false
 }
