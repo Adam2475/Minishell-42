@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/05 18:05:36 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/11 18:07:36 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,12 @@ int	manual_cmd(char **cmd_args, t_data **data)
 		return (export_cmd(cmd_args, data));
 		// return (1);
 	if (tmp->cmd == UNSET)
-		return (1);
-		// return (unset_cmd(cmd_args));
+		return (unset_env(&tmp->env_list, cmd_args[1]));
 	if (tmp->cmd == ENV)
 		return (env_cmd(data));
 		// return (env_cmd(cmd_args));
 	if (tmp->cmd == EXIT)
-		return (1);
+		cmd_exit(cmd_args, *data);
 	if (tmp->cmd == PWD)
 		return (pwd_cmd(data));
 		// return (exit_cmd(cmd_args));
@@ -124,8 +123,15 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	int		status;
 
 	cmd = NULL;
-	cmd = find_cmd(command[0], data);
 	tmp = ft_strjoin_gnl(command[0], " ");
+	if (manual_cmd(command, data))
+	{
+		ft_printf("CHILD PROCESS pwd\n\n");
+		print_env_pwd(data);
+		return ;
+		// exit(1);
+	}
+	cmd = find_cmd(command[0], data);
 	int i = 1;
 	while (command[i])
 	{
@@ -134,12 +140,6 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 		i++;
 	}
 	cmd_args = ft_split(tmp, 32);
-	if (manual_cmd(command, data))
-	{
-		ft_printf("CHILD PROCESS pwd\n\n");
-		print_env_pwd(data);
-		return ;
-	}
 	parent = fork();
 	// ft_printf("%d\n", data->parent);
 	if (parent < 0)
@@ -150,7 +150,7 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 		child_process(cmd, command, data, envp);
 		ft_printf("EXECUTE_COMMAND_SINGLE pwd\n\n");
 		print_env_pwd(data);
-		exit(0);
+		return ;
 	}
 	else
 		status = parent_process();

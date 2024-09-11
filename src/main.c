@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/11 15:50:25 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/11 17:58:35 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void free_exit(t_data **data)
 	close((*data)->fd);
 }
 
-static int check_quotes(t_token **tokens)
+int check_quotes(t_token **tokens)
 {
 	t_token	*current;
 	t_token	*current_2;
@@ -145,3 +145,5 @@ int main(int argc, char **argv, char **envp)
 // Tests:
 // grep int src/main.c | wc -w > outfile
 // echo ciao ?!
+// expansion di ?
+// cmd not found = 127 (exit_status)

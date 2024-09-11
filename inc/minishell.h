@@ -133,11 +133,12 @@ int				add_to_env(char *arg, t_data **data);
 int				ft_strsearch(char *str, int c);
 void			clean_tokens_qt(t_token **tkn_lst);
 /////////// DA ELIMINARE
-void	    print_env_pwd(t_data **data);
+void			print_env_pwd(t_data **data);
 int				check_unclosed_quotes(t_token *token);
 void			print_tokens_state(t_token *tokens);
-int				check_quotes(t_token *tokens);
+int				check_quotes(t_token **tokens);
 void			set_redirection(t_token *tokens, t_data **data);
 void			handle_heredoc(char *delimiter, t_data **data);
-
+int				unset_env(t_env_list **env, char *var_name);
+void			cmd_exit(char **args, t_data *data);
 #endif
