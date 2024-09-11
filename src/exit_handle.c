@@ -2,7 +2,6 @@
 
 void	free_exit(t_data **data)
 {
-
 	t_env_list	*node;
 
 	node = (*data)->env_list;

@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 12:47:06 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/04 18:44:37 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/11 15:43:40 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,10 @@ void	set_redirection(t_token *tokens, t_data **data)
 		else if (current->type == TOKEN_HEREDOC)
 		{
 			current = current->next;
-			//(*data)->heredoc_flag = 1; 
-			//ft_strlcpy((*data)->heredoc_content, current->value, ft_strlen((*data)->heredoc_content));
-			//(*data)->redirect_state = 0;
 			if (current->type == TOKEN_APPENDICE)
 			{
 				ft_printf("setting up the heredoc!\n");
-				//(*data)->fd = open(current->value, O_WRONLY | O_APPEND | O_CREAT, 0644);
-				handle_heredoc(current->value);
+				handle_heredoc(current->value, data);
 			}
 		}
 		current = current->next;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_chdir.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:29:32 by marco             #+#    #+#             */
-/*   Updated: 2024/08/30 12:43:35 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/09/11 15:46:21 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,6 @@ int cd_cmd(char **cmd_args, t_data **data)
 	}
 	ft_printf("\033[0;91mCD_CMD\033[0;39m\n");
 	chpwd_env(data, cmd_args[1]);
-	
-	// t_env_list *node = (*data)->env_list;
-	// while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
-	// {
-	// 	node = node->next;
-	// }
-	// ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
-
-	/* PROVA LISTA ENV*/
 	node = (*data)->env_list;
 	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
 	{
