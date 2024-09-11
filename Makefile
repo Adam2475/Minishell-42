@@ -1,13 +1,14 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
-# CFLAGS = -g
+# CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -g
 # Source files
 SRC_DIR = src
 LIB = ./libft/libft.a
 SRCS = main tokenizer states redirection init \
 		utils parser cmd_chdir cmd_env cmd_pwd env_list cmd_echo \
-		cmd_export pipe_case utils2 utils3 utils4 utils5 heredoc \
+		cmd_export  pipe_case utils2 utils3 utils4 \
+		expander \
 
 SRC = $(addprefix $(SRC_DIR)/, $(addsuffix .c, $(SRCS)))
 # Object file generation

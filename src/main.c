@@ -19,6 +19,58 @@ void free_exit(t_data **data)
 	close((*data)->fd);
 }
 
+static int check_quotes(t_token **tokens)
+{
+	t_token	*current;
+	t_token	*current_2;
+
+	current = (*tokens);
+	current_2 = NULL;
+	while ((int)current->type != TOKEN_EOF)
+	{
+		if ((int)current->type == 10)
+		{
+			current_2 = current->next;
+			while ((int)current_2->type != 7 && (int)current_2->type != 10)
+			{
+				current_2->type = TOKEN_WORD;
+				current_2 = current_2->next;
+			}
+			if ((int)current_2->type == 7)
+				return (ft_printf("check_quotes\n"), 1);
+			current = current_2;
+		}
+		if ((int)current->type == 9)
+		{
+			current_2 = current->next;
+			while ((int)current_2->type != 7 && (int)current_2->type != 9)
+			{
+				if ((int)current_2->type != 8)
+					current_2->type = TOKEN_WORD;
+				else if ((int)current->type == 8 && (int)current->next->type == 13)
+					current_2 = current->next;
+				current_2 = current_2->next;
+			}
+			if ((int)current_2->type == 7)
+				return (ft_printf("check_quotes\n"), 1);
+			current = current_2;
+		}
+		current = current->next;
+	}
+	return (0);
+}
+
+void	print_tokens_state(t_token *tokens)
+{
+	t_token *temp = tokens;
+	while (temp)
+	{
+		printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
+		//printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
+		temp = temp->next;
+	}
+}
+
 int main(int argc, char **argv, char **envp)
 {
 	t_data *data;
@@ -45,11 +97,17 @@ int main(int argc, char **argv, char **envp)
 		// exit(1);
 		if (!(data)->input)
 			exit(1);
+		env_parser(&data, envp);
 		tokens = tokenize_string(&data);
 		token_reformatting(&tokens);
-		env_parser(&data, envp);
+		data->tokens = tokens;
+
+		//print_tokens(tokens);
+		//exit(1);
+
 		set_token_state(&tokens);
-		if (check_quotes(tokens) != 0)
+		// print_tokens_state(tokens);
+		if (check_quotes(&tokens) != 0)
 			exit(printf("unclosed quotes found!!\n"));
 
 		/////////////////////////////
@@ -57,11 +115,12 @@ int main(int argc, char **argv, char **envp)
 		// Implement Expander
 		// single quotes treated as literal have no difference
 		// if state is $ of "" then go to expander
-
 		/////////////////////////////
+		expand_var(&tokens, &data);
 		// Debug
 		// print_tokens_state(tokens);
 		tmp = copy_token_list(tokens);
+
 		if (piper(&tokens) == 0)
 			token_parser(&tokens, &data, envp);
 		else
@@ -69,6 +128,9 @@ int main(int argc, char **argv, char **envp)
 			token_list = split_tokens_by_pipe(tmp);
 			pipe_case(&tokens, &data, envp, &token_list);
 		}
+
+		//ft_printf("MAIN pwd\n\n");
+		//print_env_pwd(&data);
 	}
 	free_exit(&data);
 	return (0);
@@ -82,4 +144,4 @@ int main(int argc, char **argv, char **envp)
 
 // Tests:
 // grep int src/main.c | wc -w > outfile
-// echo ciao ??
+// echo ciao ?!

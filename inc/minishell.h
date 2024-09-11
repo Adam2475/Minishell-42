@@ -11,6 +11,7 @@
 # include "../libft/libft.h"
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -83,7 +84,8 @@ t_token			*tokenize_string(t_data **data);
 void			init_state(t_data **data, t_token **tokens);
 int				special_cases_lexer(t_data **data, char *buffer, t_token **tokens);
 void			token_parser(t_token **tokens,t_data **data, char **envp);
-char			*expand_variable(t_token **current, char **envp);
+int				expand_var(t_token **tkn_lst, t_data **data);
+void			expand_doll(t_token **current, t_data **data);
 void			env_parser(t_data **data, char **envp);
 void			*token_reformatting(t_token **tokens);
 char			*find_cmd(char *cmd, t_data **data);
@@ -96,9 +98,7 @@ int				cd_cmd(char **cmd_args, t_data **data);
 void			chpwd_env(t_data **data, char *new_path);
 int				env_cmd(t_data **data);
 int				pwd_cmd(t_data **data);
-int				echo_doll(char *str, t_data **data);
-int				echo_basic(char *str);
-int				echo_cmd(t_data **data, char **cmd_args, t_token **tokens);
+int				echo_cmd(t_data **data, t_token **tokens);
 void			free_exit(t_data **data);
 int				parse_input(t_data *data);
 int				lexer_control(t_data *data, int j);
@@ -127,6 +127,13 @@ int				piper(t_token **tokens);
 t_token			*create_token(t_token_type type, char *value);
 void			append_token(t_token **list, t_token *new_token);
 int				set_token_state(t_token **tokens);
+int				check_double_redirects(const char *str);
+int				export_cmd(char **args, t_data **data);
+int				add_to_env(char *arg, t_data **data);
+int				ft_strsearch(char *str, int c);
+void			clean_tokens_qt(t_token **tkn_lst);
+/////////// DA ELIMINARE
+void	    print_env_pwd(t_data **data);
 int				check_unclosed_quotes(t_token *token);
 void			print_tokens_state(t_token *tokens);
 int				check_quotes(t_token *tokens);

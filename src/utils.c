@@ -12,6 +12,19 @@
 
 #include "../inc/minishell.h"
 
+void	print_env_pwd(t_data **data)
+{
+	t_env_list *node = (*data)->env_list;
+	while (node)
+	{
+		if (ft_strncmp(node->var, "PWD=", 4) == 0)
+			ft_printf("%s\n", node->value);
+		if (ft_strncmp(node->var, "OLDPWD=", 7) == 0)
+			ft_printf("%s\n", node->value);
+		node = node->next;
+	}
+}
+
 char	*trim_whitespace(char *str)
 {
 	char *end;

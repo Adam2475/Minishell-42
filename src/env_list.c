@@ -70,13 +70,15 @@ void	split_var_env(t_env_list **node, int len)
 	}
 }
 
+/*TODO: problemi malloc(): invalid next size (unsorted) quando si presenta un un tab di prese*/
 t_env_list	*new_node_env(char *content)
 {
 	t_env_list	*new;
 	int			len;
 
 	len = 0;
-	new = (t_env_list *)malloc(sizeof(t_env_list) * 1);
+	new = NULL;
+	new = (t_env_list *)ft_calloc(sizeof(t_env_list), 1);
 	if (!new)
 		return (NULL);
 	new->next = NULL;

@@ -25,7 +25,6 @@ char	*find_cmd(char *cmd, t_data **data)
 		holder = ft_strjoin(tmp, cmd);
 		if (access(holder, X_OK) == 0)
 			return (free(tmp), holder);
-		free(tmp);
 		free(holder);
 		i++;
 	}
@@ -39,17 +38,17 @@ int	conf_man_cmd(char *str)
 {
 	if (ft_strncmp(str, "cd", ft_strlen(str)) == 0)
 		return (1);
-	if (!ft_strncmp(str, "echo", ft_strlen(str)))
+	if (ft_strncmp(str, "echo", ft_strlen(str)) == 0)
 		return (2);
-	if (!ft_strncmp(str, "export", ft_strlen(str)))
+	if (ft_strncmp(str, "export", ft_strlen(str)) == 0)
 		return (3);
-	if (!ft_strncmp(str, "unset", ft_strlen(str)))
+	if (ft_strncmp(str, "unset", ft_strlen(str)) == 0)
 		return (4);
 	if (ft_strncmp(str, "env", ft_strlen(str)) == 0)
 		return (5);
-	if (!ft_strncmp(str, "exit", ft_strlen(str)))
+	if (ft_strncmp(str, "exit", ft_strlen(str)) == 0)
 		return (6);
-	if (!ft_strncmp(str, "pwd", ft_strlen(str)))
+	if (ft_strncmp(str, "pwd", ft_strlen(str)) == 0)
 		return (7);
 	else
 		return (0);
@@ -62,16 +61,17 @@ int	manual_cmd(char **cmd_args, t_data **data)
 
 	tmp = (*data);
 	i = 0;
+	// ft_printf("\033[0;91mmanual cmd\033[0;39m\n");
 	tmp->cmd = conf_man_cmd(cmd_args[0]);
 	if (tmp->cmd == CH_DIR)
 		return (cd_cmd(cmd_args, data));
 		// return (1);
 	if (tmp->cmd == ECHO)
-		return (echo_cmd(data, cmd_args, &tmp->tokens));
+		return (echo_cmd(data, &tmp->tokens));
 		// return (1);
 	if (tmp->cmd == EXPORT)
-		return (1);
-		// return (export_cmd(cmd_args, data));
+		return (export_cmd(cmd_args, data));
+		// return (1);
 	if (tmp->cmd == UNSET)
 		return (1);
 		// return (unset_cmd(cmd_args));
@@ -101,20 +101,15 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 				return (-1);
 		}
 	}
-	//ft_printf("proceding to execve: \n");
-	if (manual_cmd(cmd_args, data))
-		return (printf("\033[0;92mchild %p\n\033[0;39m", data), 0);
-	else
-		execve(cmd, cmd_args, envp);
+	execve(cmd, cmd_args, envp);
 	return (EXIT_SUCCESS);
 }
 
-static int parent_process(char *cmd, char **cmd_args, char **envp)
+// static int parent_process(char *cmd, char **cmd_args, t_data **data, char **envp)
+static int parent_process(void)
 {
 	int status;
-	
-	if (!cmd || !cmd_args || !envp)
-		return (0);
+
 	waitpid(-1, &status, 0);
 	return (status);
 }
@@ -139,25 +134,26 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 		i++;
 	}
 	cmd_args = ft_split(tmp, 32);
-
+	if (manual_cmd(command, data))
+	{
+		ft_printf("CHILD PROCESS pwd\n\n");
+		print_env_pwd(data);
+		return ;
+	}
 	parent = fork();
 	// ft_printf("%d\n", data->parent);
 	if (parent < 0)
 		exit(ft_printf("error with the fork"));
 	//ft_printf("%d\n", status);
 	if (!parent)
-		child_process(cmd, command, data, envp);
-	else
-		status = parent_process(cmd, command, envp);
-			/* PROVA LISTA ENV*/
-	t_env_list *node = (*data)->env_list;
-	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
 	{
-		node = node->next;
+		child_process(cmd, command, data, envp);
+		ft_printf("EXECUTE_COMMAND_SINGLE pwd\n\n");
+		print_env_pwd(data);
+		exit(0);
 	}
-		ft_printf("\033[0;91mPWD %s\033[0;39m\n", node->value);
-	//ft_printf("%d\n", status);
-	// exit(1);
+	else
+		status = parent_process();
 	return ;
 }
 
@@ -226,7 +222,11 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				//printf("%s\n", command[i]);
 				i++;
 			}
+			////// PROBLEMI CON IL PUNTATORE DATA E I PROCESSI
+			/* Si perdono i valori cambiati di data causando l'inutilita' delle modifiche
+				nelle builtin */
 			execute_command_single(command, data, envp);
+
 			close((*data)->fd);
 			return ;
 		}
