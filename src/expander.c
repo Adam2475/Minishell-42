@@ -56,7 +56,7 @@ int	expand_var(t_token **tkn_lst, t_data **data)
 			expand_doll(&current, data);
 		current = current->next;
 	}
-	print_tokens_state(*tkn_lst);
+	//print_tokens_state(*tkn_lst);
 	return (0);
 }
 // TODO: va rimesso che azzera i token type

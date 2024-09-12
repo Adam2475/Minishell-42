@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:07:52 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/11 18:12:15 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/11 18:18:31 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,3 +82,5 @@ void cmd_exit(char **args, t_data *data)
 	free_exit(&data);
 	exit(exit_code);
 }
+
+// need to setup the exit status for the ? expansion
