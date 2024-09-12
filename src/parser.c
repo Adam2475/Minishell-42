@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/12 17:41:16 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/12 18:09:25 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,8 +148,8 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	if (!parent)
 	{
 		child_process(cmd, command, data, envp);
-		ft_printf("EXECUTE_COMMAND_SINGLE pwd\n\n");
-		print_env_pwd(data);
+		//t_printf("EXECUTE_COMMAND_SINGLE pwd\n\n");
+		//print_env_pwd(data);
 		return ;
 	}
 	else
@@ -193,13 +193,13 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				(*data)->redirect_state = 1;
 				if (current->type == TOKEN_APPENDICE)
 				{
-					ft_printf("setting up the append!\n");
+					//ft_printf("setting up the append!\n");
 					(*data)->fd = open(current->value, O_WRONLY | O_APPEND | O_CREAT, 0644);
 				}
 			}
 			else if (current->type == TOKEN_HEREDOC)
 			{
-				ft_printf("setting up the heredoc!\n");
+				//ft_printf("setting up the heredoc!\n");
 				current = current->next;
 				handle_heredoc(current->value, data);
 			}
