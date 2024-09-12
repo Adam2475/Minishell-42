@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 17:32:27 by mapichec          #+#    #+#             */
-/*   Updated: 2024/09/12 17:43:22 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/12 17:49:49 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,11 @@ static t_token	*print_in_qt(t_data **data, t_token *current, t_token **tokens)
 	int		flag;
 
 	tmp = (*data)->input;
-	flag = 0;
+	flag = 1;
 	while (*tmp != '\0')
 	{
-		if (*tmp == '\'' && flag == 0)
+		if (*tmp == '\'' && flag != 0)
 		{
-			flag = 1;
 			tmp++;
 			while ((*tmp != '\0' || *tmp == '\'') && flag == 1)
 			{
@@ -64,9 +63,8 @@ static t_token	*print_in_qt(t_data **data, t_token *current, t_token **tokens)
 					flag = 0;
 			}
 		}
-		if (*tmp == '\"' && flag == 0)
+		if (*tmp == '\"' && flag != 0)
 		{
-			flag = 1;
 			tmp++;
 			while ((*tmp != '\0' || *tmp == '\"') && flag == 1)
 			{
@@ -113,3 +111,5 @@ int	echo_cmd(t_data **data, t_token **tokens)
 
 // echo ciao " :"    ?!
 // echo "   ciao   " !!
+
+//echo "   ciao   "'merda' ?!
