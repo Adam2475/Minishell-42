@@ -31,7 +31,7 @@ static void	modify_type(t_token *current, t_token_type num)
 	}
 }
 
-static int	print_in_qt(t_data **data, t_token *current, t_token **tokens)
+static t_token	*print_in_qt(t_data **data, t_token *current, t_token **tokens)
 {
 	char	*tmp;
 	int		flag;
@@ -44,7 +44,7 @@ static int	print_in_qt(t_data **data, t_token *current, t_token **tokens)
 		{
 			flag = 1;
 			tmp++;
-			while (*tmp != '\0' || *tmp == '\'')
+			while ((*tmp != '\0' || *tmp == '\'') && flag == 1)
 			{
 				if (current->type == TOKEN_SINGLE_QUOTES)
 					modify_type(current, TOKEN_SINGLE_QUOTES);
@@ -54,19 +54,21 @@ static int	print_in_qt(t_data **data, t_token *current, t_token **tokens)
 					ft_putchar(' ');
 					tmp++;
 				}
-				if (current->type == TOKEN_SINGLE_QUOTES)
+				if (current->type == TOKEN_EOF)
+					return (current);
+				if (current->type != TOKEN_SINGLE_QUOTES)
 					ft_printf("%s", current->value);
 				while (*tmp != '\0' && *tmp != 32 && *tmp != '\'')
 					tmp++;
+				if (*tmp == '\'')
+					flag = 0;
 			}
-			if (*tmp == '\'')
-				flag = 0;
 		}
 		if (*tmp == '\"' && flag == 0)
 		{
 			flag = 1;
 			tmp++;
-			while (*tmp != '\0' || *tmp == '\"')
+			while ((*tmp != '\0' || *tmp == '\"') && flag == 1)
 			{
 				if (current->type == TOKEN_DOUBLE_QUOTES)
 					modify_type(current, TOKEN_DOUBLE_QUOTES);
@@ -76,18 +78,19 @@ static int	print_in_qt(t_data **data, t_token *current, t_token **tokens)
 					ft_putchar(' ');
 					tmp++;
 				}
-				if (current->type == TOKEN_DOUBLE_QUOTES)
+				if (current->type == TOKEN_EOF)
+					return (current);
+				if (current->type != TOKEN_DOUBLE_QUOTES)
 					ft_printf("%s", current->value);
 				while (*tmp != '\0' && *tmp != 32 && *tmp != '\"')
 					tmp++;
+				if (*tmp == '\"')
+					flag = 0;
 			}
-
-			if (*tmp == '\"')
-				flag = 0;
 		}
 		tmp++;
 	}
-	return (0);	
+	return (current->next);	
 }
 
 int	echo_cmd(t_data **data, t_token **tokens)
@@ -99,7 +102,7 @@ int	echo_cmd(t_data **data, t_token **tokens)
 	while (current->type != TOKEN_EOF)
 	{
 		if (current->type == TOKEN_DOUBLE_QUOTES || current->type == TOKEN_SINGLE_QUOTES)
-			print_in_qt(data, current, tokens);
+			current = print_in_qt(data, current, tokens);
 		else
 			ft_printf("%s", current->value);
 		current = current->next;
