@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/11 18:07:36 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/12 17:41:16 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,8 +126,8 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	tmp = ft_strjoin_gnl(command[0], " ");
 	if (manual_cmd(command, data))
 	{
-		ft_printf("CHILD PROCESS pwd\n\n");
-		print_env_pwd(data);
+		//ft_printf("CHILD PROCESS pwd\n\n");
+		//print_env_pwd(data);
 		return ;
 		// exit(1);
 	}

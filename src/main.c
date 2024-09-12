@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/11 17:58:35 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/12 17:35:14 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,3 +147,4 @@ int main(int argc, char **argv, char **envp)
 // echo ciao ?!
 // expansion di ?
 // cmd not found = 127 (exit_status)
+// echo -n

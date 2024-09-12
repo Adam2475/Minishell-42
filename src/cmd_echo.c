@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_echo.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 17:32:27 by mapichec          #+#    #+#             */
-/*   Updated: 2024/08/29 13:46:40 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/09/12 17:43:22 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int	echo_cmd(t_data **data, t_token **tokens)
 
 	current = (*tokens);
 	current = current->next;
-	while (current->type != TOKEN_EOF)
+	while (current && current->next)
 	{
 		if (current->type == TOKEN_DOUBLE_QUOTES || current->type == TOKEN_SINGLE_QUOTES)
 			current = print_in_qt(data, current, tokens);
@@ -110,3 +110,6 @@ int	echo_cmd(t_data **data, t_token **tokens)
 	ft_putchar('\n');
 	return ((*data)->err_state = 0, 1);
 }
+
+// echo ciao " :"    ?!
+// echo "   ciao   " !!
