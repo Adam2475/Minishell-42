@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/13 16:17:23 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:25:10 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@ int	err_state;
 void free_exit(t_data **data)
 {
 	clear_history();
+	if ((*data)->fd >= 0)
+		close((*data)->fd);
 	free((*data)->env_list);
 	free((*data)->input);
 	free((*data));
-	close((*data)->fd);
 }
 
 int check_quotes(t_token **tokens)
@@ -77,7 +78,6 @@ void	print_tokens_state(t_token *tokens)
 static void	sigint(void)
 {
 	rl_on_new_line();
-	// rl_redisplay();
 	ft_putstr_fd("\n", STDOUT_FILENO);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -144,7 +144,7 @@ int main(int argc, char **argv, char **envp)
 		(data)->fd = -1;
 		add_history(data->input);
 		if (!(data)->input)
-			exit(1);
+			free_exit(&data);	
 		env_parser(&data, envp);
 		tokens = tokenize_string(&data);
 		token_reformatting(&tokens);
@@ -163,19 +163,30 @@ int main(int argc, char **argv, char **envp)
 			pipe_case(&tokens, &data, envp, &token_list);
 		}
 	}
-	free_exit(&data);
 	return (0);
 }
 
+//////////////////////////////////////
 // Gdb process follow mode:
 // set follow-fork-mode [parent|child]
+//////////////////////////////////////
 
+// Legenda
 // ?? = NOT WORKING
 // !? = SOME ISSUES
+// !! = OK
 
+////////////////
 // Tests:
 // grep int src/main.c | wc -w > outfile
 // echo ciao ?!
 // expansion di ?
 // cmd not found = 127 (exit_status)
 // echo -n
+
+//////////////
+// Valgrind:
+// echo ciao
+// echo -n ciao
+// echo "$PWD"
+// grep int src/main.c | cat -e > outfile !!

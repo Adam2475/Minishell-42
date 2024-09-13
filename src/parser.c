@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/13 16:37:57 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 16:46:01 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	conf_man_cmd(char *str)
 int	manual_cmd(char **cmd_args, t_data **data)
 {
 	int		i;
-	t_data *tmp;
+	t_data	*tmp;
 
 	tmp = (*data);
 	i = 0;
