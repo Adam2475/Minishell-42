@@ -3,6 +3,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <signal.h>
 # include <limits.h>
 # include <errno.h>
 # include <ctype.h> 
@@ -28,6 +29,8 @@
 
 #define MAX_HISTORY 100
 #define MAX_COMMAND_LENGTH 1024
+
+extern int	err_state;
 
 typedef struct s_token_list
 {
@@ -85,7 +88,8 @@ void			init_state(t_data **data, t_token **tokens);
 int				special_cases_lexer(t_data **data, char *buffer, t_token **tokens);
 void			token_parser(t_token **tokens,t_data **data, char **envp);
 int				expand_var(t_token **tkn_lst, t_data **data);
-void			expand_doll(t_token **current, t_data **data);
+int				expand_doll(t_token **current, t_data **data);
+char			*expand_err_state(char *tmp);
 void			env_parser(t_data **data, char **envp);
 void			*token_reformatting(t_token **tokens);
 char			*find_cmd(char *cmd, t_data **data);
@@ -141,4 +145,5 @@ void			set_redirection(t_token *tokens, t_data **data);
 void			handle_heredoc(char *delimiter, t_data **data);
 int				unset_env(t_env_list **env, char *var_name);
 void			cmd_exit(char **args, t_data *data);
+void			set_signal(void);
 #endif

@@ -15,7 +15,15 @@ void	clean_tokens_qt(t_token **tkn_lst)
 	}
 }
 
-void	expand_doll(t_token **current, t_data **data)
+char	*expand_err_state(char *tmp)
+{
+	tmp = ft_strtrim(tmp, "=");
+	tmp = ft_strtrim(tmp, "?");
+	tmp = ft_strjoin(ft_itoa(err_state), tmp);
+	return (tmp);
+}
+
+int	expand_doll(t_token **current, t_data **data)
 {
 	t_env_list	*node;
 	char		*tmp;
@@ -37,11 +45,12 @@ void	expand_doll(t_token **current, t_data **data)
 	if (!node)
 	{
 		free((*current)->value);
-		(*current)->value = ft_strndup("", 1);
-		return ;
+		if (*tmp == '?')
+			return ((*current)->value = expand_err_state(tmp), 0);
+		return ((*current)->value = ft_strndup("", 1), 0);
 	}
 	free(tmp);
-	(*current)->value = ft_strndup(node->value, ft_strlen(node->value));
+	return ((*current)->value = ft_strndup(node->value, ft_strlen(node->value)), 0);
 }
 
 int	expand_var(t_token **tkn_lst, t_data **data)
