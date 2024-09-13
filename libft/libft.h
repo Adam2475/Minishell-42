@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:27:20 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 06:41:59 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:56:10 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ char		*get_next_line(int fd);
 char		**ft_minisplit(char *str);
 void		*ft_free_mat(char **mat, char *str);
 void		*ft_custom_function(size_t nmemb, size_t size, char *str, bool flag);
-char		*ft_strjoin_gnl(char const *s1, char const *s2);
+char		*ft_strjoin_gnl(char *s1, char *s2);
 char		*ft_strdup_gnl(const char *src);
 //////////////////////////////////////////////
 // Minishell
@@ -152,5 +152,6 @@ int			ft_strlen_char(char *str, int c);
 void		tkn_delone(t_token **current, t_token *del);
 // INUTILS
 void	print_tokens_state(t_token *tokens);
+void	free_char_array(char **array);
 
 #endif
