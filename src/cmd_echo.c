@@ -115,7 +115,7 @@ int	echo_cmd(t_data **data, t_token **tokens)
 	}
 	if (print_newline)
 		ft_putchar('\n');
-	return ((*data)->err_state = 0, 1);
+	return (err_state = 0, 1);
 }
 
 
