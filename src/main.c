@@ -73,53 +73,6 @@ void	print_tokens_state(t_token *tokens)
 	}
 }
 
-static void	sigint(void)
-{
-	rl_on_new_line();
-	// rl_redisplay();
-	ft_putstr_fd("\n", STDOUT_FILENO);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
-static void	sigquit(void)
-{
-	rl_on_new_line();
-	rl_redisplay();
-	ft_putstr_fd("  \b\b", STDOUT_FILENO);
-}
-
-static void	handle_signal(int signo)
-{
-	int	pid;
-	int	status;
-
-	pid = waitpid(-1, &status, WNOHANG);
-	if (signo == SIGINT)
-	{
-		err_state = 130;
-		if (pid == -1)
-			sigint();
-		else
-			ft_putstr_fd("\n", STDOUT_FILENO);
-	}
-	else if (signo == SIGQUIT)
-	{
-		if (pid == -1)
-			sigquit();
-		else
-			ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
-	}
-}
-
-void	set_signal(void)
-{
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, handle_signal);
-}
-
-
 int main(int argc, char **argv, char **envp)
 {
 	t_data *data;
@@ -183,7 +136,6 @@ int main(int argc, char **argv, char **envp)
 		//ft_printf("MAIN pwd\n\n");
 		//print_env_pwd(&data);
 	}
-	free_exit(&data);
 	return (0);
 }
 

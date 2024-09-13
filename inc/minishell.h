@@ -146,4 +146,5 @@ void			handle_heredoc(char *delimiter, t_data **data);
 int				unset_env(t_env_list **env, char *var_name);
 void			cmd_exit(char **args, t_data *data);
 void			set_signal(void);
+
 #endif
