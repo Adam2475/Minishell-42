@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/12 17:35:14 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:25:10 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,11 @@ int	err_state;
 void free_exit(t_data **data)
 {
 	clear_history();
+	if ((*data)->fd >= 0)
+		close((*data)->fd);
+	free((*data)->env_list);
 	free((*data)->input);
-	close((*data)->fd);
+	free((*data));
 }
 
 int check_quotes(t_token **tokens)
@@ -68,7 +71,6 @@ void	print_tokens_state(t_token *tokens)
 	while (temp)
 	{
 		printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
-		//printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
 		temp = temp->next;
 	}
 }
@@ -95,34 +97,16 @@ int main(int argc, char **argv, char **envp)
 		(data)->input = readline("myprompt$ ");
 		(data)->fd = -1;
 		add_history(data->input);
-		/**quando devi pulire memoria usa clear_history() */
-		// input_parser(&data);
-		// printf("%s\n", (data)->input);
-		// exit(1);
 		if (!(data)->input)
-			exit(1);
+			free_exit(&data);	
 		env_parser(&data, envp);
 		tokens = tokenize_string(&data);
 		token_reformatting(&tokens);
 		data->tokens = tokens;
-
-		//print_tokens(tokens);
-		//exit(1);
-
 		set_token_state(&tokens);
-		// print_tokens_state(tokens);
 		if (check_quotes(&tokens) != 0)
 			exit(printf("unclosed quotes found!!\n"));
-
-		/////////////////////////////
-		// To Do
-		// Implement Expander
-		// single quotes treated as literal have no difference
-		// if state is $ of "" then go to expander
-		/////////////////////////////
 		expand_var(&tokens, &data);
-		// Debug
-		// print_tokens_state(tokens);
 		tmp = copy_token_list(tokens);
 
 		if (piper(&tokens) == 0)
@@ -132,22 +116,31 @@ int main(int argc, char **argv, char **envp)
 			token_list = split_tokens_by_pipe(tmp);
 			pipe_case(&tokens, &data, envp, &token_list);
 		}
-
-		//ft_printf("MAIN pwd\n\n");
-		//print_env_pwd(&data);
 	}
 	return (0);
 }
 
+//////////////////////////////////////
 // Gdb process follow mode:
 // set follow-fork-mode [parent|child]
+//////////////////////////////////////
 
+// Legenda
 // ?? = NOT WORKING
 // !? = SOME ISSUES
+// !! = OK
 
+////////////////
 // Tests:
 // grep int src/main.c | wc -w > outfile
 // echo ciao ?!
 // expansion di ?
 // cmd not found = 127 (exit_status)
 // echo -n
+
+//////////////
+// Valgrind:
+// echo ciao
+// echo -n ciao
+// echo "$PWD"
+// grep int src/main.c | cat -e > outfile !!

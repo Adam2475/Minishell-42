@@ -6,20 +6,11 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 17:32:27 by mapichec          #+#    #+#             */
-/*   Updated: 2024/09/12 18:07:43 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 16:10:25 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-// static void	print_doll(char *value, t_data **data)
-// {
-// 	t_env_list	*node;
-// 	char		*str;
-
-// 	node = (*data)->env_list;
-// 	str = ft_strtrim()
-// }
 
 static void	modify_type(t_token *current, t_token_type num)	
 {

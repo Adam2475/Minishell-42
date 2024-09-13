@@ -32,7 +32,7 @@ int	expand_doll(t_token **current, t_data **data)
 	tmp = ft_strdup((*current)->value);
 	tmp = ft_strtrim(tmp, "$");
 	tmp = ft_strjoin(tmp, "=");
-	while (node && ft_strncmp(tmp, node->var, ft_strlen(tmp)) != 0)
+	while (node && ft_strncmp(tmp, node->var, ft_strlen(tmp) - 1) != 0)
 	{
 		if (node->next)
 			node = node->next;

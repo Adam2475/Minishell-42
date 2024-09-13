@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/12 18:09:25 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 16:46:01 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,31 +57,25 @@ int	conf_man_cmd(char *str)
 int	manual_cmd(char **cmd_args, t_data **data)
 {
 	int		i;
-	t_data *tmp;
+	t_data	*tmp;
 
 	tmp = (*data);
 	i = 0;
-	// ft_printf("\033[0;91mmanual cmd\033[0;39m\n");
 	tmp->cmd = conf_man_cmd(cmd_args[0]);
 	if (tmp->cmd == CH_DIR)
 		return (cd_cmd(cmd_args, data));
-		// return (1);
 	if (tmp->cmd == ECHO)
 		return (echo_cmd(data, &tmp->tokens));
-		// return (1);
 	if (tmp->cmd == EXPORT)
 		return (export_cmd(cmd_args, data));
-		// return (1);
 	if (tmp->cmd == UNSET)
 		return (unset_env(&tmp->env_list, cmd_args[1]));
 	if (tmp->cmd == ENV)
 		return (env_cmd(data));
-		// return (env_cmd(cmd_args));
 	if (tmp->cmd == EXIT)
 		cmd_exit(cmd_args, *data);
 	if (tmp->cmd == PWD)
 		return (pwd_cmd(data));
-		// return (exit_cmd(cmd_args));
 	return (0);
 }
 
@@ -104,7 +98,6 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 	return (EXIT_SUCCESS);
 }
 
-// static int parent_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 static int parent_process(void)
 {
 	int status;
@@ -125,31 +118,18 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	cmd = NULL;
 	tmp = ft_strjoin_gnl(command[0], " ");
 	if (manual_cmd(command, data))
-	{
-		//ft_printf("CHILD PROCESS pwd\n\n");
-		//print_env_pwd(data);
 		return ;
-		// exit(1);
-	}
 	cmd = find_cmd(command[0], data);
 	int i = 1;
 	while (command[i])
-	{
-		//ft_printf("%s\n", command[i]);
-		tmp = ft_strjoin_gnl(tmp, command[i]);
-		i++;
-	}
+		tmp = ft_strjoin_gnl(tmp, command[i++]);
 	cmd_args = ft_split(tmp, 32);
 	parent = fork();
-	// ft_printf("%d\n", data->parent);
 	if (parent < 0)
 		exit(ft_printf("error with the fork"));
-	//ft_printf("%d\n", status);
 	if (!parent)
 	{
 		child_process(cmd, command, data, envp);
-		//t_printf("EXECUTE_COMMAND_SINGLE pwd\n\n");
-		//print_env_pwd(data);
 		return ;
 	}
 	else
@@ -165,7 +145,7 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 	int			i;
 
 	i = 0;
-	command = (char **)ft_calloc(3, sizeof(char *));
+	command = (char **)ft_calloc(4, sizeof(char *));
 	command[3] = (char*)ft_calloc(1, 1);
 	current = *tokens;
 	head = *tokens;	
@@ -193,13 +173,11 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				(*data)->redirect_state = 1;
 				if (current->type == TOKEN_APPENDICE)
 				{
-					//ft_printf("setting up the append!\n");
 					(*data)->fd = open(current->value, O_WRONLY | O_APPEND | O_CREAT, 0644);
 				}
 			}
 			else if (current->type == TOKEN_HEREDOC)
 			{
-				//ft_printf("setting up the heredoc!\n");
 				current = current->next;
 				handle_heredoc(current->value, data);
 			}
@@ -217,17 +195,12 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 			{
 				command[i] = ft_strdup(current->value);
 				current = current->next;
-				////////
-				//Debug
-				//printf("%s\n", command[i]);
 				i++;
 			}
-			////// PROBLEMI CON IL PUNTATORE DATA E I PROCESSI
-			/* Si perdono i valori cambiati di data causando l'inutilita' delle modifiche
-				nelle builtin */
 			execute_command_single(command, data, envp);
 
-			close((*data)->fd);
+			if ((*data)->fd >= 0)
+				close((*data)->fd);
 			return ;
 		}
 		current = current->next;
