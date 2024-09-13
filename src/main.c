@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/12 17:35:14 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 16:17:23 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 void free_exit(t_data **data)
 {
 	clear_history();
+	free((*data)->env_list);
 	free((*data)->input);
+	free((*data));
 	close((*data)->fd);
 }
 
@@ -66,7 +68,6 @@ void	print_tokens_state(t_token *tokens)
 	while (temp)
 	{
 		printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
-		//printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
 		temp = temp->next;
 	}
 }
@@ -91,34 +92,16 @@ int main(int argc, char **argv, char **envp)
 		(data)->input = readline("myprompt$ ");
 		(data)->fd = -1;
 		add_history(data->input);
-		/**quando devi pulire memoria usa clear_history() */
-		// input_parser(&data);
-		// printf("%s\n", (data)->input);
-		// exit(1);
 		if (!(data)->input)
 			exit(1);
 		env_parser(&data, envp);
 		tokens = tokenize_string(&data);
 		token_reformatting(&tokens);
 		data->tokens = tokens;
-
-		//print_tokens(tokens);
-		//exit(1);
-
 		set_token_state(&tokens);
-		// print_tokens_state(tokens);
 		if (check_quotes(&tokens) != 0)
 			exit(printf("unclosed quotes found!!\n"));
-
-		/////////////////////////////
-		// To Do
-		// Implement Expander
-		// single quotes treated as literal have no difference
-		// if state is $ of "" then go to expander
-		/////////////////////////////
 		expand_var(&tokens, &data);
-		// Debug
-		// print_tokens_state(tokens);
 		tmp = copy_token_list(tokens);
 
 		if (piper(&tokens) == 0)
@@ -128,9 +111,6 @@ int main(int argc, char **argv, char **envp)
 			token_list = split_tokens_by_pipe(tmp);
 			pipe_case(&tokens, &data, envp, &token_list);
 		}
-
-		//ft_printf("MAIN pwd\n\n");
-		//print_env_pwd(&data);
 	}
 	free_exit(&data);
 	return (0);
