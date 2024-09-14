@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:23:17 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/30 12:58:34 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:12:47 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,6 @@ void	env_parser(t_data **data, char **envp)
 	(*data)->my_paths = ft_split((*data)->path_from_envp, ':');
 }
 
-/* 
-	Da finire? manca la combo STATE_DOLLAR_SINGLE_QUATES che inibisce l'espansione
-	
-*/
 int	set_token_state(t_token **tokens)
 {
 	t_token 		*current = *tokens;

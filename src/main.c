@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/13 17:25:10 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:45:10 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,34 @@
 
 int	err_state;
 
+void free_list(t_token **head)
+{
+	t_token *temp;
+
+	if (head == NULL || *head == NULL)
+		return;
+	while (*head != NULL)
+	{
+		temp = *head;    // Store the current node
+		*head = (*head)->next;  // Move to the next node
+		free(temp->value);
+		free(temp);  // Free the current node
+	}
+	*head = NULL;  // Set the original head pointer to NULL
+}
+
 void free_exit(t_data **data)
 {
 	clear_history();
-	if ((*data)->fd >= 0)
-		close((*data)->fd);
-	free((*data)->env_list);
-	free((*data)->input);
-	free((*data));
+	//if ((*data)->fd >= 0)
+	//	close((*data)->fd);
+	// free((*data)->env_list);
+	free((*data)->my_line);
+	free((*data)->path_from_envp);
+	free_char_array((*data)->my_paths);
+
+	// free((*data));
+	exit(0);
 }
 
 int check_quotes(t_token **tokens)
@@ -116,6 +136,9 @@ int main(int argc, char **argv, char **envp)
 			token_list = split_tokens_by_pipe(tmp);
 			pipe_case(&tokens, &data, envp, &token_list);
 		}
+		free_list(&tokens);
+		free(tokens);
+		free(data->input);
 	}
 	return (0);
 }
@@ -140,6 +163,8 @@ int main(int argc, char **argv, char **envp)
 
 //////////////
 // Valgrind:
+// ciao
+
 // echo ciao
 // echo -n ciao
 // echo "$PWD"

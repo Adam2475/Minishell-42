@@ -6,19 +6,26 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 14:14:27 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/11 15:44:46 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:31:21 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+// if you move the pointer around then the free wont work
+// that's why using counters is safer
+
 t_token	*tokenize_string(t_data **data)
 {
+	char				*tmp;
 	char				*buffer;
 	char				*end;
 	t_token				*tokens;
 
-	buffer = (*data)->input;
+	tmp = ft_strndup((*data)->input, ft_strlen((*data)->input));
+	if (!tmp)
+		free_exit(data);
+	buffer = tmp;
 	init_state(data, &tokens);
 	while (*buffer)
 	{
@@ -52,6 +59,7 @@ t_token	*tokenize_string(t_data **data)
 		buffer = end;
 	}
 	ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_EOF, NULL));
+	free(tmp);
 	return (tokens);
 }
 
@@ -89,7 +97,6 @@ int	special_cases_lexer(t_data **data, char *buffer, t_token **tokens)
 		ft_tokenadd_back(tokens, ft_lstnewtoken(TOKEN_PIPE, ft_strndup(buffer, 1)));
 		return (1);
 	}
-	// State must wait for it's closure TODO:dio cane
 	if (*buffer == DOLLAR_SIGN)
 	{
 		int i = 1;

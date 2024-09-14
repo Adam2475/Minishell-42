@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:19:19 by adapassa          #+#    #+#             */
-/*   Updated: 2024/02/08 17:55:55 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:56:36 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	*ft_strdup_gnl(const char *src)
 	return (dest);
 }
 
-char	*ft_strjoin_gnl(char const *s1, char const *s2)
+char	*ft_strjoin_gnl(char *s1, char *s2)
 {
 	char	*s3;
 	int		i;
@@ -104,6 +104,7 @@ char	*ft_strjoin_gnl(char const *s1, char const *s2)
 	while (s2[++j] != '\0')
 		s3[i + j] = s2[j];
 	s3[i + j] = '\0';
+	free(s1);
 	return (s3);
 }
 
