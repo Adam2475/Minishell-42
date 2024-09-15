@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/13 19:03:55 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/15 17:08:25 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,54 +121,6 @@ static int parent_process(void)
 	return (status);
 }
 
-
-// static void	execute_command_single(char **command, t_data **data, char **envp)
-// {
-// 	char	*cmd;
-// 	pid_t	parent;
-// 	char	*tmp;
-// 	char	**cmd_args;
-// 	int		status;
-// 	char	*holder;
-// 	char	*tmp2;
-
-// 	cmd = NULL;
-// 	tmp = NULL;
-// 	tmp = ft_strjoin(command[0], " ");
-// 	if (manual_cmd(command, data))
-// 		return ;
-// 	cmd = find_cmd(command[0], data);
-// 	int i = 1;
-// 	while (command[i])
-// 	{
-// 		if (tmp2)
-// 			free(tmp2);
-// 		holder = ft_strjoin_gnl(tmp, command[i++]);
-// 		tmp2 = ft_strdup(holder);
-// 		free(tmp);
-// 		tmp = ft_strdup(holder);
-// 		holder = tmp2;
-// 	}
-// 	free(tmp);
-// 	cmd_args = ft_split(tmp, 32);
-// 	parent = fork();
-// 	if (parent < 0)
-// 		exit(ft_printf("error with the fork"));
-// 	if (!parent)
-// 	{
-// 		child_process(cmd, command, data, envp);
-// 		free(holder);
-// 		free(tmp);
-// 		return ;
-// 	}
-// 	else
-// 		status = parent_process();
-// 	free_char_array(cmd_args);
-// 	free(holder);
-// 	free(tmp);
-// 	return ;
-// }
-
 static void	execute_command_single(char **command, t_data **data, char **envp)
 {
 	char	*cmd;
@@ -182,7 +134,7 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	tmp = ft_strjoin(command[0], " ");
 	if (manual_cmd(command, data))
 	{
-		free(tmp);  // Free tmp if the command is handled manually
+		free(tmp);
 		return;
 	}
 	cmd = find_cmd(command[0], data);
@@ -191,32 +143,27 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	holder = NULL;
 	while (command[i])
 	{
-		holder = ft_strjoin_gnl(tmp, command[i++]); // Join strings
-		free(tmp);    // Free previous tmp
-		tmp = holder; // Assign new value to tmp
+		holder = ft_strjoin_gnl(tmp, command[i++]);
+		free(tmp);
+		tmp = holder;
 	}
-
-	// tmp now holds the final concatenated string
 	cmd_args = ft_split(tmp, 32);
-	free(tmp); // Free tmp after splitting it into cmd_args
-
+	free(tmp);
 	parent = fork();
 	if (parent < 0)
 	{
-		free(cmd_args);  // Free cmd_args before exiting
+		free(cmd_args);
 		exit(ft_printf("error with the fork"));
 	}
-
 	if (!parent)
 	{
 		child_process(cmd, command, data, envp);
-		free(cmd_args);  // Free cmd_args in the child process
+		free(cmd_args);
 		return;
 	}
 	else
 		status = parent_process();
-
-	free(cmd_args);  // Free cmd_args after parent process is done
+	free(cmd_args);
 	return;
 }
 
@@ -268,9 +215,7 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 			}
 			current = current->next;
 		}
-
 		current = head;
-		
 		if (current->type == 12)
 		{
 			command[i] = ft_strdup(current->value);
@@ -283,7 +228,6 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				i++;
 			}
 			execute_command_single(command, data, envp);
-
 			if ((*data)->fd >= 0)
 				close((*data)->fd);
 			free(command[3]);

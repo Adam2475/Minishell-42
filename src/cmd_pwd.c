@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_pwd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 19:09:53 by mapichec          #+#    #+#             */
-/*   Updated: 2024/08/24 16:46:03 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/09/15 16:33:32 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,5 @@ int	pwd_cmd(t_data **data)
 	while (ft_strncmp(node->var, "PWD=", 4))
 		node = node->next;
 	ft_printf("%s\n", node->value);
-	return ((*data)->err_state = 0, 1);
+	return (err_state = 0, 1);
 }

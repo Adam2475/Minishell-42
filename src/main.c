@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/13 18:45:10 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/15 18:28:11 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,55 @@ void free_list(t_token **head)
 {
 	t_token *temp;
 
+	if (!head || !*head)
+		return ;
+	if ((*head)->type == TOKEN_EOF || (*head)->type == TOKEN_NEUTRO)
+	{
+		free((*head));
+		*head = NULL;
+		return;
+	}
+	while (*head != NULL)
+	{
+		temp = *head;
+		if (temp->next != NULL && temp->type != TOKEN_EOF)
+		{
+			*head = (*head)->next;
+			free(temp->value);
+			free(temp);
+		}
+		else if (temp)
+		{
+			free(temp->value);
+			free(temp);
+			break;
+		}
+	}
+	*head = NULL;
+}
+
+void free_list_env(t_env_list **head)
+{
+	t_env_list *temp;
+
 	if (head == NULL || *head == NULL)
 		return;
 	while (*head != NULL)
 	{
 		temp = *head;    // Store the current node
-		*head = (*head)->next;  // Move to the next node
+		if (temp->next)
+			*head = (*head)->next;  // Move to the next node
+		else
+		{
+			free(temp->value);
+			free(temp->var);
+			free(temp->content);
+			free(temp);
+			break;
+		}
 		free(temp->value);
+		free(temp->var);
+		free(temp->content);
 		free(temp);  // Free the current node
 	}
 	*head = NULL;  // Set the original head pointer to NULL
@@ -36,11 +78,15 @@ void free_exit(t_data **data)
 	//if ((*data)->fd >= 0)
 	//	close((*data)->fd);
 	// free((*data)->env_list);
-	free((*data)->my_line);
+	if ((*data)->my_line)
+		free((*data)->my_line);
 	free((*data)->path_from_envp);
 	free_char_array((*data)->my_paths);
+	if ((*data)->tokens)
+		free_list(&(*data)->tokens);
+	free_list_env(&(*data)->env_list);
 
-	// free((*data));
+	free((*data));
 	exit(0);
 }
 
@@ -95,51 +141,14 @@ void	print_tokens_state(t_token *tokens)
 	}
 }
 
-static void	sigint(void)
+void	set_data_zero(t_data *data)
 {
-	rl_on_new_line();
-	ft_putstr_fd("\n", STDOUT_FILENO);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	data->my_line = NULL;
+	data->my_paths = NULL;
+	data->path_from_envp = NULL;
+	data->tokens = NULL;
+	data->env_list = NULL;
 }
-
-static void	sigquit(void)
-{
-	rl_on_new_line();
-	rl_redisplay();
-	ft_putstr_fd("  \b\b", STDOUT_FILENO);
-}
-
-static void	handle_signal(int signo)
-{
-	int	pid;
-	int	status;
-
-	pid = waitpid(-1, &status, WNOHANG);
-	if (signo == SIGINT)
-	{
-		err_state = 130;
-		if (pid == -1)
-			sigint();
-		else
-			ft_putstr_fd("\n", STDOUT_FILENO);
-	}
-	else if (signo == SIGQUIT)
-	{
-		if (pid == -1)
-			sigquit();
-		else
-			ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
-	}
-}
-
-void	set_signal(void)
-{
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, handle_signal);
-}
-
 
 int main(int argc, char **argv, char **envp)
 {
@@ -155,6 +164,7 @@ int main(int argc, char **argv, char **envp)
 	argv = NULL;
 	err_state = 0;
 	data = malloc(sizeof(t_data) * 1);
+	set_data_zero(data);
 	tmp = NULL;
 	set_signal();
 	while (1)
@@ -162,10 +172,15 @@ int main(int argc, char **argv, char **envp)
 		(data)->input = NULL;
 		(data)->input = readline("myprompt$ ");
 		(data)->fd = -1;
-		add_history(data->input);
 		if (!(data)->input)
-			free_exit(&data);	
-		env_parser(&data, envp);
+		{
+			(data)->tokens = ft_calloc(sizeof(t_token), 1);
+			data->tokens->type = 14;
+			free_exit(&data);
+		}
+		add_history(data->input);
+		if (data->path_from_envp == NULL)
+			env_parser(&data, envp);
 		tokens = tokenize_string(&data);
 		token_reformatting(&tokens);
 		data->tokens = tokens;
@@ -174,7 +189,6 @@ int main(int argc, char **argv, char **envp)
 			exit(printf("unclosed quotes found!!\n"));
 		expand_var(&tokens, &data);
 		tmp = copy_token_list(tokens);
-
 		if (piper(&tokens) == 0)
 			token_parser(&tokens, &data, envp);
 		else
@@ -183,6 +197,7 @@ int main(int argc, char **argv, char **envp)
 			pipe_case(&tokens, &data, envp, &token_list);
 		}
 		free_list(&tokens);
+		free_list(&tmp);
 		free(tokens);
 		free(data->input);
 	}

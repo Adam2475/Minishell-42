@@ -66,14 +66,9 @@ typedef struct s_data
 	pid_t			parent;
 	t_cmd			cmd;
 	int				redirect_state;
-	/////////////
-	// Commands splitted by pipe
 	t_env_list		*env_list;
 	t_token			*tokens;
-	int				err_state;
-	struct s_command *commands;
-	/////////////
-	// From Pipex
+
 	char *my_line;
 	char *path_from_envp;
 	char **my_paths;
@@ -146,4 +141,5 @@ void			handle_heredoc(char *delimiter, t_data **data);
 int				unset_env(t_env_list **env, char *var_name);
 void			cmd_exit(char **args, t_data *data);
 void			set_signal(void);
+void			set_data_zero(t_data *data);
 #endif

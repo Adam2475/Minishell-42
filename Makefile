@@ -8,7 +8,7 @@ LIB = ./libft/libft.a
 SRCS = main tokenizer redirection init \
 		utils parser cmd_chdir cmd_env cmd_pwd env_list cmd_echo \
 		cmd_export  pipe_case utils2 utils3 utils4 \
-		expander heredoc unset \
+		expander heredoc unset util_sign \
 
 SRC = $(addprefix $(SRC_DIR)/, $(addsuffix .c, $(SRCS)))
 # Object file generation

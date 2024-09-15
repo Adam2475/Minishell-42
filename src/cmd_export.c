@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:06:36 by mapichec          #+#    #+#             */
-/*   Updated: 2024/08/30 12:15:12 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/09/15 16:34:52 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,5 @@ int	export_cmd(char **args, t_data **data)
 		node = node->next;
 	}
 	ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
-	return(0);
+	return(1);
 }
