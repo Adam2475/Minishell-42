@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/15 17:08:25 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/15 19:21:15 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ char	*find_cmd(char *cmd, t_data **data)
 	write(2, "command not found : ", 20);
 	write(2, cmd, ft_strlen(cmd));
 	write(2, "\n", 1);
+	free(tmp);
 	return (NULL);
 }
 
