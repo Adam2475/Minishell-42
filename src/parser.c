@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:04:42 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/13 19:03:55 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/15 19:21:15 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ char	*find_cmd(char *cmd, t_data **data)
 		holder = ft_strjoin(tmp, cmd);
 		if (access(holder, X_OK) == 0)
 			return (free(tmp), holder);
-		free(holder);
+		if (holder)
+			free(holder);
+		if (tmp)
+			free(tmp);
 		i++;
 	}
 	write(2, "command not found : ", 20);
@@ -109,7 +112,10 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 				return (-1);
 		}
 	}
-	execve(cmd, cmd_args, envp);
+	if (cmd && cmd_args)
+		execve(cmd, cmd_args, envp);
+	else
+		exit(0);
 	return (EXIT_SUCCESS);
 }
 
@@ -120,54 +126,6 @@ static int parent_process(void)
 	waitpid(-1, &status, 0);
 	return (status);
 }
-
-
-// static void	execute_command_single(char **command, t_data **data, char **envp)
-// {
-// 	char	*cmd;
-// 	pid_t	parent;
-// 	char	*tmp;
-// 	char	**cmd_args;
-// 	int		status;
-// 	char	*holder;
-// 	char	*tmp2;
-
-// 	cmd = NULL;
-// 	tmp = NULL;
-// 	tmp = ft_strjoin(command[0], " ");
-// 	if (manual_cmd(command, data))
-// 		return ;
-// 	cmd = find_cmd(command[0], data);
-// 	int i = 1;
-// 	while (command[i])
-// 	{
-// 		if (tmp2)
-// 			free(tmp2);
-// 		holder = ft_strjoin_gnl(tmp, command[i++]);
-// 		tmp2 = ft_strdup(holder);
-// 		free(tmp);
-// 		tmp = ft_strdup(holder);
-// 		holder = tmp2;
-// 	}
-// 	free(tmp);
-// 	cmd_args = ft_split(tmp, 32);
-// 	parent = fork();
-// 	if (parent < 0)
-// 		exit(ft_printf("error with the fork"));
-// 	if (!parent)
-// 	{
-// 		child_process(cmd, command, data, envp);
-// 		free(holder);
-// 		free(tmp);
-// 		return ;
-// 	}
-// 	else
-// 		status = parent_process();
-// 	free_char_array(cmd_args);
-// 	free(holder);
-// 	free(tmp);
-// 	return ;
-// }
 
 static void	execute_command_single(char **command, t_data **data, char **envp)
 {
@@ -182,7 +140,7 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	tmp = ft_strjoin(command[0], " ");
 	if (manual_cmd(command, data))
 	{
-		free(tmp);  // Free tmp if the command is handled manually
+		free(tmp);
 		return;
 	}
 	cmd = find_cmd(command[0], data);
@@ -191,36 +149,31 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	holder = NULL;
 	while (command[i])
 	{
-		holder = ft_strjoin_gnl(tmp, command[i++]); // Join strings
-		free(tmp);    // Free previous tmp
-		tmp = holder; // Assign new value to tmp
+		holder = ft_strjoin_gnl(tmp, command[i++]);
+		tmp = holder;
 	}
-
-	// tmp now holds the final concatenated string
 	cmd_args = ft_split(tmp, 32);
-	free(tmp); // Free tmp after splitting it into cmd_args
-
+	free(tmp);
 	parent = fork();
 	if (parent < 0)
 	{
-		free(cmd_args);  // Free cmd_args before exiting
+		free(cmd_args);
 		exit(ft_printf("error with the fork"));
 	}
-
 	if (!parent)
 	{
 		child_process(cmd, command, data, envp);
-		free(cmd_args);  // Free cmd_args in the child process
+		free(cmd_args);
 		return;
 	}
 	else
 		status = parent_process();
-
-	free(cmd_args);  // Free cmd_args after parent process is done
+	free(cmd);
+	free_char_array(cmd_args);
 	return;
 }
 
-void	token_parser(t_token **tokens, t_data **data, char **envp)
+int	token_parser(t_token **tokens, t_data **data, char **envp)
 {
 	t_token		*current;
 	t_token		*head;
@@ -235,8 +188,8 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 	if (!command[3])
 		free_exit(data);
 	current = *tokens;
-	head = *tokens;	
-	while (current->type != TOKEN_EOF)
+	head = *tokens;
+	while (current && current->type != TOKEN_EOF)
 	{
 		while (current != NULL)
 		{
@@ -246,6 +199,12 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				(*data)->redirect_state = 1;
 				if (current->type == TOKEN_APPENDICE)
 					(*data)->fd = open(current->value, O_CREAT | O_RDWR | O_TRUNC, 0644);
+				else
+				{
+					free(command[3]);
+					free_char_array(command);
+					return(ft_printf("syntax error!!\n"));
+				}
 			}
 			else if (current->type == TOKEN_REDIRECT_IN)
 			{
@@ -253,6 +212,12 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				(*data)->redirect_state = 0;
 				if (current->type == TOKEN_APPENDICE)
 					(*data)->fd = open(current->value, O_RDONLY);
+				else
+				{
+					free(command[3]);
+					free_char_array(command);
+					return(ft_printf("syntax error!!\n"));
+				}
 			}
 			else if (current->type == TOKEN_APPEND)
 			{
@@ -260,17 +225,28 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				(*data)->redirect_state = 1;
 				if (current->type == TOKEN_APPENDICE)
 					(*data)->fd = open(current->value, O_WRONLY | O_APPEND | O_CREAT, 0644);
+				else
+				{
+					free(command[3]);
+					free_char_array(command);
+					return(ft_printf("syntax error!!\n"));
+				}
 			}
 			else if (current->type == TOKEN_HEREDOC)
 			{
 				current = current->next;
-				handle_heredoc(current->value, data);
+				if (current->type == TOKEN_APPENDICE)
+					handle_heredoc(current->value, data);
+				else
+				{
+					free(command[3]);
+					free_char_array(command);
+					return(ft_printf("syntax error!!\n"));
+				}
 			}
 			current = current->next;
 		}
-
 		current = head;
-		
 		if (current->type == 12)
 		{
 			command[i] = ft_strdup(current->value);
@@ -283,15 +259,15 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				i++;
 			}
 			execute_command_single(command, data, envp);
-
 			if ((*data)->fd >= 0)
 				close((*data)->fd);
 			free(command[3]);
 			free_char_array(command);
-			return ;
+			return (0);
 		}
 		current = current->next;
 	}
 	free(command[3]);
 	free_char_array(command);
+	return (0);
 }

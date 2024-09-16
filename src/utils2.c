@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 10:39:34 by adapassa          #+#    #+#             */
-/*   Updated: 2024/08/31 10:40:16 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/15 17:52:51 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,20 @@
 t_token *copy_token(t_token *token)
 {
 	if (!token)
-		return NULL;
+		return (NULL);
 
-	t_token *new_token = (t_token *)malloc(sizeof(t_token));
+	t_token *new_token = (t_token *)ft_calloc(sizeof(t_token), 1);
 	if (!new_token)
-		return NULL;
+		return (NULL);
 
 	new_token->type = token->type;
-	new_token->value = strdup(token->value);
+	if (token->value)
+		new_token->value = ft_strndup(token->value, ft_strlen(token->value));
+	else
+		new_token->value = NULL;
 	new_token->next = NULL;
 
-	return new_token;
+	return (new_token);
 }
 
 int count_pipes(t_token* head)

@@ -17,8 +17,8 @@
 // DELIMITER
 
 // The command above means “Take everything after “<< DELIMITER”
-// until you find a line that only contains `DELIMITER`, 
-// and pass it as input to `[CMD]`”. In this case, 
+// until you find a line that only contains `DELIMITER`,
+// and pass it as input to `[CMD]`”. In this case,
 // ` Input Line` will be passed as input to `[CMD]`.
 
 // line 1 ├── cat << EOF
@@ -46,7 +46,7 @@ void handle_heredoc(char *delimiter, t_data **data)
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || strcmp(line, delimiter) == 0)
+		if (!line || ft_strncmp(line, delimiter, ft_strlen(line)) == 0)
 		{
 			free(line);
 			break;

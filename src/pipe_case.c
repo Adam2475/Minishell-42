@@ -75,7 +75,7 @@ void pipe_case(t_token **tokens, t_data **data, char **envp, t_token_list **toke
 				{
 					perror("error while duplicating fd!\n");
 					exit(EXIT_FAILURE);
-				}				
+				}
 				close(prev_fd);
 			}
 			// If not the last command redirect stdout to the current pipe's input
@@ -95,7 +95,8 @@ void pipe_case(t_token **tokens, t_data **data, char **envp, t_token_list **toke
 				z++;
 			}
 			// Setting Redirections
-			set_redirection(current->head, data);
+			if (set_redirection(current->head, data) > 0)
+				return ;
 			//if ((*data)->heredoc_flag)
 			//	write(end[1], (*data)->heredoc_content, strlen((*data)->heredoc_content));
 			// Command Execution
@@ -103,7 +104,7 @@ void pipe_case(t_token **tokens, t_data **data, char **envp, t_token_list **toke
 		}
 		else
 		{
-			// Parent process	
+			// Parent process
 			if (i > 0)
 			{
 				close(prev_fd);

@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 16:29:32 by marco             #+#    #+#             */
-/*   Updated: 2024/09/11 15:46:21 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/15 17:55:06 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int cd_cmd(char **cmd_args, t_data **data)
 
 	if (cmd_args[2] && (cmd_args[2][1] != '|' || cmd_args[2][1] != '>'
 		|| cmd_args[2][1] != '<'))
-		return ((*data)->err_state = 1,	ft_printf("bash: cd: %s: too many arguments\n", cmd_args[1]));
+		return (err_state = 1,	ft_printf("bash: cd: %s: too many arguments\n", cmd_args[1]));
 	node = (*data)->env_list;
 	if (!cmd_args[1] || cmd_args[1][0] == '~')
 	{
@@ -54,11 +54,10 @@ int cd_cmd(char **cmd_args, t_data **data)
 	if (chdir(cmd_args[1]) != 0)
 	{
 		if (errno == ENOENT)
-			return ((*data)->err_state = errno, ft_printf("bash: cd: %s: No such file or directory\n", cmd_args[1]));
+			return (err_state = errno, ft_printf("bash: cd: %s: No such file or directory\n", cmd_args[1]));
 		else if (errno == ENOTDIR)
-			return ((*data)->err_state = errno, ft_printf("bash: cd: %s: Not a directory\n", cmd_args[1]));
+			return (err_state = errno, ft_printf("bash: cd: %s: Not a directory\n", cmd_args[1]));
 	}
-	ft_printf("\033[0;91mCD_CMD %s\033[0;39m\n", cmd_args[1]);
 	chpwd_env(data, cmd_args[1]);
-	return((*data)->err_state = 0, 1);
+	return(err_state = 0, 1);
 }

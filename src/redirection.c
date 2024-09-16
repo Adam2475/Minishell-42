@@ -12,7 +12,7 @@
 
 #include "../inc/minishell.h"
 
-void	set_redirection(t_token *tokens, t_data **data)
+int	set_redirection(t_token *tokens, t_data **data)
 {
 	t_token *current = tokens;
 
@@ -24,6 +24,8 @@ void	set_redirection(t_token *tokens, t_data **data)
 			(*data)->redirect_state = 1;
 			if (current->type == TOKEN_APPENDICE)
 				(*data)->fd = open(current->value, O_CREAT | O_RDWR | O_TRUNC, 0644);
+			else
+				return(ft_printf("syntax error!!\n"));
 		}
 		else if (current->type == TOKEN_REDIRECT_IN)
 		{
@@ -34,6 +36,8 @@ void	set_redirection(t_token *tokens, t_data **data)
 				(*data)->fd = open(current->value, O_RDONLY);
 				if ((*data)->fd < 0)
 					exit(ft_printf("input file not found!\n"));
+				else
+					return(ft_printf("syntax error!!\n"));
 			}
 		}
 		else if (current->type == TOKEN_APPEND)
@@ -45,15 +49,16 @@ void	set_redirection(t_token *tokens, t_data **data)
 				ft_printf("setting up the append!\n");
 				(*data)->fd = open(current->value, O_WRONLY | O_APPEND | O_CREAT, 0644);
 			}
+			else
+				return(ft_printf("syntax error!!\n"));
 		}
 		else if (current->type == TOKEN_HEREDOC)
 		{
 			current = current->next;
 			if (current->type == TOKEN_APPENDICE)
-			{
-				ft_printf("setting up the heredoc!\n");
 				handle_heredoc(current->value, data);
-			}
+			else
+				return(ft_printf("syntax error!!\n"));
 		}
 		current = current->next;
 	}

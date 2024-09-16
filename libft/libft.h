@@ -6,7 +6,7 @@
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 17:27:20 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/13 18:56:10 by adapassa         ###   ########.fr       */
+/*   Updated: 2024/09/15 17:40:53 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ typedef enum type
 	TOKEN_SINGLE_QUOTES,
 	TOKEN_WHITESPACE,
 	TOKEN_COMMAND,
-	TOKEN_APPENDICE
+	TOKEN_APPENDICE,
+	TOKEN_NEUTRO
 }	t_token_type;
 
 ////////////////////////////////////////////////

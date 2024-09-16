@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mapichec <mapichec@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:06:36 by mapichec          #+#    #+#             */
-/*   Updated: 2024/08/30 12:15:12 by mapichec         ###   ########.fr       */
+/*   Updated: 2024/09/15 16:34:52 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	export_cmd(char **args, t_data **data)
 	char		*tmp;
 	int			size;
 	int			i;
-	
+
 	node = (*data)->env_list;
 	current = (*data)->tokens;
 	size = ft_lstsize_token(current);
@@ -76,11 +76,11 @@ int	export_cmd(char **args, t_data **data)
 			add_to_env(args[i], data);
 		i++;
 	}
-	while (node->next)
-	{
-		ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
-		node = node->next;
-	}
-	ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
-	return(0);
+	// while (node->next)
+	// {
+	// 	ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
+	// 	node = node->next;
+	// }
+	// ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
+	return(1);
 }
