@@ -83,4 +83,3 @@ void cmd_exit(char **args, t_data *data)
 	exit(exit_code);
 }
 
-// need to setup the exit status for the ? expansion

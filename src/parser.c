@@ -40,13 +40,15 @@ char	*find_cmd(char *cmd, t_data **data)
 		holder = ft_strjoin(tmp, cmd);
 		if (access(holder, X_OK) == 0)
 			return (free(tmp), holder);
-		free(holder);
+		if (holder)
+			free(holder);
+		if (tmp)
+			free(tmp);
 		i++;
 	}
 	write(2, "command not found : ", 20);
 	write(2, cmd, ft_strlen(cmd));
 	write(2, "\n", 1);
-	free(tmp);
 	return (NULL);
 }
 
@@ -110,7 +112,10 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 				return (-1);
 		}
 	}
-	execve(cmd, cmd_args, envp);
+	if (cmd && cmd_args)
+		execve(cmd, cmd_args, envp);
+	else
+		exit(0);
 	return (EXIT_SUCCESS);
 }
 
@@ -145,7 +150,6 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	while (command[i])
 	{
 		holder = ft_strjoin_gnl(tmp, command[i++]);
-		free(tmp);
 		tmp = holder;
 	}
 	cmd_args = ft_split(tmp, 32);
@@ -164,11 +168,12 @@ static void	execute_command_single(char **command, t_data **data, char **envp)
 	}
 	else
 		status = parent_process();
-	free(cmd_args);
+	free(cmd);
+	free_char_array(cmd_args);
 	return;
 }
 
-void	token_parser(t_token **tokens, t_data **data, char **envp)
+int	token_parser(t_token **tokens, t_data **data, char **envp)
 {
 	t_token		*current;
 	t_token		*head;
@@ -183,8 +188,8 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 	if (!command[3])
 		free_exit(data);
 	current = *tokens;
-	head = *tokens;	
-	while (current->type != TOKEN_EOF)
+	head = *tokens;
+	while (current && current->type != TOKEN_EOF)
 	{
 		while (current != NULL)
 		{
@@ -194,6 +199,12 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				(*data)->redirect_state = 1;
 				if (current->type == TOKEN_APPENDICE)
 					(*data)->fd = open(current->value, O_CREAT | O_RDWR | O_TRUNC, 0644);
+				else
+				{
+					free(command[3]);
+					free_char_array(command);
+					return(ft_printf("syntax error!!\n"));
+				}
 			}
 			else if (current->type == TOKEN_REDIRECT_IN)
 			{
@@ -201,6 +212,12 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				(*data)->redirect_state = 0;
 				if (current->type == TOKEN_APPENDICE)
 					(*data)->fd = open(current->value, O_RDONLY);
+				else
+				{
+					free(command[3]);
+					free_char_array(command);
+					return(ft_printf("syntax error!!\n"));
+				}
 			}
 			else if (current->type == TOKEN_APPEND)
 			{
@@ -208,11 +225,24 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				(*data)->redirect_state = 1;
 				if (current->type == TOKEN_APPENDICE)
 					(*data)->fd = open(current->value, O_WRONLY | O_APPEND | O_CREAT, 0644);
+				else
+				{
+					free(command[3]);
+					free_char_array(command);
+					return(ft_printf("syntax error!!\n"));
+				}
 			}
 			else if (current->type == TOKEN_HEREDOC)
 			{
 				current = current->next;
-				handle_heredoc(current->value, data);
+				if (current->type == TOKEN_APPENDICE)
+					handle_heredoc(current->value, data);
+				else
+				{
+					free(command[3]);
+					free_char_array(command);
+					return(ft_printf("syntax error!!\n"));
+				}
 			}
 			current = current->next;
 		}
@@ -233,10 +263,11 @@ void	token_parser(t_token **tokens, t_data **data, char **envp)
 				close((*data)->fd);
 			free(command[3]);
 			free_char_array(command);
-			return ;
+			return (0);
 		}
 		current = current->next;
 	}
 	free(command[3]);
 	free_char_array(command);
+	return (0);
 }

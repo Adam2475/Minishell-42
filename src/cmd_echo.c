@@ -12,7 +12,7 @@
 
 #include "../inc/minishell.h"
 
-static void	modify_type(t_token *current, t_token_type num)	
+static void	modify_type(t_token *current, t_token_type num)
 {
 	current = current->next;
 	while (current->type != TOKEN_EOF && current->type != num)
@@ -79,7 +79,7 @@ static t_token	*print_in_qt(t_data **data, t_token *current, t_token **tokens)
 		}
 		tmp++;
 	}
-	return (current->next);	
+	return (current->next);
 }
 
 int	echo_cmd(t_data **data, t_token **tokens)

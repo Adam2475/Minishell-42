@@ -17,7 +17,6 @@ int	pwd_cmd(t_data **data)
 	t_env_list	*node;
 
 	node = (*data)->env_list;
-	ft_printf("\033[0;91mPWD_CMD\033[0;39m\n");
 	while (ft_strncmp(node->var, "PWD=", 4))
 		node = node->next;
 	ft_printf("%s\n", node->value);

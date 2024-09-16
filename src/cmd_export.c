@@ -60,7 +60,7 @@ int	export_cmd(char **args, t_data **data)
 	char		*tmp;
 	int			size;
 	int			i;
-	
+
 	node = (*data)->env_list;
 	current = (*data)->tokens;
 	size = ft_lstsize_token(current);
@@ -76,11 +76,11 @@ int	export_cmd(char **args, t_data **data)
 			add_to_env(args[i], data);
 		i++;
 	}
-	while (node->next)
-	{
-		ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
-		node = node->next;
-	}
-	ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
+	// while (node->next)
+	// {
+	// 	ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
+	// 	node = node->next;
+	// }
+	// ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
 	return(1);
 }

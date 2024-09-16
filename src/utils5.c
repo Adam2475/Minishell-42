@@ -12,49 +12,43 @@
 
 #include "../inc/minishell.h"
 
-int	check_unclosed_quotes(t_token *token)
+int check_quotes(t_token **tokens)
 {
-	int	single_quote_count;
-	int	double_quote_count;
+	t_token	*current;
+	t_token	*current_2;
 
-	single_quote_count = 0;
-	double_quote_count = 0;
-	while (*token->value)
+	current = (*tokens);
+	current_2 = NULL;
+	while ((int)current->type != TOKEN_EOF)
 	{
-		if (*token->value == '\'')
-			single_quote_count++;
-		else if (*token->value == '"')
-			double_quote_count++;
-		token->value++;
-	}
-	if (single_quote_count % 2 != 0 || double_quote_count % 2 != 0)
-		return (1);
-	return (0);
-}
-
-int	check_quotes(t_token *tokens)
-{
-	t_token	*current = tokens;
-
-	while (current)
-	{
-		if (current->state > STATE_NORMAL)
+		if ((int)current->type == 10)
 		{
-			if (check_unclosed_quotes(current))
-				return (1);
+			current_2 = current->next;
+			while ((int)current_2->type != 7 && (int)current_2->type != 10)
+			{
+				current_2->type = TOKEN_WORD;
+				current_2 = current_2->next;
+			}
+			if ((int)current_2->type == 7)
+				return (ft_printf("check_quotes\n"), 1);
+			current = current_2;
+		}
+		if ((int)current->type == 9)
+		{
+			current_2 = current->next;
+			while ((int)current_2->type != 7 && (int)current_2->type != 9)
+			{
+				if ((int)current_2->type != 8)
+					current_2->type = TOKEN_WORD;
+				else if ((int)current->type == 8 && (int)current->next->type == 13)
+					current_2 = current->next;
+				current_2 = current_2->next;
+			}
+			if ((int)current_2->type == 7)
+				return (ft_printf("check_quotes\n"), 1);
+			current = current_2;
 		}
 		current = current->next;
 	}
 	return (0);
-}
-
-void	print_tokens_state(t_token *tokens)
-{
-	t_token	*temp = tokens;
-
-	while (temp)
-	{
-		ft_printf("State: %d Type: %d, Value: %s\n", temp->state, temp->type, temp->value);
-		temp = temp->next;
-	}
 }
