@@ -57,11 +57,8 @@ void	split_var_env(t_env_list **node, int len)
 
 	i = 0;
 	j = 0;
-	while (i <= len && (*node)->content[i] != '\0')
-	{
-		(*node)->var[i] = (*node)->content[i];
-		i++;
-	}
+	(*node)->var = (char *)ft_strndup((*node)->content, ft_strlen_char((*node)->content, '='));
+	i = ft_strlen_char((*node)->content, '=');
 	while ((*node)->content[i] != '\0')
 		(*node)->value[j++] = (*node)->content[i++];
 }

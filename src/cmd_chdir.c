@@ -16,7 +16,6 @@ void	chpwd_env(t_data **data, char *new_path)
 {
 	t_env_list	*node;
 	t_env_list	*node_old;
-	char		*tmp_str;
 
 	node = (*data)->env_list;
 	while (node && ft_strncmp(node->var, "PWD=", 4) != 0)
@@ -30,8 +29,7 @@ void	chpwd_env(t_data **data, char *new_path)
 	node_old->content = ft_strjoin(node_old->var, node->value);
 	free(node->value);
 	free(node->content);
-	tmp_str = getcwd(new_path, UINT_MAX);
-	node->value = ft_strndup(tmp_str, ft_strlen(tmp_str));
+	node->value = ft_strndup(new_path, ft_strlen(new_path));
 	node->content = ft_strjoin(node->var, node->value);
 	return ;
 }
@@ -40,6 +38,7 @@ int cd_cmd(char **cmd_args, t_data **data)
 {
 	t_env_list	*node;
 	t_token		*token;
+	char		*tmp;
 	
 	token = (*data)->tokens->next;
 	if (token->next->value && (token->next->value[1] != '|'
@@ -60,6 +59,8 @@ int cd_cmd(char **cmd_args, t_data **data)
 		else if (errno == ENOTDIR)
 			return (err_state = errno, ft_printf("bash: cd: %s: Not a directory\n", token->value));
 	}
-	chpwd_env(data, token->value);
+	tmp = ft_strdup(token->value);
+	tmp = getcwd(tmp, 1024);
+	chpwd_env(data, tmp);
 	return(err_state = 0, 1);
 }

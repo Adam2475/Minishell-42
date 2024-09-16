@@ -46,11 +46,11 @@ int main(int argc, char **argv, char **envp)
 		if (data->path_from_envp == NULL)
 			env_parser(&data, envp);
 		tokens = tokenize_string(&data);
+		if (check_quotes(&tokens) != 0)
+			exit(printf("unclosed quotes found!!\n"));
 		token_reformatting(&tokens);
 		data->tokens = tokens;
 		set_token_state(&tokens);
-		if (check_quotes(&tokens) != 0)
-			exit(printf("unclosed quotes found!!\n"));
 		expand_var(&tokens, &data);
 		tmp = copy_token_list(tokens);
 		if (piper(&tokens) == 0)

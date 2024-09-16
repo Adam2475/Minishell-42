@@ -85,7 +85,8 @@ void	free_list(t_token **head)
 			free(temp);
 			break ;
 		}
-		free(temp->value);
+		if (temp->value[0])
+			free(temp->value);
 		free(temp);
 	}
 	*head = NULL;
