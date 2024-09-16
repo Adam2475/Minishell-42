@@ -114,8 +114,8 @@ static int child_process(char *cmd, char **cmd_args, t_data **data, char **envp)
 	}
 	if (cmd && cmd_args)
 		execve(cmd, cmd_args, envp);
-	else
-		exit(0);
+	// else
+	// 	exit(0);
 	return (EXIT_SUCCESS);
 }
 
@@ -249,12 +249,12 @@ int	token_parser(t_token **tokens, t_data **data, char **envp)
 		current = head;
 		if (current->type == 12)
 		{
-			command[i] = ft_strdup(current->value);
+			command[i] = ft_strndup(current->value, ft_strlen(current->value));
 			i++;
 			current = current->next;
 			while (current->type == 13 || current->type == 1 || current->type == 8)
 			{
-				command[i] = ft_strdup(current->value);
+				command[i] = ft_strndup(current->value, ft_strlen(current->value));
 				current = current->next;
 				i++;
 			}

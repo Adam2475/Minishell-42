@@ -56,16 +56,26 @@ int	expand_doll(t_token **current, t_data **data)
 int	expand_var(t_token **tkn_lst, t_data **data)
 {
 	t_token	*current;
+	char	*tmp;
 
 	current = (*tkn_lst);
-	// clean_tokens_qt(tkn_lst);
 	while (current->type != TOKEN_EOF)
 	{
 		if (current->type == 8)
 			expand_doll(&current, data);
 		current = current->next;
 	}
-	//print_tokens_state(*tkn_lst);
+	current = (*tkn_lst);
+	if (ft_strncmp(current->value, "export", 7) == 0)
+	{
+		clean_tokens_qt(tkn_lst);
+		current = current->next;
+		tmp = ft_strjoin(current->value, current->next->value);
+		free(current->value);
+		current->value = tmp;
+		tkn_delone(&current, current->next);
+	}
+	print_token_lists((*tkn_lst));
 	return (0);
 }
 // TODO: va rimesso che azzera i token type

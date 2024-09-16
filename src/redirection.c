@@ -62,4 +62,5 @@ int	set_redirection(t_token *tokens, t_data **data)
 		}
 		current = current->next;
 	}
+	return (0);
 }

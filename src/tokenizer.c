@@ -17,10 +17,11 @@
 
 t_token	*tokenize_string(t_data **data)
 {
-	char				*tmp;
-	char				*buffer;
-	char				*end;
-	t_token				*tokens;
+	char		*tmp;
+	char		*buffer;
+	char		*end;
+	int			flag_ws;
+	t_token		*tokens;
 
 	tmp = ft_strndup((*data)->input, ft_strlen((*data)->input));
 	if (!tmp)
@@ -31,6 +32,7 @@ t_token	*tokenize_string(t_data **data)
 	{
 		if ((*buffer) == WHITESPACE)
 		{
+			ft_tokenadd_back(&tokens, ft_lstnewtoken(TOKEN_WHITESPACE, ft_strndup(buffer, 1)));
 			buffer++;
 			continue;
 		}

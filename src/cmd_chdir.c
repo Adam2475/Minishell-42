@@ -25,39 +25,41 @@ void	chpwd_env(t_data **data, char *new_path)
 	while (node_old && ft_strncmp(node_old->var, "OLDPWD=", 7) != 0)
 		node_old = node_old->next;
 	free(node_old->value);
-	// free(node_old->content);
-	node_old->value = ft_strdup(node->value);
+	free(node_old->content);
+	node_old->value = ft_strndup(node->value, ft_strlen(node->value));
 	node_old->content = ft_strjoin(node_old->var, node->value);
 	free(node->value);
-	// free(node->content);
+	free(node->content);
 	tmp_str = getcwd(new_path, UINT_MAX);
 	node->value = ft_strndup(tmp_str, ft_strlen(tmp_str));
 	node->content = ft_strjoin(node->var, node->value);
-	free(tmp_str);
 	return ;
 }
 
 int cd_cmd(char **cmd_args, t_data **data)
 {
 	t_env_list	*node;
-
-	if (cmd_args[2] && (cmd_args[2][1] != '|' || cmd_args[2][1] != '>'
-		|| cmd_args[2][1] != '<'))
-		return (err_state = 1,	ft_printf("bash: cd: %s: too many arguments\n", cmd_args[1]));
+	t_token		*token;
+	
+	token = (*data)->tokens->next;
+	if (token->next->value && (token->next->value[1] != '|'
+		|| token->next->value[1] != '>'
+		|| token->next->value[1] != '<'))
+		return (err_state = 1,	ft_printf("bash: cd: %s: too many arguments\n", token->value));
 	node = (*data)->env_list;
-	if (!cmd_args[1] || cmd_args[1][0] == '~')
+	if (!token->value || token->value[0] == '~')
 	{
 		while (node && ft_strncmp(node->var, "HOME=", 5) != 0)
 			node = node->next;
-		cmd_args[1] = ft_strdup(node->value);
+		token->value = ft_strndup(node->value, ft_strlen(node->value));
 	}
-	if (chdir(cmd_args[1]) != 0)
+	if (chdir(token->value) != 0)
 	{
 		if (errno == ENOENT)
-			return (err_state = errno, ft_printf("bash: cd: %s: No such file or directory\n", cmd_args[1]));
+			return (err_state = errno, ft_printf("bash: cd: %s: No such file or directory\n", token->value));
 		else if (errno == ENOTDIR)
-			return (err_state = errno, ft_printf("bash: cd: %s: Not a directory\n", cmd_args[1]));
+			return (err_state = errno, ft_printf("bash: cd: %s: Not a directory\n", token->value));
 	}
-	chpwd_env(data, cmd_args[1]);
+	chpwd_env(data, token->value);
 	return(err_state = 0, 1);
 }

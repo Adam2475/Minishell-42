@@ -59,20 +59,17 @@ int	execute_command(char *command, t_data **data, char **envp)
 	return(execve(holder, cmd_args, envp));
 }
 
-void	print_token_lists(t_token_list *list)
+void	print_token_lists(t_token *list)
 {
-	while (list)
+	t_token *current = list;
+
+	printf("Token List:\n");
+	while (current)
 	{
-		t_token *current = list->head;
-		printf("Token List:\n");
-		while (current)
-		{
-			printf("Type: %d, Value: %s\n", current->type, current->value);
-			current = current->next;
-		}
-		list = list->next;
-		printf("----\n");
+		printf("Type: %d, Value: %s\n", current->type, current->value);
+		current = current->next;
 	}
+	printf("----\n");
 }
 
 void	print_tokens(t_token *tokens)

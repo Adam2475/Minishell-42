@@ -29,7 +29,7 @@ int	ft_strsearch(char *str, int c)
 	return (0);
 }
 
-int	add_to_env(char *arg, t_data **data)
+int	add_to_env(t_token *arg, t_data **data)
 {
 	t_env_list	*node;
 	t_env_list	*head;
@@ -39,16 +39,16 @@ int	add_to_env(char *arg, t_data **data)
 	// TODO: check if it works
 	while (node)
 	{
-		if (ft_strncmp(arg, node->var, ft_strlen_char(arg, '=')) == 0)
+		if (ft_strncmp(arg->value, node->var, ft_strlen_char(arg->value, '=')) == 0)
 		{
-			node->value = ft_strndup(arg + ft_strlen_char(arg, '='), ft_strlen_char(arg, '\0'));
+			node->value = ft_strndup(arg->value + ft_strlen_char(arg->value, '='), ft_strlen_char(arg->value, '\0'));
 			break ;
 		}
 		if (!node->next)
 			break ;
 		node = node->next;
 	}
-	node = new_node_env(arg);
+	node = new_node_env(arg->value);
 	add_back_env(&head, node);
 	return (0);
 }
@@ -57,30 +57,32 @@ int	export_cmd(char **args, t_data **data)
 {
 	t_env_list	*node;
 	t_token		*current;
-	char		*tmp;
-	int			size;
-	int			i;
+	// int			size;
+	// int			i;
+	int			flag;
 
 	node = (*data)->env_list;
 	current = (*data)->tokens;
-	size = ft_lstsize_token(current);
-	i = 1;
-	/* EXPANDER ??*/
-	// if ((*data)->tokens->next->type == TOKEN_DOLLAR)
-	while (args[i] && i < size)
+	// size = ft_lstsize_token(current);
+	// i = 1;
+	flag = 0;
+	while (current->value && current->type != TOKEN_EOF)
 	{
-		if (args[i] && !((args[i][0] >= 'a' && args[i][0] <= 'z')
-				|| (args[i][0] >= 'A' && args[i][0] <= 'Z')))
-			return (ft_printf("bash: export: `%s': not a valid identifier\n", args[i]));
-		if (args[i] && ft_strsearch(args[i], '='))
-			add_to_env(args[i], data);
-		i++;
+		if (current->value && !((current->value[0] >= 'a' && current->value[0] <= 'z')
+				|| (current->value[0] >= 'A' && current->value[0] <= 'Z')))
+			return (ft_printf("bash: export: `%s': not a valid identifier\n", current->value));
+		if (current->value && ft_strsearch(current->value, '='))
+		{
+			add_to_env(current, data);
+			flag = 1;
+		}
+		current = current->next;
 	}
-	// while (node->next)
-	// {
-	// 	ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
-	// 	node = node->next;
-	// }
-	// ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
+	while (node->next && flag == 0)
+	{
+		ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
+		node = node->next;
+	}
+	ft_printf("declare -x %s\"%s\"\n", node->var, node->value);
 	return(1);
 }

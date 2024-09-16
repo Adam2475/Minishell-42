@@ -1,36 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   util_sign.c                                        :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adapassa <adapassa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/15 18:04:10 by adapassa          #+#    #+#             */
-/*   Updated: 2024/09/15 18:04:34 by adapassa         ###   ########.fr       */
+/*   Created: 2024/07/05 15:01:08 by adapassa          #+#    #+#             */
+/*   Updated: 2024/09/12 17:35:14 by adapassa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-// TODO: chiedere se e' un errore se quando sto scrivendo un comando e mando un ctrl+D non mi fa nulla 
-
-void	sig_int(void)
+static void	sig_int(void)
 {
 	rl_on_new_line();
-	ft_putstr_fd("\n", 1);
+	ft_putstr_fd("\n", STDOUT_FILENO);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
 
-void	sig_quit(void)
+static void	sig_quit(void)
 {
 	rl_on_new_line();
 	rl_redisplay();
-	ft_putstr_fd("  \b\b", 1);
+	ft_putstr_fd("  \b\b", STDOUT_FILENO);
 }
 
-void	signal_handler(int signo)
+static void	signal_handler(int signo)
 {
 	int	pid;
 	int	status;
@@ -49,7 +47,7 @@ void	signal_handler(int signo)
 		if (pid == -1)
 			sig_quit();
 		else
-			ft_putstr_fd("Quit: 3\n", 1);
+			ft_putstr_fd("\n", 1);
 	}
 }
 

@@ -12,6 +12,30 @@
 
 #include "../inc/minishell.h"
 
+void	remove_ws(t_token **token)
+{
+	t_token	*node;
+	t_token	*tmp;
+
+	node = (*token);
+	tmp = NULL;
+	while (node->type == TOKEN_WHITESPACE && node->type != TOKEN_EOF)
+	{
+		tmp = node;
+		node = node->next;
+		free(tmp->value);
+		free(tmp);
+		tmp = NULL;
+	}
+	while (node->type != TOKEN_EOF)
+	{
+		if (node->next->type == TOKEN_WHITESPACE)
+			tkn_delone(&node, node->next);
+		else
+			node = node->next;
+	}	
+}
+
 int check_quotes(t_token **tokens)
 {
 	t_token	*current;
@@ -50,5 +74,6 @@ int check_quotes(t_token **tokens)
 		}
 		current = current->next;
 	}
+	remove_ws(tokens);
 	return (0);
 }
